@@ -8,68 +8,11 @@ import Button from '@/components/Button';
 import { Github, Filter, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// Mock data for repositories
-const mockRepos: Repository[] = [
-  {
-    id: '1',
-    name: 'frontend-app',
-    owner: 'acme-org',
-    isConfigured: true,
-    language: 'TypeScript',
-    lastUpdated: '2 days ago'
-  },
-  {
-    id: '2',
-    name: 'backend-api',
-    owner: 'acme-org',
-    isConfigured: true,
-    language: 'JavaScript',
-    lastUpdated: '5 days ago'
-  },
-  {
-    id: '3',
-    name: 'documentation',
-    owner: 'acme-org',
-    isConfigured: false,
-    language: 'TypeScript',
-    lastUpdated: '1 week ago'
-  },
-  {
-    id: '4',
-    name: 'analytics-dashboard',
-    owner: 'acme-org',
-    isConfigured: false,
-    language: 'JavaScript',
-    lastUpdated: '3 days ago'
-  },
-  {
-    id: '5',
-    name: 'design-system',
-    owner: 'acme-org',
-    isConfigured: true,
-    language: 'TypeScript',
-    lastUpdated: '2 weeks ago'
-  },
-  {
-    id: '6',
-    name: 'mobile-app',
-    owner: 'acme-org',
-    isConfigured: false,
-    language: 'Dart',
-    lastUpdated: '1 day ago'
-  },
-  {
-    id: '7',
-    name: 'infrastructure',
-    owner: 'acme-org',
-    isConfigured: true,
-    language: 'Go',
-    lastUpdated: '2 days ago'
-  }
-];
+// Mock data for repositories - empty array for initial state
+const mockRepos: Repository[] = [];
 
 const Index = () => {
-  const [connected, setConnected] = useState(true);
+  const [connected, setConnected] = useState(false);
   const [repositories, setRepositories] = useState<Repository[]>(mockRepos);
   const [loading, setLoading] = useState(false);
   
@@ -81,6 +24,33 @@ const Index = () => {
     // Simulate API call
     setTimeout(() => {
       setConnected(true);
+      // Set some mock data after connecting
+      setRepositories([
+        {
+          id: '1',
+          name: 'frontend-app',
+          owner: 'acme-org',
+          isConfigured: true,
+          language: 'TypeScript',
+          lastUpdated: '2 days ago'
+        },
+        {
+          id: '2',
+          name: 'backend-api',
+          owner: 'acme-org',
+          isConfigured: false,
+          language: 'JavaScript',
+          lastUpdated: '5 days ago'
+        },
+        {
+          id: '3',
+          name: 'documentation',
+          owner: 'acme-org',
+          isConfigured: false,
+          language: 'TypeScript',
+          lastUpdated: '1 week ago'
+        }
+      ]);
       setLoading(false);
     }, 1500);
   };

@@ -2,7 +2,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import Button from './Button';
-import { Github, PlusCircle } from 'lucide-react';
+import { Github, PlusCircle, ArrowRight } from 'lucide-react';
 
 interface EmptyStateProps {
   className?: string;
@@ -12,23 +12,53 @@ interface EmptyStateProps {
 const EmptyState: React.FC<EmptyStateProps> = ({ className, onConnect }) => {
   return (
     <div className={cn(
-      "flex flex-col items-center justify-center text-center p-8 rounded-lg border border-dashed border-border bg-accent/50 animate-fadeIn",
+      "flex flex-col items-center justify-center text-center p-12 rounded-lg border border-dashed border-border bg-accent/50 animate-fadeIn min-h-[500px] mx-auto max-w-3xl",
       className
     )}>
-      <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center mb-4">
-        <Github className="h-8 w-8 text-primary" />
+      <div className="w-20 h-20 rounded-full bg-accent flex items-center justify-center mb-6">
+        <Github className="h-10 w-10 text-primary" />
       </div>
-      <h3 className="text-xl font-semibold mb-2">Connect to GitHub</h3>
-      <p className="text-muted-foreground mb-6 max-w-md">
-        Connect your GitHub account to view and manage repositories. You'll be able to configure integration settings for each repository.
+      <h2 className="text-2xl font-bold mb-3">Welcome to Repository Integration</h2>
+      <p className="text-muted-foreground mb-3 max-w-md">
+        Connect your GitHub organization to start configuring repositories with our product.
       </p>
-      <Button 
-        onClick={onConnect}
-        icon={<PlusCircle className="h-4 w-4" />}
-        className="button-shine"
-      >
-        Connect GitHub Organization
-      </Button>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-8 w-full max-w-2xl">
+        <div className="flex flex-col items-center p-4 rounded-lg bg-background border border-border">
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+            <span className="font-semibold">1</span>
+          </div>
+          <h3 className="font-medium mb-1">Connect</h3>
+          <p className="text-xs text-muted-foreground">Link your GitHub organization</p>
+        </div>
+        <div className="flex flex-col items-center p-4 rounded-lg bg-background border border-border">
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+            <span className="font-semibold">2</span>
+          </div>
+          <h3 className="font-medium mb-1">Select</h3>
+          <p className="text-xs text-muted-foreground">Choose repositories to configure</p>
+        </div>
+        <div className="flex flex-col items-center p-4 rounded-lg bg-background border border-border">
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+            <span className="font-semibold">3</span>
+          </div>
+          <h3 className="font-medium mb-1">Configure</h3>
+          <p className="text-xs text-muted-foreground">Set up repository integration</p>
+        </div>
+      </div>
+      <div className="flex flex-col items-center">
+        <div className="text-sm text-muted-foreground mb-6">
+          <span className="font-medium">0 repositories</span> connected out of <span className="font-medium">0 total</span>
+        </div>
+        <Button 
+          onClick={onConnect}
+          icon={<PlusCircle className="h-4 w-4" />}
+          className="button-shine group transition-all duration-300"
+          size="lg"
+        >
+          Connect GitHub Organization
+          <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+        </Button>
+      </div>
     </div>
   );
 };
