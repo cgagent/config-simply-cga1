@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Github, ChevronRight, Check, AlertTriangle, Settings, ChevronDown } from 'lucide-react';
+import { Github, ChevronRight, Check, AlertTriangle, Settings, ChevronDown, GitCommitHorizontal, Clock } from 'lucide-react';
 import Button from './Button';
 import { Badge } from '@/components/ui/badge';
 import { Repository, languageColors } from '@/types/repository';
@@ -27,7 +27,9 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
       <div 
         className="grid grid-cols-12 gap-2 px-6 py-4 cursor-pointer hover:bg-secondary/50 transition-colors"
         onClick={() => {
-          if (!hasWorkflows) {
+          if (hasWorkflows) {
+            setIsOpen(!isOpen);
+          } else {
             onClick(repository);
           }
         }}
@@ -100,7 +102,7 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
               <Button
                 size="sm"
                 variant="ghost"
-                className="rounded-full w-8 h-8 p-0 md:hidden"
+                className="rounded-full w-8 h-8 p-0"
                 icon={isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
               />
             </CollapsibleTrigger>
@@ -116,11 +118,31 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
             <div className="text-xs font-medium text-muted-foreground mb-2 uppercase">Workflows</div>
             <div className="space-y-2">
               {repository.workflows?.map(workflow => (
-                <div key={workflow.id} className="flex items-center justify-between py-2 px-3 bg-background rounded-md">
-                  <span className="text-sm">{workflow.name}</span>
-                  <Badge variant={workflow.status === 'active' ? 'default' : 'outline'}>
-                    {workflow.status}
-                  </Badge>
+                <div key={workflow.id} className="grid grid-cols-12 gap-2 py-2 px-3 bg-background rounded-md">
+                  <div className="col-span-5 flex items-center">
+                    <span className="text-sm font-medium">{workflow.name}</span>
+                  </div>
+                  <div className="col-span-3 flex items-center justify-center">
+                    {workflow.buildNumber !== undefined && (
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <GitCommitHorizontal className="h-3.5 w-3.5" />
+                        <span>Build #{workflow.buildNumber}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="col-span-2 flex items-center justify-center">
+                    {workflow.lastRun && (
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Clock className="h-3.5 w-3.5" />
+                        <span>{workflow.lastRun}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="col-span-2 flex items-center justify-end">
+                    <Badge variant={workflow.status === 'active' ? 'default' : 'outline'}>
+                      {workflow.status}
+                    </Badge>
+                  </div>
                 </div>
               ))}
             </div>

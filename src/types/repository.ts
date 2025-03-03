@@ -9,7 +9,13 @@ export interface Repository {
   packageTypes?: string[];
   lastRun?: string;
   orgName?: string;
-  workflows?: { id: string; name: string; status: 'active' | 'inactive' }[];
+  workflows?: { 
+    id: string; 
+    name: string; 
+    status: 'active' | 'inactive';
+    buildNumber?: number;
+    lastRun?: string;
+  }[];
 }
 
 export const languageColors: Record<string, string> = {
