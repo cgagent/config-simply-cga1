@@ -1,12 +1,13 @@
+
 import React, { useState } from 'react';
-import { Repository, Workflow } from '@/types/repository';
-import { ChevronDown, ChevronRight, GitPullRequest, Package, Check, X, Settings, Cog } from 'lucide-react';
+import { Repository } from '@/types/repository';
+import { ChevronDown, ChevronRight, Package } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useNavigate } from 'react-router-dom';
+import WorkflowItem from './repository/WorkflowItem';
+import PackageTypeBadges from './repository/PackageTypeBadges';
+import RepositoryStatus from './repository/RepositoryStatus';
 
 interface RepositoryItemProps {
   repository: Repository;
@@ -82,31 +83,10 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
         
         <div className="col-span-2 hidden md:flex justify-center items-center">
           {repository.isConfigured && repository.packageTypes && repository.packageTypes.length > 0 ? (
-            <div className="flex gap-1 flex-wrap">
-              {/* Connected package types */}
-              {repository.packageTypes.map((type, index) => (
-                <Badge 
-                  key={index}
-                  variant="outline"
-                  className="text-xs bg-secondary text-secondary-foreground"
-                >
-                  <Package className="h-3 w-3 mr-1" />
-                  {type}
-                </Badge>
-              ))}
-              
-              {/* Missing package types */}
-              {missingPackageTypes.map((type, index) => (
-                <Badge 
-                  key={`missing-${index}`}
-                  variant="outline"
-                  className="text-xs border-dashed bg-red-50 text-red-500 border-red-200"
-                >
-                  <X className="h-3 w-3 mr-1" />
-                  {type}
-                </Badge>
-              ))}
-            </div>
+            <PackageTypeBadges 
+              packageTypes={repository.packageTypes}
+              missingPackageTypes={missingPackageTypes}
+            />
           ) : (
             repository.isConfigured ? 
             <span className="text-xs text-muted-foreground">-</span> :
@@ -123,117 +103,20 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
         </div>
         
         <div className="col-span-2 md:col-span-2 flex justify-end items-center">
-          {repository.isConfigured ? (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="flex items-center gap-2">
-                    {isFullyConfigured ? (
-                      <div className="flex items-center text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
-                        <Check className="h-3.5 w-3.5 mr-1" />
-                        <span className="text-xs font-medium">Configured</span>
-                      </div>
-                    ) : (
-                      <div className="w-full max-w-24">
-                        <div className="flex justify-between text-xs mb-1">
-                          <span>{coveragePercentage}%</span>
-                        </div>
-                        <Progress value={coveragePercentage} className="h-1.5" />
-                      </div>
-                    )}
-                    <Button
-                      variant={isFullyConfigured ? "outline" : "default"}
-                      size="sm"
-                      onClick={handleConfigure}
-                      className="ml-2"
-                    >
-                      <Cog className="h-4 w-4 mr-2" />
-                      {isFullyConfigured ? "Manage" : "Configure"}
-                    </Button>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {missingPackageTypes.length > 0 ? (
-                    <div className="text-xs">
-                      <p>Missing package types:</p>
-                      <ul className="list-disc pl-4 mt-1">
-                        {missingPackageTypes.map((type) => (
-                          <li key={type}>{type}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  ) : (
-                    <p className="text-xs">All package types connected</p>
-                  )}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          ) : (
-            <Button 
-              variant="default"
-              size="sm"
-              onClick={handleConfigure}
-              className="text-sm flex items-center gap-2"
-            >
-              <Cog className="h-4 w-4" />
-              Configure FlyFrog
-            </Button>
-          )}
+          <RepositoryStatus
+            isConfigured={repository.isConfigured}
+            isFullyConfigured={isFullyConfigured}
+            coveragePercentage={coveragePercentage}
+            missingPackageTypes={missingPackageTypes}
+            onConfigure={handleConfigure}
+          />
         </div>
       </div>
       
       {hasWorkflows && repository.isConfigured && (
         <CollapsibleContent className="bg-muted/30">
           {repository.workflows?.map((workflow) => (
-            <div 
-              key={workflow.id}
-              className="grid grid-cols-12 gap-2 px-6 py-3 border-t border-border/50 pl-10"
-            >
-              <div className="col-span-6 flex items-center gap-2">
-                <div className="flex flex-col">
-                  <div className="flex items-center gap-2">
-                    <GitPullRequest className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm">{workflow.name}</span>
-                  </div>
-                  <span className="text-xs text-muted-foreground ml-6">
-                    / #{workflow.buildNumber || '-'}
-                  </span>
-                </div>
-              </div>
-              
-              <div className="col-span-2 flex justify-center items-center">
-                {workflow.packageTypes && workflow.packageTypes.length > 0 ? (
-                  <div className="flex gap-1 flex-wrap">
-                    {workflow.packageTypes.map((type, index) => (
-                      <Badge 
-                        key={index}
-                        variant="outline"
-                        className="text-xs bg-secondary text-secondary-foreground"
-                      >
-                        <Package className="h-3 w-3 mr-1" />
-                        {type}
-                      </Badge>
-                    ))}
-                  </div>
-                ) : (
-                  <span className="text-xs text-muted-foreground">-</span>
-                )}
-              </div>
-              
-              <div className="col-span-2 flex justify-center items-center">
-                <span className="text-sm text-muted-foreground">{workflow.lastRun || '-'}</span>
-              </div>
-              
-              <div className="col-span-2 flex justify-center items-center">
-                <span className={`px-2 py-0.5 text-xs rounded-full ${
-                  workflow.status === 'active' 
-                    ? 'bg-emerald-100 text-emerald-800' 
-                    : 'bg-amber-100 text-amber-800'
-                }`}>
-                  {workflow.status === 'active' ? 'Active' : 'Inactive'}
-                </span>
-              </div>
-            </div>
+            <WorkflowItem key={workflow.id} workflow={workflow} />
           ))}
         </CollapsibleContent>
       )}
