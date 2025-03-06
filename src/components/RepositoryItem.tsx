@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { Repository, Workflow } from '@/types/repository';
-import { ChevronDown, ChevronRight, GitPullRequest, Package, Check, X, Settings } from 'lucide-react';
+import { ChevronDown, ChevronRight, GitPullRequest, Package, Check, X, Settings, Cog } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -123,7 +122,7 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
           )}
         </div>
         
-        <div className="col-span-2 md:col-span-2 flex justify-center items-center">
+        <div className="col-span-2 md:col-span-2 flex justify-end items-center">
           {repository.isConfigured ? (
             <TooltipProvider>
               <Tooltip>
@@ -143,12 +142,13 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
                       </div>
                     )}
                     <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8"
+                      variant={isFullyConfigured ? "outline" : "default"}
+                      size="sm"
                       onClick={handleConfigure}
+                      className="ml-2"
                     >
-                      <Settings className="h-4 w-4" />
+                      <Cog className="h-4 w-4 mr-2" />
+                      {isFullyConfigured ? "Manage" : "Configure"}
                     </Button>
                   </div>
                 </TooltipTrigger>
@@ -169,17 +169,15 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
               </Tooltip>
             </TooltipProvider>
           ) : (
-            <div className="flex items-center">
-              <span className="text-sm text-muted-foreground mr-2">Configure FlyFrog</span>
-              <Button 
-                variant="ghost" 
-                size="icon"
-                className="h-8 w-8"
-                onClick={handleConfigure}
-              >
-                <Settings className="h-4 w-4" />
-              </Button>
-            </div>
+            <Button 
+              variant="default"
+              size="sm"
+              onClick={handleConfigure}
+              className="text-sm flex items-center gap-2"
+            >
+              <Cog className="h-4 w-4" />
+              Configure FlyFrog
+            </Button>
           )}
         </div>
       </div>
