@@ -59,7 +59,7 @@ const RepositoryList: React.FC<RepositoryListProps> = ({
           <div className="col-span-2 text-center hidden md:block">Package Types</div>
           <div className="col-span-2 text-center hidden md:block">Last Updated</div>
           <div className="col-span-2 text-center">Status</div>
-          <div className="col-span-1 text-center hidden md:block">Action</div>
+          <div className="col-span-1 text-center hidden md:block">Configure</div>
         </div>
         
         <div className="divide-y divide-border">

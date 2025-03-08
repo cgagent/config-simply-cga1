@@ -150,7 +150,7 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
               onClick={handleConfigure}
             >
               <Cog className="h-4 w-4 mr-2" />
-              Configure
+              Set
             </Button>
           )}
         </div>
