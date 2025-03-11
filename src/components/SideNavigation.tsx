@@ -7,13 +7,15 @@ import {
   GitBranch, 
   Package, 
   Users,
-  Beaker
+  Beaker,
+  MessageSquare
 } from 'lucide-react';
 
 const navItems = [
   { name: 'Overview', path: '/dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
   { name: 'CI', path: '/repositories', icon: <GitBranch className="w-5 h-5" /> },
   { name: 'Packages', path: '/packages', icon: <Package className="w-5 h-5" /> },
+  { name: 'Packages AI', path: '/packages2', icon: <MessageSquare className="w-5 h-5" /> },
   { name: 'User Management', path: '/users', icon: <Users className="w-5 h-5" /> },
   // Test link - normally would be hidden in production
   { name: 'CI Test UX', path: '/ci-configuration-test', icon: <Beaker className="w-5 h-5" /> },
