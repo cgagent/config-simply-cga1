@@ -5,7 +5,7 @@ import { MessageList } from './MessageList';
 import { ChatInput } from './ChatInput';
 import { SuggestedQueries } from './SuggestedQueries';
 import { useToast } from '@/hooks/use-toast';
-import { Bot, Plane } from 'lucide-react';
+import { Bird, Plane } from 'lucide-react';
 
 // Sample queries that will be inserted when clicking the suggestion bubbles
 const SUGGESTED_QUERIES = [
@@ -103,14 +103,17 @@ export const AIChat: React.FC = () => {
   // Initial state (no messages yet)
   if (messages.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-full pt-8">
+      <div className="flex flex-col items-center justify-center h-full pt-2">
         <div className="flex items-center justify-center mb-2">
-          <div className="relative h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center mb-2">
-            <Bot className="h-8 w-8 text-primary absolute" />
-            <Plane className="h-6 w-6 text-primary absolute transform rotate-45 -translate-x-2 -translate-y-2" />
+          <div className="relative h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center">
+            {/* Colorful Flying Frog Icon (represented by a Bird with a Plane) */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Bird className="h-10 w-10 text-[#9b87f5]" />
+              <Plane className="h-6 w-6 text-[#F97316] absolute transform rotate-45 -translate-x-2 -translate-y-2" />
+            </div>
           </div>
         </div>
-        <h1 className="text-3xl font-bold text-center mb-6">What do you want to know?</h1>
+        <h1 className="text-2xl font-bold text-center mb-4">What do you want to know?</h1>
         <div className="w-full max-w-xl">
           <ChatInput 
             isProcessing={isProcessing} 
@@ -119,7 +122,7 @@ export const AIChat: React.FC = () => {
             value={inputValue}
             setValue={setInputValue}
           />
-          <div className="mt-6">
+          <div className="mt-4">
             <SuggestedQueries 
               queries={SUGGESTED_QUERIES.map(q => q.label)} 
               onSelectQuery={(label) => {
