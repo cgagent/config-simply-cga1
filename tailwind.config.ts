@@ -56,6 +56,20 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				// Add ocean blue color variants
+				ocean: {
+					50: '#eef8ff',
+					100: '#d9edff',
+					200: '#bce0ff',
+					300: '#8ecdff',
+					400: '#59b3ff',
+					500: '#3498ff',
+					600: '#197af3',
+					700: '#1462e0',
+					800: '#1851b5',
+					900: '#19488f',
+					950: '#142d58',
+				},
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

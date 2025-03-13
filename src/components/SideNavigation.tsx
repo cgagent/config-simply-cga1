@@ -43,7 +43,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ className }) => {
                 className={cn(
                   "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors hover:bg-secondary",
                   active 
-                    ? "bg-primary text-white" 
+                    ? "bg-primary text-primary-foreground shadow-sm" 
                     : "text-foreground hover:text-foreground"
                 )}
                 aria-current={active ? "page" : undefined}
