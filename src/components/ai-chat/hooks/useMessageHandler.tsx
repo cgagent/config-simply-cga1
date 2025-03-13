@@ -30,7 +30,7 @@ export const useMessageHandler = () => {
     try {
       // Check if this is a CI Setup query
       if (content.toLowerCase().trim().includes('ci') && 
-          (content.toLowerCase().includes('setup') || content.toLowerCase().includes('assist'))) {
+          (content.toLowerCase().trim().includes('setup') || content.toLowerCase().trim().includes('assist'))) {
         
         // Add a bot response first
         const botResponse: Message = {
@@ -53,10 +53,17 @@ export const useMessageHandler = () => {
         setIsProcessing(false);
         
       } else {
-        // Handle other queries as before
+        // Enhanced debugging
+        console.log("Processing query:", content.trim());
+        
+        // Handle other queries with a slight delay to simulate processing
         setTimeout(() => {
           // Get the AI response with the properly formatted content
-          const aiResponse = simulateAIResponse(content.trim());
+          const cleanedContent = content.trim();
+          console.log("Cleaned content:", cleanedContent);
+          
+          const aiResponse = simulateAIResponse(cleanedContent);
+          console.log("AI Response:", aiResponse);
           
           const botResponse: Message = {
             id: (Date.now() + 1).toString(),
@@ -66,9 +73,10 @@ export const useMessageHandler = () => {
           
           setMessages(prev => [...prev, botResponse]);
           setIsProcessing(false);
-        }, 1500);
+        }, 1000); // Reduced from 1500ms to 1000ms for faster response
       }
     } catch (error) {
+      console.error("Error processing message:", error);
       toast({
         variant: "destructive",
         title: "Error",

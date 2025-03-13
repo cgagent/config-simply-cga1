@@ -78,14 +78,16 @@ Severity: High
 
    • [Homepage](https://request.js.org/)`;
   }
-  // Updated condition to better catch variations of block-related queries
+  // Completely revised the condition to ensure it catches all variations of block-related queries
   else if (
-    lowerQuery.includes('block') || 
-    lowerQuery.includes('malicious') || 
-    lowerQuery.includes('blocked package') || 
-    lowerQuery === "which packages were blocked in the last two weeks?"
+    lowerQuery === "which packages were blocked in the last two weeks?" ||
+    lowerQuery === "blocked packages" ||
+    lowerQuery === "show me the packages that are blocked" ||
+    lowerQuery === "block" ||
+    (lowerQuery.includes('block') && !lowerQuery.includes('blockchain')) ||
+    lowerQuery.includes('malicious')
   ) {
-    // Fixed formatting to ensure proper line breaks
+    // Ensure the response has the exact format required
     return `In the past 2 weeks, we blocked the following malicious npm packages:
 
 evil-package-101: Attempted to steal user credentials.
