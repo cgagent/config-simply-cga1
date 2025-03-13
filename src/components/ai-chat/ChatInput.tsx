@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -25,7 +24,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   const [isTyping, setIsTyping] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   
-  const staticPlaceholder = "Ask anything about repositories, CI/CD, or coding...";
+  const staticPlaceholder = "Ask me anything...";
   
   const rotatingPlaceholders = [
     "Set up your CI with FlyFrog...",

@@ -31,7 +31,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ isProcessing, onSendMessag
         value={input}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="Ask about your packages..."
+        placeholder="Ask me anything..."
         disabled={isProcessing}
         className="flex-1"
       />
