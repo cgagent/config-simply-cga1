@@ -14,33 +14,33 @@
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
     
-    --primary: 0 0% 98%;
+    --primary: 215 100% 69%; /* Changed to a brighter blue */
     --primary-foreground: 240 5.9% 10%;
     
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     
     --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted-foreground: 210 10% 80%; /* Brightened muted text */
     
     --accent: 240 3.7% 15.9%;
     --accent-foreground: 0 0% 98%;
     
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 84% 60%; /* Brighter red for better visibility */
     --destructive-foreground: 0 0% 98%;
     
-    --border: 240 3.7% 15.9%;
+    --border: 240 3.7% 25%; /* Brightened border */
     --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
+    --ring: 210 100% 80%; /* Brightened ring */
 
     --sidebar-background: 240 10% 3.9%;
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 0 0% 98%;
+    --sidebar-primary: 215 100% 69%; /* Match primary */
     --sidebar-primary-foreground: 240 5.9% 10%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 240 4.9% 83.9%;
+    --sidebar-border: 240 3.7% 25%; /* Match border */
+    --sidebar-ring: 210 100% 80%; /* Match ring */
     
     --radius: 0.5rem;
 
@@ -61,7 +61,7 @@
 
   input:focus-visible, 
   button:focus-visible {
-    @apply outline-none ring-2 ring-primary ring-opacity-25;
+    @apply outline-none ring-2 ring-primary ring-opacity-50;
   }
 }
 
@@ -75,11 +75,11 @@
 
 @layer components {
   .glass-effect {
-    @apply bg-secondary/30 backdrop-blur-md border border-white/10;
+    @apply bg-secondary/40 backdrop-blur-md border border-white/15;
   }
   
   .repo-row {
-    @apply transition-all duration-300 ease-in-out hover:bg-accent hover:scale-[1.005] cursor-pointer;
+    @apply transition-all duration-300 ease-in-out hover:bg-accent/80 hover:scale-[1.005] cursor-pointer;
   }
   
   .button-shine {
