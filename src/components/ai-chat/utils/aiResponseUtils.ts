@@ -3,7 +3,7 @@
  * Simulate AI response (would be replaced with actual API call)
  */
 export const simulateAIResponse = (query: string): string => {
-  const lowerQuery = query.toLowerCase();
+  const lowerQuery = query.toLowerCase().trim();
   
   if (lowerQuery.includes('hello') || lowerQuery.includes('hi')) {
     return "Hello! How can I assist you today?";
@@ -78,7 +78,7 @@ Severity: High
 
    • [Homepage](https://request.js.org/)`;
   }
-  else if (lowerQuery.includes('blocked') || lowerQuery.includes('blocked packages') || lowerQuery === "which packages were blocked in the last two weeks?") {
+  else if (lowerQuery.includes('block') || lowerQuery.includes('blocked package') || lowerQuery === "which packages were blocked in the last two weeks?") {
     return `In the past 2 weeks, we blocked the following malicious npm packages:
 
 evil-package-101: Attempted to steal user credentials.
