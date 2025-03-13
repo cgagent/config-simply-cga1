@@ -10,7 +10,7 @@ export const SUGGESTED_QUERIES = [
   },
   {
     label: "Public package",
-    query: "recommend me for a 3 npm packages for making http requests."
+    query: "recommend me for 3 npm packages for making http requests."
   },
   {
     label: "Blocked packages",
