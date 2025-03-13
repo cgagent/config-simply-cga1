@@ -13,8 +13,8 @@ const SUGGESTED_QUERIES = [
     query: "I would like to set up my CI to work with you, can you please assist me to do it."
   },
   {
-    label: "Org packages",
-    query: "What are the packages that are being used in the last month? Please order it based on consumption date and show me the package type, latest version and vulnerability status."
+    label: "My Org",
+    query: "What are the most popular package being used in my organization? is it secured?"
   },
   {
     label: "Sbom",
@@ -128,6 +128,18 @@ export const AIChat: React.FC = () => {
     else if (lowerQuery.includes('user') || lowerQuery.includes('account')) {
       return "User management allows you to control access to your organization's resources. You can add users, define roles, and set permissions in the User Management section.";
     }
+    else if (lowerQuery.includes('popular package') || lowerQuery.includes('my organization') || lowerQuery.includes('secured')) {
+      return `Here are the most popular packages used in your organization:
+
+**axios**
+- Most common version: 1.5.1 (published on 2024-08-31)
+- Latest Version published: 1.8.3
+- Your org version 1.5.1 has known vulnerabilities:
+
+**CVE-2024-39338**
+Description - axios 1.5.1 allows SSRF via unexpected behavior where requests for path relative URLs get processed as protocol relative URLs
+Severity: High`;
+    }
     else {
       return "I understand you're asking about \"" + query + "\". Let me provide some information about that. This is a simulated response in our demo application. In a production environment, this would connect to an AI language model API like OpenAI GPT, Anthropic Claude, or Perplexity to provide helpful and accurate responses.";
     }
@@ -183,4 +195,3 @@ export const AIChat: React.FC = () => {
     </div>
   );
 };
-

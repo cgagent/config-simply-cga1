@@ -9,7 +9,19 @@ export const processUserQuery = (
 ): string => {
   const lowerQuery = query.toLowerCase();
   
-  if (lowerQuery.includes('latest') && lowerQuery.includes('download')) {
+  if (lowerQuery.includes('popular package') || lowerQuery.includes('my organization') || lowerQuery.includes('secured')) {
+    return `Here are the most popular packages used in your organization:
+
+**axios**
+- Most common version: 1.5.1 (published on 2024-08-31)
+- Latest Version published: 1.8.3
+- Your org version 1.5.1 has known vulnerabilities:
+
+**CVE-2024-39338**
+Description - axios 1.5.1 allows SSRF via unexpected behavior where requests for path relative URLs get processed as protocol relative URLs
+Severity: High`;
+  }
+  else if (lowerQuery.includes('latest') && lowerQuery.includes('download')) {
     return getTopDownloadedPackages(packages);
   } 
   else if (lowerQuery.includes('vulnerabilit')) {
@@ -38,7 +50,7 @@ export const getInitialMessage = (): Message => {
 };
 
 export const DEFAULT_SUGGESTED_QUERIES = [
-  "Show me the latest 10 downloaded packages",
+  "What are the most popular package being used in my organization? is it secured?",
   "Show me existing packages with vulnerabilities",
   "Show me the packages that are blocked",
   "Show me the largest packages by size",
@@ -118,7 +130,7 @@ function getPackageSummary(packages: Package[]): string {
 
 function getGenericResponse(input: string): string {
   return `I'm not sure I understand your query about "${input}". Here are some things you can ask me:\n\n` +
-    `• Show me the latest 10 downloaded packages\n` +
+    `• What are the most popular package being used in my organization? is it secured?\n` +
     `• Show me existing packages with vulnerabilities\n` +
     `• Show me the packages that are blocked\n` +
     `• Show me the largest packages by size\n` +
