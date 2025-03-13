@@ -31,7 +31,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
       const parts = content.split(/\n\n(?=Package:)/);
       return (
         <>
-          <p className="mb-3">{parts[0]}</p>
+          <p className="mb-4">{parts[0]}</p>
           <div className="space-y-6">
             {parts.slice(1).map((packageData, index) => {
               const lines = packageData.split('\n');
@@ -40,9 +40,9 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
               const license = lines[2].replace('License: ', '');
               
               return (
-                <div key={index} className="bg-muted/40 rounded-md p-3 border">
-                  <div className="font-medium text-sm mb-1">{packageName}</div>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
+                <div key={index} className="bg-muted/40 rounded-md p-4 border mb-3">
+                  <div className="font-medium text-sm mb-2">{packageName}</div>
+                  <div className="grid grid-cols-2 gap-2 text-xs mb-2">
                     <div className="text-muted-foreground">Version:</div>
                     <div>{version}</div>
                     <div className="text-muted-foreground">License:</div>
@@ -50,10 +50,10 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
                   </div>
                   {lines.length > 3 && lines[3].includes('Dependencies:') && (
                     <>
-                      <div className="text-xs text-muted-foreground mt-2">Dependencies:</div>
-                      <ul className="list-disc pl-5 text-xs mt-1">
+                      <div className="text-xs text-muted-foreground mt-3 mb-1">Dependencies:</div>
+                      <ul className="list-disc pl-5 text-xs">
                         {lines.slice(4).map((dep, i) => (
-                          <li key={i}>{dep}</li>
+                          <li key={i} className="mb-1">{dep}</li>
                         ))}
                       </ul>
                     </>
