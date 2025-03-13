@@ -8,14 +8,18 @@ interface ChatInputProps {
   onSendMessage: (message: string) => void;
   isProcessing: boolean;
   isInitialState?: boolean;
+  value?: string;
+  setValue?: (value: string) => void;
 }
 
 export const ChatInput: React.FC<ChatInputProps> = ({
   onSendMessage,
   isProcessing,
-  isInitialState = false
+  isInitialState = false,
+  value = '',
+  setValue
 }) => {
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState(value);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [currentSuggestion, setCurrentSuggestion] = useState('');
   const [isTyping, setIsTyping] = useState(true);
@@ -31,6 +35,13 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     "Check your data consumption or storage in the last month...",
     "Create an Sbom report for you..."
   ];
+  
+  // Update local input when value prop changes
+  useEffect(() => {
+    if (value !== input) {
+      setInput(value);
+    }
+  }, [value]);
   
   // Effect for textarea auto-resize
   useEffect(() => {
@@ -79,12 +90,25 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     if (!input.trim()) return;
     onSendMessage(input);
     setInput('');
+    // Update parent's state if setValue is provided
+    if (setValue) {
+      setValue('');
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value;
+    setInput(newValue);
+    // Update parent's state if setValue is provided
+    if (setValue) {
+      setValue(newValue);
     }
   };
 
@@ -97,7 +121,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       <Textarea
         ref={textareaRef}
         value={input}
-        onChange={(e) => setInput(e.target.value)}
+        onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         disabled={isProcessing}

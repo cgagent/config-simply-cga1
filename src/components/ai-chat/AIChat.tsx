@@ -3,13 +3,40 @@ import React, { useState } from 'react';
 import { Message } from './ChatMessage';
 import { MessageList } from './MessageList';
 import { ChatInput } from './ChatInput';
+import { SuggestedQueries } from './SuggestedQueries';
 import { useToast } from '@/hooks/use-toast';
+import { Bot, Plane } from 'lucide-react';
+
+// Sample queries that will be inserted when clicking the suggestion bubbles
+const SUGGESTED_QUERIES = [
+  {
+    label: "CI Setup",
+    query: "I would like to set up my CI to work with you, can you please assist me to do it."
+  },
+  {
+    label: "Org packages",
+    query: "What are the packages that are being used in the last month? Please order it based on consumption date and show me the package type, latest version and vulnerability status."
+  },
+  {
+    label: "Sbom",
+    query: "Please create an Sbom report for me for the packages that are being used in the last 30 days in my organization."
+  },
+  {
+    label: "Public package",
+    query: "I would like to use axios, can you please share with me more details: what package should I use, any vulnerabilities I should know, what are the latest versions, and is there any reason why I should not use it?"
+  },
+  {
+    label: "Blocked packages",
+    query: "Can you please share with me the blocked packages that did not enter my organization in the last 2 weeks? Include package name, package type, and why it was blocked."
+  }
+];
 
 const INITIAL_MESSAGES: Message[] = [];
 
 export const AIChat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [inputValue, setInputValue] = useState('');
   const { toast } = useToast();
 
   const handleSendMessage = async (content: string) => {
@@ -48,6 +75,10 @@ export const AIChat: React.FC = () => {
     }
   };
 
+  const handleSelectQuery = (query: string) => {
+    setInputValue(query);
+  };
+
   // Simulate AI response (would be replaced with actual API call)
   const simulateAIResponse = (query: string): string => {
     const lowerQuery = query.toLowerCase();
@@ -72,14 +103,31 @@ export const AIChat: React.FC = () => {
   // Initial state (no messages yet)
   if (messages.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-full">
-        <h1 className="text-3xl font-bold text-center mb-8">What do you want to know?</h1>
+      <div className="flex flex-col items-center justify-center h-full pt-8">
+        <div className="flex items-center justify-center mb-2">
+          <div className="relative h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+            <Bot className="h-8 w-8 text-primary absolute" />
+            <Plane className="h-6 w-6 text-primary absolute transform rotate-45 -translate-x-2 -translate-y-2" />
+          </div>
+        </div>
+        <h1 className="text-3xl font-bold text-center mb-6">What do you want to know?</h1>
         <div className="w-full max-w-xl">
           <ChatInput 
             isProcessing={isProcessing} 
             onSendMessage={handleSendMessage}
             isInitialState={true}
+            value={inputValue}
+            setValue={setInputValue}
           />
+          <div className="mt-6">
+            <SuggestedQueries 
+              queries={SUGGESTED_QUERIES.map(q => q.label)} 
+              onSelectQuery={(label) => {
+                const query = SUGGESTED_QUERIES.find(q => q.label === label)?.query || '';
+                handleSelectQuery(query);
+              }} 
+            />
+          </div>
         </div>
       </div>
     );
@@ -96,6 +144,8 @@ export const AIChat: React.FC = () => {
           isProcessing={isProcessing} 
           onSendMessage={handleSendMessage} 
           isInitialState={false}
+          value={inputValue}
+          setValue={setInputValue}
         />
       </div>
     </div>
