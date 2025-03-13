@@ -14,7 +14,7 @@ export const SUGGESTED_QUERIES = [
   },
   {
     label: "Blocked Packages",
-    query: "abc"
+    query: "Which packages were blocked in the last two weeks?"
   },
   {
     label: "SBOM",
