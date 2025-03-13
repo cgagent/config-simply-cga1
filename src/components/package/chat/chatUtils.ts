@@ -1,5 +1,7 @@
+
 import { Package } from '@/types/package';
 import { format } from 'date-fns';
+import { Message } from '../chat/ChatMessage';
 
 // Process the user query and return a response based on the query type
 export const processUserQuery = (
@@ -18,7 +20,12 @@ export const processUserQuery = (
 
 **CVE-2024-39338**
 Description - axios 1.5.1 allows SSRF via unexpected behavior where requests for path relative URLs get processed as protocol relative URLs
-Severity: High`;
+Severity: High
+
+**lodash**
+- Most common version: 4.17.21
+- Latest version: 4.17.21
+- Your most common version is secured`;
   }
   else if (lowerQuery.includes('latest') && lowerQuery.includes('download')) {
     return getTopDownloadedPackages(packages);
@@ -41,7 +48,7 @@ Severity: High`;
 };
 
 // Get initial welcome message
-export const getInitialMessage = () => {
+export const getInitialMessage = (): Message => {
   return {
     id: 'welcome',
     role: 'bot',

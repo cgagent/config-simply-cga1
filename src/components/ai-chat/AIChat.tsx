@@ -138,7 +138,12 @@ export const AIChat: React.FC = () => {
 
 **CVE-2024-39338**
 Description - axios 1.5.1 allows SSRF via unexpected behavior where requests for path relative URLs get processed as protocol relative URLs
-Severity: High`;
+Severity: High
+
+**lodash**
+- Most common version: 4.17.21
+- Latest version: 4.17.21
+- Your most common version is secured`;
     }
     else {
       return "I understand you're asking about \"" + query + "\". Let me provide some information about that. This is a simulated response in our demo application. In a production environment, this would connect to an AI language model API like OpenAI GPT, Anthropic Claude, or Perplexity to provide helpful and accurate responses.";
