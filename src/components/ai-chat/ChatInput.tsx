@@ -17,17 +17,19 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 }) => {
   const [input, setInput] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [currentSuggestion, setCurrentSuggestion] = useState('');
+  const [isTyping, setIsTyping] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
   
   const staticPlaceholder = "Ask anything about repositories, CI/CD, or coding...";
   
   const rotatingPlaceholders = [
-    "Set up your CI with FlyFrog",
-    "Show you what packages are being used in your organization",
-    "Find a public package",
-    "See the malicious packages that blocked by FlyFrog",
-    "Check your data consumption or storage in the last month",
-    "Create an Sbom report for you"
+    "Set up your CI with FlyFrog...",
+    "Show you what packages are being used in your organization...",
+    "Find a public package...",
+    "See the malicious packages that blocked by FlyFrog...",
+    "Check your data consumption or storage in the last month...",
+    "Create an Sbom report for you..."
   ];
   
   // Effect for textarea auto-resize
@@ -38,16 +40,40 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     }
   }, [input]);
   
-  // Effect for rotating placeholders
+  // Effect for animated typing/deleting placeholders
   useEffect(() => {
     if (!isInitialState) return;
     
-    const interval = setInterval(() => {
-      setPlaceholderIndex((prev) => (prev + 1) % rotatingPlaceholders.length);
-    }, 3000);
+    const prefix = "Ask FlyFrog to ";
     
-    return () => clearInterval(interval);
-  }, [isInitialState]);
+    if (isTyping) {
+      if (currentSuggestion.length < rotatingPlaceholders[currentIndex].length) {
+        const timer = setTimeout(() => {
+          setCurrentSuggestion(rotatingPlaceholders[currentIndex].substring(0, currentSuggestion.length + 1));
+        }, 80);
+        return () => clearTimeout(timer);
+      } else {
+        // Done typing, wait before starting to delete
+        const timer = setTimeout(() => {
+          setIsTyping(false);
+        }, 2000);
+        return () => clearTimeout(timer);
+      }
+    } else {
+      if (currentSuggestion.length > 0) {
+        const timer = setTimeout(() => {
+          setCurrentSuggestion(currentSuggestion.substring(0, currentSuggestion.length - 1));
+        }, 50);
+        return () => clearTimeout(timer);
+      } else {
+        // Done deleting, move to next suggestion and start typing again
+        const nextIndex = (currentIndex + 1) % rotatingPlaceholders.length;
+        setCurrentIndex(nextIndex);
+        setIsTyping(true);
+        return undefined;
+      }
+    }
+  }, [currentSuggestion, isTyping, currentIndex, isInitialState, rotatingPlaceholders]);
 
   const handleSendMessage = () => {
     if (!input.trim()) return;
@@ -62,8 +88,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     }
   };
 
-  const currentPlaceholder = isInitialState 
-    ? `Ask FlyFrog to ${rotatingPlaceholders[placeholderIndex]}`
+  const placeholder = isInitialState 
+    ? `Ask FlyFrog to ${currentSuggestion}`
     : staticPlaceholder;
 
   return (
@@ -73,9 +99,9 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         value={input}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder={currentPlaceholder}
+        placeholder={placeholder}
         disabled={isProcessing}
-        className={`pr-12 resize-none overflow-hidden min-h-[56px] ${isInitialState ? 'text-lg' : ''}`}
+        className={`pr-12 resize-none overflow-hidden min-h-[56px] font-normal ${isInitialState ? 'text-base' : 'text-sm'}`}
         rows={1}
       />
       <Button
