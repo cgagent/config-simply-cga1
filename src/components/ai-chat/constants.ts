@@ -14,7 +14,7 @@ export const SUGGESTED_QUERIES = [
   },
   {
     label: "Blocked packages",
-    query: "Can you please share with me the blocked packages that did not enter my organization in the last 2 weeks? Include package name, package type, and why it was blocked."
+    query: "Which packages were blocked in the last 2 weeks?"
   },
   {
     label: "Sbom",
