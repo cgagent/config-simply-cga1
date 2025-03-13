@@ -5,6 +5,7 @@ import { MessageList } from './MessageList';
 import { ChatInput } from './ChatInput';
 import { SuggestedQueries } from './SuggestedQueries';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 // Sample queries that will be inserted when clicking the suggestion bubbles
 const SUGGESTED_QUERIES = [
@@ -71,6 +72,7 @@ export const AIChat: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSendMessage = async (content: string) => {
     if (!content.trim()) return;
@@ -86,18 +88,48 @@ export const AIChat: React.FC = () => {
     setIsProcessing(true);
     
     try {
-      // Simulate AI processing
-      // In a real app, this would be an API call to an LLM service
-      setTimeout(() => {
+      // Check if this is a CI Setup query
+      if (content.toLowerCase().includes('ci') && 
+          (content.toLowerCase().includes('setup') || content.toLowerCase().includes('assist'))) {
+        
+        // Add a bot response first
         const botResponse: Message = {
           id: (Date.now() + 1).toString(),
           role: 'bot',
-          content: simulateAIResponse(content)
+          content: "I'll help you set up CI integration. Let me redirect you to our CI configuration page..."
         };
         
         setMessages(prev => [...prev, botResponse]);
-        setIsProcessing(false);
-      }, 1500);
+        
+        // Redirect to CI configuration page after a brief delay
+        setTimeout(() => {
+          navigate('/ci-configuration', { 
+            state: { 
+              // Use a sample repository for demo purposes
+              repository: {
+                id: 'sample-repo-1',
+                name: 'sample-repository',
+                owner: 'flyfrog',
+                isConfigured: false,
+                language: 'JavaScript'
+              } 
+            } 
+          });
+        }, 1500);
+        
+      } else {
+        // Handle other queries as before
+        setTimeout(() => {
+          const botResponse: Message = {
+            id: (Date.now() + 1).toString(),
+            role: 'bot',
+            content: simulateAIResponse(content)
+          };
+          
+          setMessages(prev => [...prev, botResponse]);
+          setIsProcessing(false);
+        }, 1500);
+      }
     } catch (error) {
       toast({
         variant: "destructive",
