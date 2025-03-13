@@ -28,5 +28,11 @@ export const githubRepos: GithubRepo[] = [
     name: 'backend-api',
     owner: 'acme-org',
     orgName: 'ACME Organization'
+  },
+  {
+    id: '4',
+    name: 'infrastructure',
+    owner: 'acme-org',
+    orgName: 'ACME Organization'
   }
 ];
