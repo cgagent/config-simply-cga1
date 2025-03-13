@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Message } from './ChatMessage';
 import { MessageList } from './MessageList';
@@ -68,6 +69,22 @@ export const AIChat: React.FC = () => {
     }
   };
 
+  // Initial state (no messages yet)
+  if (messages.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <h1 className="text-3xl font-bold text-center mb-8">What do you want to know?</h1>
+        <div className="w-full max-w-xl">
+          <ChatInput 
+            isProcessing={isProcessing} 
+            onSendMessage={handleSendMessage} 
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // Chat state (after user has sent at least one message)
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-hidden flex flex-col">
