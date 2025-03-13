@@ -3,22 +3,16 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { 
-  LayoutDashboard, 
+  Home, 
   GitBranch, 
-  Package, 
   Users,
-  Beaker,
   MessageSquare
 } from 'lucide-react';
 
 const navItems = [
-  { name: 'Overview', path: '/dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
+  { name: 'Home', path: '/home', icon: <Home className="w-5 h-5" /> },
   { name: 'CI', path: '/repositories', icon: <GitBranch className="w-5 h-5" /> },
-  { name: 'Packages', path: '/packages', icon: <Package className="w-5 h-5" /> },
-  { name: 'Packages AI', path: '/packages2', icon: <MessageSquare className="w-5 h-5" /> },
   { name: 'User Management', path: '/users', icon: <Users className="w-5 h-5" /> },
-  // Test link - normally would be hidden in production
-  { name: 'CI Test UX', path: '/ci-configuration-test', icon: <Beaker className="w-5 h-5" /> },
 ];
 
 interface SideNavigationProps {

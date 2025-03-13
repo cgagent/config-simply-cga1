@@ -5,12 +5,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Auth from "./pages/Auth";
-import Index from "./pages/Index";
+import Home from "./pages/Home";
 import Repositories from "./pages/Repositories";
 import CIConfiguration from "./pages/CIConfiguration";
-import CIConfigurationTest from "./pages/CIConfigurationTest";
-import Packages from "./pages/Packages";
-import Packages2 from "./pages/Packages2";
 import Users from "./pages/Users";
 import NotFound from "./pages/NotFound";
 
@@ -24,12 +21,9 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Auth />} />
-          <Route path="/dashboard" element={<Index />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/repositories" element={<Repositories />} />
           <Route path="/ci-configuration" element={<CIConfiguration />} />
-          <Route path="/ci-configuration-test" element={<CIConfigurationTest />} />
-          <Route path="/packages" element={<Packages />} />
-          <Route path="/packages2" element={<Packages2 />} />
           <Route path="/users" element={<Users />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
