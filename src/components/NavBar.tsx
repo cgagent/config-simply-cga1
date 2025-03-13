@@ -38,7 +38,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
   
   return (
     <div className={cn(
-      "h-screen fixed left-0 top-0 z-50 flex flex-col py-4 bg-white border-r border-border shadow-sm transition-all duration-300",
+      "h-screen fixed left-0 top-0 z-50 flex flex-col py-4 bg-card dark:bg-card border-r border-border shadow-sm transition-all duration-300",
       expanded ? "w-56" : "w-16",
       className
     )}>
@@ -63,7 +63,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
                 to={item.path}
                 className={cn(
                   "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-secondary",
-                  location.pathname === item.path ? "bg-primary text-white" : "text-foreground"
+                  location.pathname === item.path ? "bg-primary text-primary-foreground" : "text-foreground"
                 )}
               >
                 <span>{item.icon}</span>

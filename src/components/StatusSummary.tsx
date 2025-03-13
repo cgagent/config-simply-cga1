@@ -20,10 +20,10 @@ const StatusSummary: React.FC<StatusSummaryProps> = ({
   
   return (
     <div className={cn(
-      "animate-fadeIn bg-white rounded-lg border border-border p-6 shadow-sm",
+      "animate-fadeIn bg-card dark:bg-card rounded-lg border border-border shadow-sm",
       className
     )}>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 p-6">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-medium">Integration Status</h3>
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">

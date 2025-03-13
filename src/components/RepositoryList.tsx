@@ -58,8 +58,8 @@ const RepositoryList: React.FC<RepositoryListProps> = ({
         setSelectedOrg={setSelectedOrg}
       />
       
-      <div className="bg-white rounded-lg border border-border overflow-hidden shadow-sm">
-        <div className="grid grid-cols-12 gap-2 px-6 py-3 bg-secondary font-medium text-sm">
+      <div className="bg-card dark:bg-card rounded-lg border border-border overflow-hidden shadow-sm">
+        <div className="grid grid-cols-12 gap-2 px-6 py-3 bg-secondary dark:bg-secondary font-medium text-sm">
           <div className="col-span-5">Git Repository</div>
           <div className="col-span-2 text-center hidden md:block">Package Types</div>
           <div className="col-span-2 text-center hidden md:block">Last Updated</div>
