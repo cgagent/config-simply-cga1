@@ -4,3 +4,9 @@ export interface Message {
   role: 'user' | 'bot';
   content: string;
 }
+
+export interface ChatOption {
+  id: string;
+  label: string;
+  value: string;
+}
