@@ -35,23 +35,25 @@ Severity: High
 - Your most common version is secured`;
   }
   else if (lowerQuery.includes('http request') || lowerQuery.includes('making http request')) {
-    return `1. axios
-Description : Promise based HTTP client for the browser and node.js
-Latest version: 1.8.3
-Github Repository link
-package page Link
+    return `Here are 3 recommended npm packages for making HTTP requests:
 
-2. node-fetch 
-Description: A light-weight module that brings window.featch to node.js
-Latest version: 3.3.2
-Github Repository Link
-package page Link
+1. **axios**
+   • Description: Promise based HTTP client for the browser and node.js
+   • Latest version: 1.8.3
+   • [GitHub Repository](https://github.com/axios/axios)
+   • [NPM Package Page](https://www.npmjs.com/package/axios)
 
-3. request 
-Description: Simplified HTTTP request client
-Latest version: 2.88.2
-Github Repository Link
-Homepage Link`;
+2. **node-fetch**
+   • Description: A light-weight module that brings window.fetch to node.js
+   • Latest version: 3.3.2
+   • [GitHub Repository](https://github.com/node-fetch/node-fetch)
+   • [NPM Package Page](https://www.npmjs.com/package/node-fetch)
+
+3. **request**
+   • Description: Simplified HTTP request client
+   • Latest version: 2.88.2
+   • [GitHub Repository](https://github.com/request/request)
+   • [Homepage](https://request.js.org/)`;
   }
   else {
     return "I understand you're asking about \"" + query + "\". Let me provide some information about that. This is a simulated response in our demo application. In a production environment, this would connect to an AI language model API like OpenAI GPT, Anthropic Claude, or Perplexity to provide helpful and accurate responses.";
