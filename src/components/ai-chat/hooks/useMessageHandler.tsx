@@ -29,7 +29,7 @@ export const useMessageHandler = () => {
     
     try {
       // Check if this is a CI Setup query
-      if (content.toLowerCase().includes('ci') && 
+      if (content.toLowerCase().trim().includes('ci') && 
           (content.toLowerCase().includes('setup') || content.toLowerCase().includes('assist'))) {
         
         // Add a bot response first
@@ -55,10 +55,13 @@ export const useMessageHandler = () => {
       } else {
         // Handle other queries as before
         setTimeout(() => {
+          // Get the AI response with the properly formatted content
+          const aiResponse = simulateAIResponse(content.trim());
+          
           const botResponse: Message = {
             id: (Date.now() + 1).toString(),
             role: 'bot',
-            content: simulateAIResponse(content)
+            content: aiResponse
           };
           
           setMessages(prev => [...prev, botResponse]);
