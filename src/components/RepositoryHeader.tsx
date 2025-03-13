@@ -1,8 +1,9 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { GitBranch } from 'lucide-react';
 import Button from '@/components/Button';
 import OrganizationSelect from './OrganizationSelect';
+import GitHubAuthFlow from './auth/GitHubAuthFlow';
 
 interface Organization {
   id: string;
@@ -20,6 +21,16 @@ const RepositoryHeader: React.FC<RepositoryHeaderProps> = ({
   selectedOrg,
   setSelectedOrg
 }) => {
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
+  
+  const handleConnectGitHub = () => {
+    setShowAuthDialog(true);
+  };
+  
+  const handleCloseAuthDialog = () => {
+    setShowAuthDialog(false);
+  };
+  
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
       <div>
@@ -27,10 +38,19 @@ const RepositoryHeader: React.FC<RepositoryHeaderProps> = ({
       </div>
       
       <div className="flex items-center gap-3">
-        <Button icon={<GitBranch className="h-4 w-4" />}>
+        <Button 
+          icon={<GitBranch className="h-4 w-4" />}
+          onClick={handleConnectGitHub}
+        >
           Connect Git Repositories
         </Button>
       </div>
+      
+      {/* GitHub Authentication Flow Dialog */}
+      <GitHubAuthFlow 
+        showDialog={showAuthDialog} 
+        onClose={handleCloseAuthDialog} 
+      />
     </div>
   );
 };

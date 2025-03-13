@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { Github, ExternalLink } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import OrganizationSelector from './OrganizationSelector';
-import RepositorySelector from './RepositorySelector';
+import OrganizationSelector, { GithubOrg } from './OrganizationSelector';
+import RepositorySelector, { GithubRepo } from './RepositorySelector';
 import AuthorizationScreen from './AuthorizationScreen';
 import { githubOrgs, githubRepos } from './githubData';
 
