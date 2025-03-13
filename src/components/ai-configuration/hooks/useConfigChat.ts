@@ -148,10 +148,10 @@ jobs:
         with:
           subdomain: acme
           
-      - name: Install dependencies
+      - name: Install npm dependencies
         run: npm install
         
-      # Add other build steps as needed
+      # Other npm build steps
 \`\`\`
 
 Once you add this file to your repository and merge it to your main branch, FlyFrog will be connected with your workflow.`;
