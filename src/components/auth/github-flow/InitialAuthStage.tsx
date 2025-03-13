@@ -1,0 +1,35 @@
+
+import React from 'react';
+import AuthorizationScreen from '../AuthorizationScreen';
+import { useAuthStage } from './AuthStageProvider';
+import { useToast } from '@/hooks/use-toast';
+
+interface InitialAuthStageProps {
+  onClose: () => void;
+}
+
+const InitialAuthStage: React.FC<InitialAuthStageProps> = ({ onClose }) => {
+  const { setStage } = useAuthStage();
+  const { toast } = useToast();
+  
+  const handleConnectGitHub = () => {
+    // Simulate initial GitHub OAuth authentication (just the user, no org perms yet)
+    toast({
+      title: "GitHub Account Connected",
+      description: "Your personal GitHub account has been connected.",
+    });
+    
+    // Move to the next step (requesting org permissions)
+    setStage('requestOrgPermissions');
+  };
+  
+  return (
+    <AuthorizationScreen 
+      onAuthorize={handleConnectGitHub}
+      onCancel={onClose}
+      isInitialAuth={true}
+    />
+  );
+};
+
+export default InitialAuthStage;
