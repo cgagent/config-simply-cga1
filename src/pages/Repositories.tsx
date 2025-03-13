@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import RepositoryHeader from '@/components/RepositoryHeader';
 import RepositoryList from '@/components/RepositoryList';
@@ -6,6 +5,7 @@ import StatusSummary from '@/components/StatusSummary';
 import EmptyState from '@/components/EmptyState';
 import { Repository } from '@/types/repository';
 import { useToast } from '@/hooks/use-toast';
+import GitHubAuthFlow from '@/components/auth/GitHubAuthFlow';
 
 interface Organization {
   id: string;
@@ -18,6 +18,9 @@ const RepositoriesPage: React.FC = () => {
   const [isGitHubConnected, setIsGitHubConnected] = useState<boolean>(false);
   // Flag to check if organization permissions were granted
   const [hasOrgPermissions, setHasOrgPermissions] = useState<boolean>(false);
+  // State to control the GitHub auth dialog
+  const [showAuthDialog, setShowAuthDialog] = useState<boolean>(false);
+  
   // Reduced git repositories to just 3 with different configuration statuses
   const [repositories, setRepositories] = useState<Repository[]>([
     {
@@ -107,28 +110,14 @@ const RepositoriesPage: React.FC = () => {
 
   // Handler for connecting GitHub
   const handleConnectGitHub = () => {
-    // Open GitHub auth flow dialog
-    // In a real implementation, this would be triggered through RepositoryHeader
-    toast({
-      title: "Starting GitHub Connection",
-      description: "Redirecting to GitHub authorization page...",
-    });
-    
-    // For demo purposes, we'll just set this to true after a short delay
-    // In a real app, this would be set after successful OAuth flow completion
-    setTimeout(() => {
-      setIsGitHubConnected(true);
-      toast({
-        title: "GitHub Connected",
-        description: "Successfully connected to GitHub.",
-      });
-    }, 1000);
+    setShowAuthDialog(true);
   };
 
   // Handler for GitHub connection with org permissions info
   const handleGitHubConnected = (orgPermissionsGranted: boolean) => {
     setIsGitHubConnected(true);
     setHasOrgPermissions(orgPermissionsGranted);
+    setShowAuthDialog(false);
     
     toast({
       title: "GitHub Connected",
@@ -136,6 +125,10 @@ const RepositoriesPage: React.FC = () => {
         ? "Successfully connected to GitHub with organization access." 
         : "Connected to GitHub without organization access.",
     });
+  };
+
+  const handleCloseAuthDialog = () => {
+    setShowAuthDialog(false);
   };
 
   // Calculate summary statistics
@@ -175,6 +168,13 @@ const RepositoriesPage: React.FC = () => {
           />
         )}
       </div>
+      
+      {/* GitHub Authentication Flow Dialog */}
+      <GitHubAuthFlow 
+        showDialog={showAuthDialog} 
+        onClose={handleCloseAuthDialog}
+        onComplete={handleGitHubConnected}
+      />
     </div>
   );
 };

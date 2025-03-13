@@ -72,7 +72,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({ className, onConnect, noOrgAcce
           <div className="flex flex-col items-center">
             <Button 
               onClick={onConnect}
-              icon={<PlusCircle className="h-4 w-4" />}
+              icon={<Github className="h-4 w-4" />}
               className="button-shine group transition-all duration-300"
               size="lg"
             >
