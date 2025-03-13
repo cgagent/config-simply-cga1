@@ -77,6 +77,8 @@ export const useMessageHandler = () => {
 
   const handleSelectQuery = (query: string) => {
     setInputValue(query);
+    // Automatically send the message when a suggested query is selected
+    handleSendMessage(query);
   };
 
   return {
