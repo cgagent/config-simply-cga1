@@ -1,11 +1,12 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Github } from 'lucide-react';
+import { Github, ExternalLink } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import OrganizationSelector, { GithubOrg } from './OrganizationSelector';
+import OrganizationSelector from './OrganizationSelector';
 import RepositorySelector from './RepositorySelector';
+import AuthorizationScreen from './AuthorizationScreen';
 import { githubOrgs, githubRepos } from './githubData';
 
 type GitHubAuthFlowProps = {
@@ -13,10 +14,13 @@ type GitHubAuthFlowProps = {
   showDialog: boolean;
 };
 
+// Auth flow stages that match the GitHub OAuth flow more closely
+type AuthStage = 'initial' | 'organization' | 'repositories' | 'confirmation';
+
 const GitHubAuthFlow: React.FC<GitHubAuthFlowProps> = ({ onClose, showDialog }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [stage, setStage] = useState<'organization' | 'repositories'>('organization');
+  const [stage, setStage] = useState<AuthStage>('initial');
   const [selectedOrg, setSelectedOrg] = useState<GithubOrg | null>(null);
   const [selectedRepos, setSelectedRepos] = useState<Record<string, boolean>>({});
   const [selectAll, setSelectAll] = useState(false);
@@ -25,6 +29,11 @@ const GitHubAuthFlow: React.FC<GitHubAuthFlowProps> = ({ onClose, showDialog }) 
   const orgRepos = selectedOrg 
     ? githubRepos.filter(repo => repo.orgName === selectedOrg.name)
     : [];
+  
+  const handleStartAuth = () => {
+    // Simulate initiating the GitHub OAuth flow
+    setStage('organization');
+  };
   
   const handleOrgSelect = (org: GithubOrg) => {
     setSelectedOrg(org);
@@ -62,6 +71,11 @@ const GitHubAuthFlow: React.FC<GitHubAuthFlowProps> = ({ onClose, showDialog }) 
     setSelectAll(allSelected);
   };
   
+  const handleAuthorize = () => {
+    // Move to confirmation after repositories are selected
+    setStage('confirmation');
+  };
+  
   const handleComplete = () => {
     // Complete the GitHub auth flow
     toast({
@@ -74,10 +88,30 @@ const GitHubAuthFlow: React.FC<GitHubAuthFlowProps> = ({ onClose, showDialog }) 
   };
   
   const handleBack = () => {
-    if (stage === 'repositories') {
+    if (stage === 'confirmation') {
+      setStage('repositories');
+    } else if (stage === 'repositories') {
       setStage('organization');
+    } else if (stage === 'organization') {
+      setStage('initial');
     } else {
       onClose();
+    }
+  };
+  
+  // Get the appropriate title for the current stage
+  const getDialogTitle = () => {
+    switch (stage) {
+      case 'initial':
+        return "Connect to GitHub";
+      case 'organization':
+        return "Select GitHub Organization";
+      case 'repositories':
+        return "Select Repositories";
+      case 'confirmation':
+        return "Confirm GitHub Access";
+      default:
+        return "GitHub Integration";
     }
   };
   
@@ -87,12 +121,18 @@ const GitHubAuthFlow: React.FC<GitHubAuthFlowProps> = ({ onClose, showDialog }) 
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Github className="h-5 w-5" />
-            {stage === 'organization' && "Select GitHub Organization"}
-            {stage === 'repositories' && "Select Repositories"}
+            {getDialogTitle()}
           </DialogTitle>
         </DialogHeader>
         
         <div className="space-y-4 py-2">
+          {stage === 'initial' && (
+            <AuthorizationScreen 
+              onAuthorize={handleStartAuth}
+              onCancel={onClose}
+            />
+          )}
+          
           {stage === 'organization' && (
             <OrganizationSelector 
               githubOrgs={githubOrgs}
@@ -109,9 +149,38 @@ const GitHubAuthFlow: React.FC<GitHubAuthFlowProps> = ({ onClose, showDialog }) 
               selectAll={selectAll}
               onRepoSelect={handleRepoSelect}
               onSelectAll={handleSelectAll}
-              onComplete={handleComplete}
+              onComplete={handleAuthorize}
               onBack={handleBack}
             />
+          )}
+          
+          {stage === 'confirmation' && selectedOrg && (
+            <div className="space-y-4">
+              <div className="rounded-md bg-primary/10 p-4">
+                <p className="font-medium">This application is requesting access to:</p>
+                <ul className="mt-2 list-disc pl-5 text-sm">
+                  <li>Read access to {selectedOrg.name}</li>
+                  <li>Access to {Object.values(selectedRepos).filter(Boolean).length} repositories</li>
+                  <li>Read and write content in repositories</li>
+                  <li>Read organization members</li>
+                </ul>
+              </div>
+              
+              <div className="flex flex-col space-y-2">
+                <button 
+                  onClick={handleComplete}
+                  className="inline-flex items-center justify-center gap-2 rounded-md bg-green-600 px-4 py-2 font-medium text-white hover:bg-green-700"
+                >
+                  Authorize {selectedOrg.name}
+                </button>
+                <button
+                  onClick={handleBack}
+                  className="inline-flex items-center justify-center gap-2 rounded-md border border-input bg-background px-4 py-2 hover:bg-accent hover:text-accent-foreground"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
           )}
         </div>
       </DialogContent>

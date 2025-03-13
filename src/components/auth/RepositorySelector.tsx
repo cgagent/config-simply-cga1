@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowRight, Check, ChevronLeft } from 'lucide-react';
+import { ArrowRight, Check, ChevronLeft, Lock, Globe } from 'lucide-react';
 import Button from '@/components/Button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
@@ -12,6 +12,8 @@ export interface GithubRepo {
   name: string;
   owner: string;
   orgName: string;
+  private?: boolean;
+  description?: string;
 }
 
 interface RepositorySelectorProps {
@@ -61,15 +63,27 @@ const RepositorySelector: React.FC<RepositorySelectorProps> = ({
           <p className="text-center text-muted-foreground py-4">No repositories found for this organization</p>
         ) : (
           repositories.map(repo => (
-            <div key={repo.id} className="flex items-center space-x-2 p-2 rounded-md hover:bg-accent">
+            <div key={repo.id} className="flex items-center space-x-2 p-3 rounded-md hover:bg-accent">
               <Checkbox
                 id={`repo-${repo.id}`}
                 checked={selectedRepos[repo.id] || false}
                 onCheckedChange={(checked) => onRepoSelect(repo.id, !!checked)}
               />
-              <Label htmlFor={`repo-${repo.id}`} className="flex-1 cursor-pointer">
-                {repo.name}
-              </Label>
+              <div className="flex-1 ml-1">
+                <div className="flex items-center">
+                  <Label htmlFor={`repo-${repo.id}`} className="flex items-center cursor-pointer">
+                    {repo.name}
+                    {repo.private ? (
+                      <Lock className="ml-2 h-3.5 w-3.5 text-muted-foreground" />
+                    ) : (
+                      <Globe className="ml-2 h-3.5 w-3.5 text-muted-foreground" />
+                    )}
+                  </Label>
+                </div>
+                {repo.description && (
+                  <p className="text-xs text-muted-foreground mt-0.5">{repo.description}</p>
+                )}
+              </div>
             </div>
           ))
         )}
@@ -82,7 +96,7 @@ const RepositorySelector: React.FC<RepositorySelectorProps> = ({
           icon={<Check className="h-4 w-4" />}
           disabled={!hasSelectedRepos}
         >
-          Complete Setup
+          Continue
           <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
         </Button>
         
