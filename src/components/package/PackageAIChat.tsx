@@ -7,7 +7,15 @@ import { ChatInput } from './chat/ChatInput';
 import { SuggestedQueries } from './chat/SuggestedQueries';
 import { processUserQuery, getInitialMessage, DEFAULT_SUGGESTED_QUERIES } from './chat/chatUtils';
 import { Message } from './chat/ChatMessage';
-import { Bot } from 'lucide-react';
+import { Bot, Home } from 'lucide-react';
+import { 
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator 
+} from "@/components/ui/breadcrumb";
+import { Link } from 'react-router-dom';
 
 interface PackageAIChatProps {
   packages: Package[];
@@ -61,6 +69,22 @@ const PackageAIChat: React.FC<PackageAIChatProps> = ({ packages }) => {
           <Bot className="w-5 h-5 mr-2" />
           Package Management Assistant
         </h3>
+      </div>
+      
+      {/* Breadcrumb Navigation */}
+      <div className="p-3 border-b">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/home" className="flex items-center text-sm text-muted-foreground hover:text-primary">
+                  <Home className="h-3.5 w-3.5 mr-1" />
+                  Back to Home
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       </div>
       
       {/* Summary Cards at the top */}
