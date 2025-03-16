@@ -36,6 +36,13 @@ export const AIChat: React.FC<AIChatProps> = ({ onChatStateChange }) => {
     }
   }, [messages.length, onChatStateChange]);
 
+  // Function to handle going back to home view
+  const handleBackToHome = () => {
+    if (onChatStateChange) {
+      onChatStateChange(false);
+    }
+  };
+
   // Initial state (no messages yet)
   if (messages.length === 0) {
     return (
@@ -57,10 +64,13 @@ export const AIChat: React.FC<AIChatProps> = ({ onChatStateChange }) => {
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link to="/home" className="flex items-center text-sm text-muted-foreground hover:text-primary">
+                <button 
+                  onClick={handleBackToHome}
+                  className="flex items-center text-sm text-muted-foreground hover:text-primary"
+                >
                   <Home className="h-3.5 w-3.5 mr-1" />
                   Back to Home
-                </Link>
+                </button>
               </BreadcrumbLink>
             </BreadcrumbItem>
           </BreadcrumbList>

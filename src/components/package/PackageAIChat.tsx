@@ -15,7 +15,7 @@ import {
   BreadcrumbLink,
   BreadcrumbSeparator 
 } from "@/components/ui/breadcrumb";
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface PackageAIChatProps {
   packages: Package[];
@@ -24,6 +24,7 @@ interface PackageAIChatProps {
 const PackageAIChat: React.FC<PackageAIChatProps> = ({ packages }) => {
   const [messages, setMessages] = useState<Message[]>([getInitialMessage()]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const navigate = useNavigate();
 
   // Calculate summary metrics
   const totalPackages = packages.length;
@@ -62,6 +63,10 @@ const PackageAIChat: React.FC<PackageAIChatProps> = ({ packages }) => {
     handleSendMessage(query);
   };
 
+  const handleBackToHome = () => {
+    navigate('/home');
+  };
+
   return (
     <div className="flex flex-col h-[700px] border rounded-lg overflow-hidden bg-background">
       <div className="bg-primary p-3">
@@ -77,10 +82,13 @@ const PackageAIChat: React.FC<PackageAIChatProps> = ({ packages }) => {
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link to="/home" className="flex items-center text-sm text-muted-foreground hover:text-primary">
+                <button
+                  onClick={handleBackToHome}
+                  className="flex items-center text-sm text-muted-foreground hover:text-primary"
+                >
                   <Home className="h-3.5 w-3.5 mr-1" />
                   Back to Home
-                </Link>
+                </button>
               </BreadcrumbLink>
             </BreadcrumbItem>
           </BreadcrumbList>
