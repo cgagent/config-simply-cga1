@@ -27,6 +27,7 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
         </div>
         <p className="text-2xl font-bold mb-2">{ciCompletionPercentage}%</p>
         <Progress value={ciCompletionPercentage} className="h-2" />
+        <p className="text-xs text-muted-foreground mt-2">Last 30 days</p>
       </Card>
       
       <Card className="p-4 flex flex-col">
@@ -44,7 +45,7 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
           <Package className="h-5 w-5 text-blue-500" />
         </div>
         <p className="text-2xl font-bold">{formatNumber(totalPackages)}</p>
-        <p className="text-xs text-muted-foreground mt-2">Across all repositories</p>
+        <p className="text-xs text-muted-foreground mt-2">Last 30 days</p>
       </Card>
       
       <Card className="p-4 flex flex-col">
@@ -53,7 +54,7 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
           <Database className="h-5 w-5 text-amber-500" />
         </div>
         <p className="text-2xl font-bold">{formatNumber(dataConsumption)} MB</p>
-        <p className="text-xs text-muted-foreground mt-2">This month</p>
+        <p className="text-xs text-muted-foreground mt-2">Last 30 days</p>
       </Card>
     </div>
   );
