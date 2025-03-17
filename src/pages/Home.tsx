@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { AIChat } from '@/components/ai-chat/AIChat';
 import StatisticsBar from '@/components/StatisticsBar';
 import { useLocation } from 'react-router-dom';
@@ -10,6 +10,7 @@ const Home: React.FC = () => {
   const location = useLocation();
   const initialRender = useRef(true);
   const queryCooldownRef = useRef(false);
+  const lastQueryRef = useRef('');
   
   // Sample data for statistics - in a real app, this would come from an API or state
   const statsData = {
@@ -37,29 +38,31 @@ const Home: React.FC = () => {
     }
   }, [location]);
 
-  // Handler for statistics panel queries
-  const handleChatQuery = (query: string) => {
-    if (queryCooldownRef.current) return;
+  // Handler for statistics panel queries with debounce
+  const handleChatQuery = useCallback((query: string) => {
+    // Prevent rapid sequential clicks and reprocessing the same query
+    if (queryCooldownRef.current || query === lastQueryRef.current) return;
     
-    // Set cooldown flag to prevent rapid clicks
+    // Set cooldown flag and store current query
     queryCooldownRef.current = true;
+    lastQueryRef.current = query;
     
     console.log("Chat query received:", query);
     
-    // Ensure we're completely clearing the previous value
+    // First completely clear the previous value
     setChatInputValue('');
     
-    // Use a more reliable approach with timeout
+    // Wait to ensure the clear has processed before setting new value
     setTimeout(() => {
       setChatInputValue(query);
       setIsChatActive(true);
       
-      // Release cooldown after a longer delay
+      // Release cooldown after a sufficient delay
       setTimeout(() => {
         queryCooldownRef.current = false;
-      }, 1000); // Increased from 500ms to 1000ms
-    }, 100); // Increased from 50ms to 100ms for more reliability
-  };
+      }, 2000); // Extended to 2 seconds to prevent quick repeated clicks
+    }, 150);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-background dark:bg-background">
