@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { 
   Home, 
@@ -17,10 +17,12 @@ const navItems = [
 
 interface SideNavigationProps {
   className?: string;
+  onHomeLinkClick?: () => void;
 }
 
-const SideNavigation: React.FC<SideNavigationProps> = ({ className }) => {
+const SideNavigation: React.FC<SideNavigationProps> = ({ className, onHomeLinkClick }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   
   // CI Configuration page is part of the repositories section
   const isActive = (path: string) => {
@@ -28,6 +30,15 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ className }) => {
       return true;
     }
     return location.pathname === path;
+  };
+
+  const handleNavClick = (path: string) => {
+    if (path === '/home' && location.pathname === '/home' && onHomeLinkClick) {
+      // If we're already on home and clicked home again, trigger the callback
+      onHomeLinkClick();
+    } else {
+      navigate(path);
+    }
   };
   
   return (
@@ -38,8 +49,8 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ className }) => {
           
           return (
             <li key={item.path}>
-              <Link
-                to={item.path}
+              <button
+                onClick={() => handleNavClick(item.path)}
                 className={cn(
                   "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors hover:bg-secondary",
                   active 
@@ -50,7 +61,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ className }) => {
               >
                 {item.icon}
                 {item.name}
-              </Link>
+              </button>
             </li>
           );
         })}

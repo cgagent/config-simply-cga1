@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet, useLocation, useNavigate } from "react-router-dom";
 import NavBar from "@/components/NavBar";
 import Auth from "./pages/Auth";
 import Home from "./pages/Home";
@@ -11,15 +11,28 @@ import Repositories from "./pages/Repositories";
 import CIConfiguration from "./pages/CIConfiguration";
 import Users from "./pages/Users";
 import NotFound from "./pages/NotFound";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const queryClient = new QueryClient();
 
 // Layout wrapper with NavBar
 const MainLayout = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [isChatActive, setIsChatActive] = useState(false);
+
+  // Handler for resetting to home page (closing chat if active)
+  const handleHomeClick = () => {
+    if (location.pathname === '/home') {
+      // We're on home, notify home component to reset the chat
+      // The state update will be picked up by the Home component
+      navigate('/home', { state: { resetChat: true } });
+    }
+  };
+
   return (
     <div className="flex h-screen">
-      <NavBar />
+      <NavBar onHomeLinkClick={handleHomeClick} />
       <div className="flex-1 ml-16 transition-all duration-300">
         <Outlet />
       </div>

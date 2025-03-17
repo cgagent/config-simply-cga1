@@ -1,11 +1,13 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AIChat } from '@/components/ai-chat/AIChat';
 import StatisticsBar from '@/components/StatisticsBar';
+import { useLocation } from 'react-router-dom';
 
 const Home: React.FC = () => {
   const [isChatActive, setIsChatActive] = useState(false);
   const [chatInputValue, setChatInputValue] = useState('');
+  const location = useLocation();
   
   // Sample data for statistics - in a real app, this would come from an API or state
   const statsData = {
@@ -14,6 +16,15 @@ const Home: React.FC = () => {
     totalPackages: 12486,
     dataConsumption: 1528
   };
+
+  // Check for resetChat state from navigation
+  useEffect(() => {
+    if (location.state && location.state.resetChat) {
+      setIsChatActive(false);
+      // Clear the state to avoid repeating this action
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   // Handler for statistics panel queries
   const handleChatQuery = (query: string) => {

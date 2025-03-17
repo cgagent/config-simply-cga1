@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,17 +24,28 @@ import {
 
 interface NavBarProps {
   className?: string;
+  onHomeLinkClick?: () => void;
 }
 
-const NavBar: React.FC<NavBarProps> = ({ className }) => {
+const NavBar: React.FC<NavBarProps> = ({ className, onHomeLinkClick }) => {
   const [expanded, setExpanded] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const navItems = [
     { name: 'Home', path: '/home', icon: <Home className="w-5 h-5" /> },
     { name: 'CI', path: '/repositories', icon: <GitBranch className="w-5 h-5" /> },
     { name: 'User Management', path: '/users', icon: <Users className="w-5 h-5" /> },
   ];
+
+  const handleNavClick = (path: string) => {
+    if (path === '/home' && location.pathname === '/home' && onHomeLinkClick) {
+      // If we're already on home and clicked home again, trigger the callback
+      onHomeLinkClick();
+    } else {
+      navigate(path);
+    }
+  };
   
   return (
     <div className={cn(
@@ -57,20 +68,27 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
       
       <nav className="flex-1">
         <ul className="space-y-2 px-2">
-          {navItems.map((item) => (
-            <li key={item.path}>
-              <Link
-                to={item.path}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-secondary",
-                  location.pathname === item.path ? "bg-primary text-primary-foreground" : "text-foreground"
-                )}
-              >
-                <span>{item.icon}</span>
-                {expanded && <span>{item.name}</span>}
-              </Link>
-            </li>
-          ))}
+          {navItems.map((item) => {
+            const active = location.pathname === item.path || 
+              (item.path === '/repositories' && location.pathname === '/ci-configuration');
+            
+            return (
+              <li key={item.path}>
+                <button
+                  onClick={() => handleNavClick(item.path)}
+                  className={cn(
+                    "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-secondary w-full text-left",
+                    active 
+                      ? "bg-primary text-primary-foreground" 
+                      : "text-foreground"
+                  )}
+                >
+                  <span>{item.icon}</span>
+                  {expanded && <span>{item.name}</span>}
+                </button>
+              </li>
+            );
+          })}
         </ul>
       </nav>
       
