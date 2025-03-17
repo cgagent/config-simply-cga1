@@ -37,8 +37,13 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ className, onHomeLinkCl
       // Always trigger the callback for home, regardless of current location
       if (onHomeLinkClick) {
         onHomeLinkClick();
+      }
+      
+      // If we're already on the home page, we need to use state to trigger a reset
+      if (location.pathname === '/home') {
+        navigate('/home', { state: { resetChat: true }, replace: true });
       } else {
-        navigate(path);
+        navigate('/home');
       }
     } else {
       navigate(path);

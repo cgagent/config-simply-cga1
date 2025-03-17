@@ -39,9 +39,18 @@ const NavBar: React.FC<NavBarProps> = ({ className, onHomeLinkClick }) => {
   ];
 
   const handleNavClick = (path: string) => {
-    if (path === '/home' && location.pathname === '/home' && onHomeLinkClick) {
-      // If we're already on home and clicked home again, trigger the callback
-      onHomeLinkClick();
+    if (path === '/home') {
+      // If we're already on home, we need to force a reset
+      if (location.pathname === '/home') {
+        navigate('/home', { state: { resetChat: true }, replace: true });
+      } else {
+        navigate('/home');
+      }
+      
+      // Always call the callback if provided
+      if (onHomeLinkClick) {
+        onHomeLinkClick();
+      }
     } else {
       navigate(path);
     }
