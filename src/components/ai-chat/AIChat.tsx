@@ -37,7 +37,7 @@ export const AIChat: React.FC<AIChatProps> = ({
   } = useMessageHandler();
   
   // Reset detection when navigating
-  useResetDetection({ resetMessages });
+  const { lastProcessedInputRef, processingRef } = useResetDetection({ resetMessages });
   
   // Automatic message sending
   useAutoSendMessage({

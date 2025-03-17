@@ -1,120 +1,75 @@
 
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
-import { Message } from '../constants';
-import { simulateAIResponse } from '../utils/aiResponseUtils';
+import { useCIConfiguration } from './useCIConfiguration';
+import { useSpecialQueries } from './useSpecialQueries';
+import { useMessageState } from './useMessageState';
 
 export const useMessageHandler = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [inputValue, setInputValue] = useState('');
-  const [showCIConfig, setShowCIConfig] = useState(false);
-  const [repository, setRepository] = useState<any>(null);
   const { toast } = useToast();
-  const navigate = useNavigate();
-
-  // Add a function to reset messages
-  const resetMessages = () => {
-    setMessages([]);
-    setShowCIConfig(false);
-    setRepository(null);
-    setInputValue('');
-  };
+  
+  const {
+    messages,
+    isProcessing,
+    setIsProcessing,
+    inputValue,
+    setInputValue,
+    addUserMessage,
+    addBotMessage,
+    resetMessages
+  } = useMessageState();
+  
+  const {
+    showCIConfig,
+    repository,
+    handleCIConfiguration,
+    resetCIConfiguration
+  } = useCIConfiguration();
+  
+  const { processSpecialQuery } = useSpecialQueries();
 
   const handleSendMessage = async (content: string) => {
     if (!content.trim()) return;
     
     // Add user message
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: 'user',
-      content
-    };
-    
-    setMessages(prev => [...prev, userMessage]);
+    addUserMessage(content);
     setIsProcessing(true);
     
     try {
       // Enhanced logging for debugging
       console.log("Original content:", content);
-      const lowerContent = content.toLowerCase().trim();
-      console.log("Lowercase trimmed content:", lowerContent);
       
-      // Check if this is a CI Setup query
-      if (lowerContent.includes('ci') && 
-          (lowerContent.includes('setup') || lowerContent.includes('assist'))) {
-        
-        // Add a bot response first
-        const botResponse: Message = {
-          id: (Date.now() + 1).toString(),
-          role: 'bot',
-          content: "I'll help you set up CI integration. Let me bring up our CI configuration assistant:"
-        };
-        
-        setMessages(prev => [...prev, botResponse]);
-        
-        // Show embedded CI configuration instead of redirecting
-        setRepository({
-          id: 'sample-repo-1',
-          name: 'sample-repository',
-          owner: 'flyfrog',
-          isConfigured: false,
-          language: 'JavaScript'
-        });
-        setShowCIConfig(true);
+      // First, check if this is a CI configuration request
+      const ciResult = handleCIConfiguration(content);
+      if (ciResult.handled) {
+        addBotMessage(ciResult.response);
         setIsProcessing(false);
-        
-      } 
-      // Check for blocked packages query directly
-      else if (
-        lowerContent === "which packages were blocked in the last two weeks?" ||
-        lowerContent === "blocked packages" ||
-        lowerContent === "show me the packages that are blocked" ||
-        lowerContent === "block" ||
-        lowerContent.includes('block') ||
-        lowerContent.includes('malicious')
-      ) {
-        console.log("Blocked packages query detected");
-        
-        const blockResponse = `In the past 2 weeks, we blocked the following malicious npm packages:
-
-evil-package-101: Attempted to steal user credentials.
-malware-lib: Contained scripts to inject ransomware.
-bad-actor-addon: Had a payload to exfiltrate private data.`;
-        
-        const botResponse: Message = {
-          id: (Date.now() + 1).toString(),
-          role: 'bot',
-          content: blockResponse
-        };
-        
-        setMessages(prev => [...prev, botResponse]);
-        setIsProcessing(false);
+        return;
       }
-      else {
-        // Enhanced debugging
-        console.log("Processing query:", content.trim());
-        
-        // Handle other queries with a slight delay to simulate processing
-        setTimeout(() => {
-          // Get the AI response with the properly formatted content
-          const cleanedContent = content.trim();
-          console.log("Cleaned content:", cleanedContent);
-          
-          const aiResponse = simulateAIResponse(cleanedContent);
-          console.log("AI Response:", aiResponse);
-          
-          const botResponse: Message = {
-            id: (Date.now() + 1).toString(),
-            role: 'bot',
-            content: aiResponse
-          };
-          
-          setMessages(prev => [...prev, botResponse]);
+      
+      // Next, check if this is a special query
+      const specialQueryResult = processSpecialQuery(content);
+      if (specialQueryResult.handled) {
+        addBotMessage(specialQueryResult.response);
+        setIsProcessing(false);
+        return;
+      }
+      
+      // Handle other queries with a slight delay to simulate processing
+      setTimeout(() => {
+        try {
+          const aiResponse = specialQueryResult.getResponse();
+          addBotMessage(aiResponse);
+        } catch (error) {
+          console.error("Error generating AI response:", error);
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Failed to generate response. Please try again."
+          });
+        } finally {
           setIsProcessing(false);
-        }, 1000); // Reduced from 1500ms to 1000ms for faster response
-      }
+        }
+      }, 1000);
     } catch (error) {
       console.error("Error processing message:", error);
       toast({
@@ -132,6 +87,11 @@ bad-actor-addon: Had a payload to exfiltrate private data.`;
     // Removed automatic message sending
   };
 
+  const fullReset = () => {
+    resetMessages();
+    resetCIConfiguration();
+  };
+
   return {
     messages,
     isProcessing,
@@ -141,6 +101,6 @@ bad-actor-addon: Had a payload to exfiltrate private data.`;
     handleSelectQuery,
     showCIConfig,
     repository,
-    resetMessages // Export the new reset function
+    resetMessages: fullReset // Use the combined reset function
   };
 };
