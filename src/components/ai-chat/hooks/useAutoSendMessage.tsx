@@ -18,40 +18,34 @@ export const useAutoSendMessage = ({
 }: UseAutoSendMessageProps) => {
   const hasSentRef = useRef(false);
   
+  // Reset the flag when input value changes
   useEffect(() => {
-    // Reset the flag when input value changes
     hasSentRef.current = false;
   }, [inputValue]);
   
+  // Handle automatic message sending
   useEffect(() => {
-    const sendMessageIfNeeded = () => {
-      if (shouldSendMessage && 
-          inputValue.trim() !== '' && 
-          !isProcessing && 
-          !hasSentRef.current) {
+    if (!shouldSendMessage || inputValue.trim() === '' || isProcessing || hasSentRef.current) {
+      return;
+    }
+    
+    console.log("Auto-sending message:", inputValue);
+    hasSentRef.current = true;
+    
+    // Add a slight delay to ensure UI is ready
+    const sendTimeoutId = setTimeout(() => {
+      handleSendMessage(inputValue);
+      
+      // Clear the should-send flag after sending
+      if (clearShouldSendMessage) {
+        const clearTimeoutId = setTimeout(() => {
+          clearShouldSendMessage();
+        }, 100);
         
-        console.log("Auto-sending message:", inputValue);
-        hasSentRef.current = true;
-        
-        // Add a slight delay to ensure UI is ready
-        setTimeout(() => {
-          handleSendMessage(inputValue);
-          
-          // Only clear the flag after successfully sending
-          if (clearShouldSendMessage) {
-            setTimeout(() => {
-              clearShouldSendMessage();
-            }, 100);
-          }
-        }, 200);
+        return () => clearTimeout(clearTimeoutId);
       }
-    };
+    }, 200);
     
-    // Execute with a short delay to allow for state updates
-    const timeoutId = setTimeout(sendMessageIfNeeded, 300);
-    
-    return () => {
-      clearTimeout(timeoutId);
-    };
+    return () => clearTimeout(sendTimeoutId);
   }, [shouldSendMessage, inputValue, isProcessing, clearShouldSendMessage, handleSendMessage]);
 };

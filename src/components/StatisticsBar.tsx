@@ -4,7 +4,6 @@ import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { CheckCircle, Package, PackageX, Database } from 'lucide-react';
 import { formatNumber } from '@/lib/formatters';
-import { useNavigate } from 'react-router-dom';
 
 interface StatisticsBarProps {
   ciCompletionPercentage: number;
@@ -21,11 +20,11 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
   dataConsumption,
   onChatQuery
 }) => {
-  const navigate = useNavigate();
-
   const handleCICompletionClick = useCallback(() => {
-    navigate('/repositories');
-  }, [navigate]);
+    if (onChatQuery) {
+      onChatQuery("Show me the CI completion status for my repositories");
+    }
+  }, [onChatQuery]);
 
   const handleBlockedPackagesClick = useCallback(() => {
     if (onChatQuery) {

@@ -12,8 +12,6 @@ const Home: React.FC = () => {
   const location = useLocation();
   const { toast } = useToast();
   const initialRender = useRef(true);
-  const queryCooldownRef = useRef(false);
-  const lastQueryRef = useRef('');
   
   // Sample data for statistics - in a real app, this would come from an API or state
   const statsData = {
@@ -42,52 +40,33 @@ const Home: React.FC = () => {
     }
   }, [location]);
 
-  // Handler for statistics panel queries with improved reliability
+  // Handler for statistics panel queries
   const handleChatQuery = useCallback((query: string) => {
-    // Prevent rapid sequential clicks and reprocessing the same query
-    if (queryCooldownRef.current) {
-      console.log("Ignoring query during cooldown period:", query);
-      return;
-    }
+    console.log("Chat query initiated:", query);
     
-    // Set cooldown flag immediately
-    queryCooldownRef.current = true;
-    console.log("Setting cooldown for query:", query);
-    
-    // Check if this is the same query as last time
-    if (query === lastQueryRef.current && isChatActive) {
-      console.log("Ignoring duplicate query:", query);
-      queryCooldownRef.current = false;
-      return;
-    }
-    
-    // Store current query
-    lastQueryRef.current = query;
-    console.log("Chat query being processed:", query);
-    
-    // First activate the chat to ensure we're in conversation mode
+    // Activate chat and prepare to send the query
     setIsChatActive(true);
     
-    // Wait a moment for state to update
+    // Sequential operations with timeouts to ensure proper state updates
     setTimeout(() => {
-      // Clear previous input
-      setChatInputValue('');
+      setChatInputValue(query);
       
-      // Set new input value after a brief delay
+      // Set flag to trigger automatic message sending after input is set
       setTimeout(() => {
-        setChatInputValue(query);
-        
-        // Set flag to send the message automatically
         setShouldSendMessage(true);
-        
-        // Release cooldown after a sufficient delay
-        setTimeout(() => {
-          queryCooldownRef.current = false;
-          console.log("Cooldown period ended for query:", query);
-        }, 3000); // Extended to 3 seconds to prevent quick repeated clicks
-      }, 100);
-    }, 100);
-  }, [isChatActive]);
+      }, 50);
+    }, 50);
+  }, []);
+
+  // Clear the shouldSendMessage flag after the message has been sent
+  const clearShouldSendMessage = useCallback(() => {
+    setShouldSendMessage(false);
+  }, []);
+
+  // Clear the initial input value after it has been processed
+  const clearInitialInputValue = useCallback(() => {
+    setChatInputValue('');
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-background dark:bg-background">
@@ -108,9 +87,9 @@ const Home: React.FC = () => {
               <AIChat 
                 onChatStateChange={setIsChatActive}
                 initialInputValue={chatInputValue}
-                clearInitialInputValue={() => setChatInputValue('')}
+                clearInitialInputValue={clearInitialInputValue}
                 shouldSendMessage={shouldSendMessage}
-                clearShouldSendMessage={() => setShouldSendMessage(false)}
+                clearShouldSendMessage={clearShouldSendMessage}
               />
             </div>
           </div>

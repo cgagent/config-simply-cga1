@@ -19,9 +19,11 @@ export const useInitialInput = ({
   const processingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   useEffect(() => {
-    // If we get a new initial input value that's different from what we've seen before
+    // When we get a new initial input value that's different from what we've seen before
     if (initialInputValue && initialInputValue !== previousInputRef.current) {
       console.log("Processing new initial input value:", initialInputValue);
+      
+      // Update our tracking of the current input
       previousInputRef.current = initialInputValue;
       
       // Clear any existing timeout
@@ -30,11 +32,11 @@ export const useInitialInput = ({
         processingTimeoutRef.current = null;
       }
       
-      // Set the input value with a brief delay
+      // Update the input value and mark that we have initial input
       setInputValue(initialInputValue);
       setHasInitialInput(true);
       
-      // Set a timeout to clear the initial input value after it has been processed
+      // Schedule clearing of the initial input value after it has been processed
       if (clearInitialInputValue) {
         processingTimeoutRef.current = setTimeout(() => {
           clearInitialInputValue();
@@ -43,12 +45,21 @@ export const useInitialInput = ({
       }
     }
     
-    // If we don't have an initial input value anymore, update our state accordingly
+    // Reset state when initial input is cleared and not processing
     if (!initialInputValue && hasInitialInput && !isProcessing) {
       previousInputRef.current = '';
       setHasInitialInput(false);
     }
   }, [initialInputValue, clearInitialInputValue, setInputValue, hasInitialInput, isProcessing]);
+
+  // Clean up timeouts
+  useEffect(() => {
+    return () => {
+      if (processingTimeoutRef.current) {
+        clearTimeout(processingTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return { hasInitialInput };
 };
