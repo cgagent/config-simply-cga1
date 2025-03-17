@@ -21,11 +21,9 @@ const Home: React.FC = () => {
   useEffect(() => {
     // Reset chat whenever location changes to home or when there's an explicit reset request
     if (location.pathname === '/home') {
-      setIsChatActive(false);
-      setChatInputValue('');
-      
-      // Also handle explicit reset from navigation state
       if (location.state && location.state.resetChat) {
+        setIsChatActive(false);
+        setChatInputValue('');
         // Clear the state to avoid repeating this action
         window.history.replaceState({}, document.title);
       }
@@ -36,6 +34,11 @@ const Home: React.FC = () => {
   const handleChatQuery = (query: string) => {
     setChatInputValue(query);
     setIsChatActive(true);
+  };
+
+  const handleResetChat = () => {
+    setIsChatActive(false);
+    setChatInputValue('');
   };
 
   return (
@@ -58,7 +61,6 @@ const Home: React.FC = () => {
                 onChatStateChange={setIsChatActive}
                 initialInputValue={chatInputValue}
                 clearInitialInputValue={() => setChatInputValue('')}
-                key={isChatActive ? "active-chat" : "initial-chat"}
               />
             </div>
           </div>
