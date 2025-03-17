@@ -45,20 +45,20 @@ const Home: React.FC = () => {
     queryCooldownRef.current = true;
     
     console.log("Chat query received:", query);
-    // First reset the current value
+    
+    // Ensure we're completely clearing the previous value
     setChatInputValue('');
     
-    // Wait for state update to clear
+    // Use a more reliable approach with timeout
     setTimeout(() => {
-      // Then set the new value and activate chat
       setChatInputValue(query);
       setIsChatActive(true);
       
-      // Release cooldown after a delay
+      // Release cooldown after a longer delay
       setTimeout(() => {
         queryCooldownRef.current = false;
-      }, 500);
-    }, 50);
+      }, 1000); // Increased from 500ms to 1000ms
+    }, 100); // Increased from 50ms to 100ms for more reliability
   };
 
   return (

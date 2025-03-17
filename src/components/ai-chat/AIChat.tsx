@@ -38,14 +38,22 @@ export const AIChat: React.FC<AIChatProps> = ({
   const lastProcessedInputRef = useRef<string>('');
   // Flag to prevent useEffect loops
   const isInitialQueryProcessingRef = useRef(false);
+  // Track if we've already reset the chat due to location change
+  const hasResetForLocationRef = useRef(false);
 
   // Check location state for reset flag
   useEffect(() => {
-    if (location.state && location.state.resetChat) {
+    if (location.state && location.state.resetChat && !hasResetForLocationRef.current) {
       console.log("AIChat detected reset state, clearing messages");
       resetMessages();
       lastProcessedInputRef.current = ''; // Reset this when messages are reset
       isInitialQueryProcessingRef.current = false;
+      hasResetForLocationRef.current = true;
+      
+      // Reset the flag after a delay to allow for future resets
+      setTimeout(() => {
+        hasResetForLocationRef.current = false;
+      }, 100);
     }
   }, [location.state, resetMessages]);
 
@@ -94,49 +102,40 @@ export const AIChat: React.FC<AIChatProps> = ({
 
   // Listen for initial input value changes and send it immediately
   useEffect(() => {
-    // Prevent processing if we're already in the middle of processing
-    if (isInitialQueryProcessingRef.current) {
+    // Skip if empty or already processing
+    if (!initialInputValue || initialInputValue.trim() === '' || isInitialQueryProcessingRef.current) {
       return;
     }
     
-    // Only process if we have a new initialInputValue that's different from last processed
-    if (initialInputValue && 
-        initialInputValue.trim() !== '' && 
-        initialInputValue !== lastProcessedInputRef.current) {
-      
+    // Only process if different from last processed
+    if (initialInputValue !== lastProcessedInputRef.current) {
       console.log("Processing new initial input value:", initialInputValue);
       
-      // Set flag to prevent re-entry during processing
+      // Set flag to prevent re-entry
       isInitialQueryProcessingRef.current = true;
       
-      // Store the current input as processed
+      // Store current input as processed
       lastProcessedInputRef.current = initialInputValue;
       
-      // Set the input value
+      // Set input value
       setInputValue(initialInputValue);
       
-      // Send the message with a small delay to ensure state updates have processed
+      // Send message with small delay to ensure state updates
       setTimeout(() => {
         handleSendMessage(initialInputValue);
-        // Clear the initial value to prevent re-sending
+        
+        // Clear initial value
         if (clearInitialInputValue) {
           clearInitialInputValue();
         }
-        // Reset processing flag after a delay to allow for state updates
+        
+        // Reset processing flag after delay
         setTimeout(() => {
           isInitialQueryProcessingRef.current = false;
         }, 100);
       }, 100);
     }
   }, [initialInputValue, clearInitialInputValue, setInputValue, handleSendMessage]);
-
-  // Reset the lastProcessedInputRef when messages are reset
-  useEffect(() => {
-    if (messages.length === 0) {
-      lastProcessedInputRef.current = '';
-      isInitialQueryProcessingRef.current = false;
-    }
-  }, [messages]);
 
   // Notify parent component about chat state changes
   useEffect(() => {
