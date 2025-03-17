@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle, Package, PackageX, Database, ArrowRight } from 'lucide-react';
+import { CheckCircle, Package, PackageX, Database } from 'lucide-react';
 import { formatNumber } from '@/lib/formatters';
 import { useNavigate } from 'react-router-dom';
 

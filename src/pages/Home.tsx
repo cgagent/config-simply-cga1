@@ -38,6 +38,7 @@ const Home: React.FC = () => {
 
   // Handler for statistics panel queries
   const handleChatQuery = (query: string) => {
+    console.log("Chat query received:", query);
     setChatInputValue(query);
     setIsChatActive(true);
   };

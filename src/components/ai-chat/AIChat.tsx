@@ -34,12 +34,14 @@ export const AIChat: React.FC<AIChatProps> = ({
   const typingSpeed = 15; // milliseconds per character - faster than before
   const typingTimerRef = useRef<number | null>(null);
   const latestMessageRef = useRef<string | null>(null);
+  const initialInputProcessedRef = useRef(false);
 
   // Check location state for reset flag
   useEffect(() => {
     if (location.state && location.state.resetChat) {
       console.log("AIChat detected reset state, clearing messages");
       resetMessages();
+      initialInputProcessedRef.current = false; // Reset this flag when messages are reset
     }
   }, [location.state, resetMessages]);
 
@@ -88,17 +90,30 @@ export const AIChat: React.FC<AIChatProps> = ({
 
   // Listen for initial input value changes and send it immediately
   useEffect(() => {
-    if (initialInputValue && initialInputValue.trim() !== '') {
+    // Only process if we have an initialInputValue and haven't processed it yet
+    if (initialInputValue && initialInputValue.trim() !== '' && !initialInputProcessedRef.current) {
+      console.log("Processing initial input value:", initialInputValue);
+      // Mark as processed to prevent re-sending
+      initialInputProcessedRef.current = true;
       // Set the input value
       setInputValue(initialInputValue);
-      // Send the message immediately
-      handleSendMessage(initialInputValue);
-      // Clear the initial value to prevent re-sending
-      if (clearInitialInputValue) {
-        clearInitialInputValue();
-      }
+      // Send the message with a small delay to ensure state updates have processed
+      setTimeout(() => {
+        handleSendMessage(initialInputValue);
+        // Clear the initial value to prevent re-sending
+        if (clearInitialInputValue) {
+          clearInitialInputValue();
+        }
+      }, 100);
     }
   }, [initialInputValue, clearInitialInputValue, setInputValue, handleSendMessage]);
+
+  // Reset the initialInputProcessedRef when messages are reset
+  useEffect(() => {
+    if (messages.length === 0) {
+      initialInputProcessedRef.current = false;
+    }
+  }, [messages]);
 
   // Notify parent component about chat state changes
   useEffect(() => {
