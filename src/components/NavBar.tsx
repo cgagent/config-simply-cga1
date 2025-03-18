@@ -58,8 +58,8 @@ const NavBar: React.FC<NavBarProps> = ({ className, onHomeLinkClick }) => {
   
   return (
     <div className={cn(
-      "h-screen fixed left-0 top-0 z-50 flex flex-col py-4 border-r border-ocean-800/30 shadow-sm transition-all duration-300",
-      "bg-gradient-to-b from-[#142d58] to-[#0c1a34]",
+      "h-screen fixed left-0 top-0 z-50 flex flex-col py-4 border-r border-green-900/30 shadow-sm transition-all duration-300",
+      "bg-gradient-to-b from-[#40be46] to-black",
       expanded ? "w-56" : "w-16",
       className
     )}>
@@ -67,7 +67,7 @@ const NavBar: React.FC<NavBarProps> = ({ className, onHomeLinkClick }) => {
         {expanded && <span className="text-lg font-semibold text-white">Dashboard</span>}
         <button 
           onClick={() => setExpanded(!expanded)} 
-          className="p-1.5 rounded-full bg-ocean-800/20 hover:bg-ocean-800/40 text-white transition-colors"
+          className="p-1.5 rounded-full bg-green-800/20 hover:bg-green-800/40 text-white transition-colors"
         >
           {expanded ? 
             <ChevronLeft className="h-5 w-5" /> : 
@@ -89,8 +89,8 @@ const NavBar: React.FC<NavBarProps> = ({ className, onHomeLinkClick }) => {
                   className={cn(
                     "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors w-full text-left",
                     active 
-                      ? "bg-ocean-600 text-white" 
-                      : "text-ocean-100 hover:bg-ocean-800/50 hover:text-white"
+                      ? "bg-green-600 text-white" 
+                      : "text-green-100 hover:bg-green-800/50 hover:text-white"
                   )}
                 >
                   <span>{item.icon}</span>
@@ -105,14 +105,14 @@ const NavBar: React.FC<NavBarProps> = ({ className, onHomeLinkClick }) => {
       <div className="mt-auto px-4">
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center gap-2 outline-none w-full">
-            <Avatar className="h-8 w-8 border-2 border-ocean-600/50">
+            <Avatar className="h-8 w-8 border-2 border-green-600/50">
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>JD</AvatarFallback>
             </Avatar>
             {expanded && (
               <div className="text-left">
                 <p className="text-sm font-medium text-white">John Doe</p>
-                <p className="text-xs text-ocean-200">Admin</p>
+                <p className="text-xs text-green-200">Admin</p>
               </div>
             )}
           </DropdownMenuTrigger>
