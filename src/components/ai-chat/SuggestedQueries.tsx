@@ -11,13 +11,13 @@ interface SuggestedQueriesProps {
 
 export const SuggestedQueries: React.FC<SuggestedQueriesProps> = ({ queries, onSelectQuery }) => {
   return (
-    <div className="flex flex-wrap gap-2 justify-center">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full">
       {queries.map((queryItem, index) => (
         <Button
           key={index}
           variant="outline"
           size="sm"
-          className="text-xs rounded-full px-4 hover:bg-primary hover:text-primary-foreground transition-colors flex items-center gap-1"
+          className="text-xs rounded-full px-4 hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center gap-1 w-full"
           onClick={() => onSelectQuery(queryItem.query)}
         >
           {queryItem.label}
