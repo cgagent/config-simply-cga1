@@ -12,9 +12,8 @@ export const SuggestedQueries: React.FC<SuggestedQueriesProps> = ({ queries, onS
   return (
     <div className="px-4 py-2 bg-muted/20">
       <p className="text-xs text-muted-foreground mb-2">Try asking about:</p>
-      <div className="flex flex-wrap gap-2 w-full">
+      <div className="flex flex-nowrap gap-2 w-full overflow-x-auto pb-1">
         {queries.map((query, index) => {
-          // Use natural sizing for all buttons
           const customClass = "text-xs flex items-center whitespace-nowrap";
           
           return (

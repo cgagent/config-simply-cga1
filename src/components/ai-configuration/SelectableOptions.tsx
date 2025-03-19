@@ -16,9 +16,8 @@ export const SelectableOptions: React.FC<SelectableOptionsProps> = ({
   if (!options || options.length === 0) return null;
   
   return (
-    <div className="flex flex-wrap gap-2 mt-2 w-full">
+    <div className="flex flex-nowrap gap-2 mt-2 w-full overflow-x-auto pb-2">
       {options.map((option) => {
-        // Use natural sizing for all buttons
         const customClass = "text-xs rounded-full px-3 py-1.5 hover:bg-primary hover:text-primary-foreground transition-colors flex items-center whitespace-nowrap";
         
         return (

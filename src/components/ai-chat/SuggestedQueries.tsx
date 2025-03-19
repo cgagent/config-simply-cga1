@@ -2,7 +2,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowUp } from 'lucide-react';
-import { SUGGESTED_QUERIES } from './constants';
 
 interface SuggestedQueriesProps {
   queries: { label: string; query: string }[];
@@ -11,16 +10,10 @@ interface SuggestedQueriesProps {
 
 export const SuggestedQueries: React.FC<SuggestedQueriesProps> = ({ queries, onSelectQuery }) => {
   return (
-    <div className="flex flex-wrap gap-2 w-full">
+    <div className="flex flex-nowrap gap-2 w-full overflow-x-auto pb-2">
       {queries.map((queryItem, index) => {
-        // Apply custom sizing based on the label
-        let customClass = "text-xs rounded-full px-3 py-1.5 hover:bg-primary hover:text-primary-foreground transition-colors flex items-center whitespace-nowrap";
-        
-        if (queryItem.label === "Open source packages") {
-          customClass += " flex-grow-0"; // Natural width based on content
-        } else if (queryItem.label === "My packages" || queryItem.label === "Set my CI") {
-          customClass += " flex-grow-0"; // Natural width based on content
-        }
+        // Natural size for all buttons with the same styling
+        const customClass = "text-xs rounded-full px-3 py-1.5 hover:bg-primary hover:text-primary-foreground transition-colors flex items-center whitespace-nowrap";
         
         return (
           <Button
