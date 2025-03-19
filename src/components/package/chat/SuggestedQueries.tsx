@@ -15,10 +15,10 @@ export const SuggestedQueries: React.FC<SuggestedQueriesProps> = ({ queries, onS
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full">
         {queries.map((query, index) => {
           // Apply custom sizing based on the query content
-          let customClass = "text-xs flex items-center justify-center gap-1 w-full";
+          let customClass = "text-xs truncate flex items-center justify-center gap-1 w-full";
           
           if (query.includes("open source") || query.includes("Open source")) {
-            customClass += " sm:col-span-2"; // Make "Open source packages" related buttons larger
+            customClass += " sm:col-span-2 text-[10px]"; // Make "Open source packages" related buttons larger but smaller text
           } else if (query.includes("My packages") || query.includes("my packages") || 
                     query.includes("Set my CI") || query.includes("set my CI")) {
             customClass += " transform scale-95"; // Make "My packages" and "Set my CI" related buttons smaller
@@ -32,8 +32,8 @@ export const SuggestedQueries: React.FC<SuggestedQueriesProps> = ({ queries, onS
               className={customClass}
               onClick={() => onSelectQuery(query)}
             >
-              {query}
-              <ArrowUp className="h-3 w-3" />
+              <span className="truncate">{query}</span>
+              <ArrowUp className="h-3 w-3 flex-shrink-0" />
             </Button>
           );
         })}
