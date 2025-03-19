@@ -20,7 +20,7 @@ const RepositoryHeader: React.FC<RepositoryHeaderProps> = ({
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
       <div>
-        <h1 className="text-3xl font-bold mt-1">Git Repository Manager</h1>
+        <h1 className="text-3xl font-bold mt-1">My CI</h1>
       </div>
     </div>
   );

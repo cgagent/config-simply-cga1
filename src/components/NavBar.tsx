@@ -18,7 +18,7 @@ import {
   ChevronLeft, 
   ChevronRight,
   Home,
-  GitBranch,
+  ServerCog,
   Users
 } from 'lucide-react';
 
@@ -34,7 +34,7 @@ const NavBar: React.FC<NavBarProps> = ({ className, onHomeLinkClick }) => {
 
   const navItems = [
     { name: 'Home', path: '/home', icon: <Home className="w-5 h-5" /> },
-    { name: 'CI', path: '/repositories', icon: <GitBranch className="w-5 h-5" /> },
+    { name: 'CI', path: '/repositories', icon: <ServerCog className="w-5 h-5" /> },
     { name: 'User Management', path: '/users', icon: <Users className="w-5 h-5" /> },
   ];
 

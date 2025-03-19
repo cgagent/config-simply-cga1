@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { GitBranch } from 'lucide-react';
+import { ServerCog } from 'lucide-react';
 import Search from './Search';
 import RepositoryFilter from './RepositoryFilter';
 import OrganizationSelect from './OrganizationSelect';
@@ -30,7 +29,7 @@ const RepositoryListHeader: React.FC<RepositoryListHeaderProps> = ({
   return (
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
       <div className="flex items-center gap-2">
-        <GitBranch className="h-5 w-5" />
+        <ServerCog className="h-5 w-5" />
         <h2 className="text-xl font-semibold">Git Repositories</h2>
         {organizations && selectedOrg && setSelectedOrg && (
           <OrganizationSelect 
