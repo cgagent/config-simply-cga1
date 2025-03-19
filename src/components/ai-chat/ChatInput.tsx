@@ -28,12 +28,12 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   const staticPlaceholder = "Ask me anything...";
   
   const rotatingPlaceholders = [
-    "Set up your CI with FlyFrog...",
-    "Show you what packages are being used in your organization...",
-    "Find a public package...",
-    "See the malicious packages that blocked by FlyFrog...",
-    "Check your data consumption or storage in the last month...",
-    "Create an Sbom report for you..."
+    "set up your CI with FlyFrog",
+    "show you what are the most common packages in your organization in the last...",
+    "find a package that does...",
+    "identify what packages are vulnerable and used in your organization",
+    "check what was your data consumption in the last...",
+    "generate an SBOM report from the last..."
   ];
   
   // Update local input when value prop changes

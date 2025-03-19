@@ -6,19 +6,19 @@ export const SUGGESTED_QUERIES = [
   },
   {
     label: "Org Packages",
-    query: "What are the most popular package being used in my organization? is it secured?"
+    query: "What are the most common packages being used in my organization in the last 30 days?"
   },
   {
     label: "Public package",
-    query: "recommend me for 3 npm packages for making http requests."
+    query: "Can you find a package that does HTTP requests with good security?"
   },
   {
-    label: "Blocked Packages",
-    query: "Which packages were blocked in the last two weeks?"
+    label: "Vulnerable Packages",
+    query: "Identify what packages are vulnerable and used in my organization"
   },
   {
     label: "SBOM",
-    query: "Can I get an SBOM report for my packages from the last 30 days?"
+    query: "Generate an SBOM report from the last 30 days"
   }
 ];
 
