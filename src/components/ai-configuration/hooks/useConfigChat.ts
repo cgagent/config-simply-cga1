@@ -5,8 +5,14 @@ import React from 'react';
 
 // Type for the navigation callback
 type NavigationCallback = (path: string) => void;
+// Type for the merge success callback
+type MergeSuccessCallback = (repoName: string, packageType: string) => void;
 
-export const useConfigChat = (repositoryName?: string, onNavigate?: NavigationCallback) => {
+export const useConfigChat = (
+  repositoryName?: string, 
+  onNavigate?: NavigationCallback,
+  onMergeSuccess?: MergeSuccessCallback
+) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -263,6 +269,11 @@ Your CI workflow is now fully integrated with JFrog!`;
         ]);
         
         setIsProcessing(false);
+        
+        // Call onMergeSuccess callback if provided
+        if (onMergeSuccess && repositoryName) {
+          onMergeSuccess(repositoryName, 'npm');
+        }
       }, 4000);
       
       return;

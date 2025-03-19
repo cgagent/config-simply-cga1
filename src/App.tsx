@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,6 +11,7 @@ import CIConfiguration from "./pages/CIConfiguration";
 import Users from "./pages/Users";
 import NotFound from "./pages/NotFound";
 import { useEffect, useState } from "react";
+import { RepositoryProvider } from "./contexts/RepositoryContext";
 
 const queryClient = new QueryClient();
 
@@ -50,22 +50,24 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Auth />} />
-            
-            {/* Protected routes with sidebar layout */}
-            <Route element={<MainLayout />}>
-              <Route path="/home" element={<Home />} />
-              <Route path="/repositories" element={<Repositories />} />
-              <Route path="/ci-configuration" element={<CIConfiguration />} />
-              <Route path="/users" element={<Users />} />
-            </Route>
-            
-            {/* Catch-all route */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <RepositoryProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Auth />} />
+              
+              {/* Protected routes with sidebar layout */}
+              <Route element={<MainLayout />}>
+                <Route path="/home" element={<Home />} />
+                <Route path="/repositories" element={<Repositories />} />
+                <Route path="/ci-configuration" element={<CIConfiguration />} />
+                <Route path="/users" element={<Users />} />
+              </Route>
+              
+              {/* Catch-all route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </RepositoryProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

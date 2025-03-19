@@ -5,6 +5,8 @@ import { Message, SUGGESTED_QUERIES } from './constants';
 import { AIConfigurationChat } from '@/components/ai-configuration';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { SuggestedQueries } from './SuggestedQueries';
+import { useNavigate } from 'react-router-dom';
+import { useRepositories } from '@/contexts/RepositoryContext';
 
 interface ConversationScreenProps {
   messages: Message[];
@@ -27,6 +29,14 @@ export const ConversationScreen: React.FC<ConversationScreenProps> = ({
   showCIConfig,
   repository
 }) => {
+  const navigate = useNavigate();
+  const { updateRepositoryStatus } = useRepositories();
+  
+  // Use the shared repository update function
+  const handleMergeSuccess = (repoName: string, packageType: string) => {
+    updateRepositoryStatus(repoName, packageType);
+  };
+  
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-hidden flex flex-col">
@@ -37,7 +47,10 @@ export const ConversationScreen: React.FC<ConversationScreenProps> = ({
         <div className="border-t border-border pt-2 bg-card rounded-lg shadow-sm mb-4">
           <h3 className="text-lg font-semibold px-4 py-2">CI Configuration Assistant</h3>
           <div className="p-4 max-h-[500px] overflow-y-auto">
-            <AIConfigurationChat repositoryName={repository?.name || 'sample-repository'} />
+            <AIConfigurationChat 
+              repositoryName="infrastructure" 
+              onMergeSuccess={handleMergeSuccess}
+            />
           </div>
         </div>
       )}

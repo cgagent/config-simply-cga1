@@ -1,10 +1,22 @@
-
 import React from 'react';
 import { AIConfigurationChat } from '@/components/ai-configuration';
 import { motion } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
+import { useRepositories } from '@/contexts/RepositoryContext';
 
 const CIConfigurationPage: React.FC = () => {
-  const repositoryName = 'example-repo'; // This could be dynamic based on context
+  const location = useLocation();
+  
+  // Use the shared repository context
+  const { updateRepositoryStatus } = useRepositories();
+  
+  // Always use 'infrastructure' as the repository name for this demo
+  const repositoryName = 'infrastructure';
+  
+  // Use the shared repository update function
+  const handleMergeSuccess = (repoName: string, packageType: string) => {
+    updateRepositoryStatus(repoName, packageType);
+  };
 
   return (
     <motion.div 
@@ -28,7 +40,10 @@ const CIConfigurationPage: React.FC = () => {
         animate={{ y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <AIConfigurationChat repositoryName={repositoryName} />
+        <AIConfigurationChat 
+          repositoryName={repositoryName} 
+          onMergeSuccess={handleMergeSuccess}
+        />
       </motion.div>
     </motion.div>
   );

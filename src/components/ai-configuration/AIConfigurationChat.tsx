@@ -5,12 +5,17 @@ import { useConfigChat } from './hooks/useConfigChat';
 import { SelectableOptions } from './SelectableOptions';
 import { FlyFrogIcon } from '@/components/ai-chat/FlyFrogIcon';
 import { useNavigate } from 'react-router-dom';
+import { Repository } from '@/types/repository';
 
 interface AIConfigurationChatProps {
   repositoryName?: string;
+  onMergeSuccess?: (repoName: string, packageType: string) => void;
 }
 
-const AIConfigurationChat: React.FC<AIConfigurationChatProps> = ({ repositoryName }) => {
+const AIConfigurationChat: React.FC<AIConfigurationChatProps> = ({ 
+  repositoryName,
+  onMergeSuccess
+}) => {
   const navigate = useNavigate();
   
   const {
@@ -19,7 +24,7 @@ const AIConfigurationChat: React.FC<AIConfigurationChatProps> = ({ repositoryNam
     handleSendMessage,
     options,
     handleSelectOption,
-  } = useConfigChat(repositoryName, (path) => navigate(path));
+  } = useConfigChat(repositoryName, (path) => navigate(path), onMergeSuccess);
 
   return (
     <div className="flex flex-col h-[600px] border rounded-lg overflow-hidden">
