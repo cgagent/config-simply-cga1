@@ -16,17 +16,10 @@ export const SelectableOptions: React.FC<SelectableOptionsProps> = ({
   if (!options || options.length === 0) return null;
   
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2 w-full">
+    <div className="flex flex-wrap gap-2 mt-2 w-full">
       {options.map((option) => {
-        // Apply custom sizing based on the label
-        let customClass = "text-xs rounded-full px-3 hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center gap-1 w-full truncate";
-        
-        if (option.label.includes("open source") || option.label.includes("Open source")) {
-          customClass += " sm:col-span-2 text-[10px]"; // Make "Open source" related buttons larger but smaller text
-        } else if (option.label.includes("My packages") || option.label.includes("my packages") || 
-                  option.label.includes("Set my CI") || option.label.includes("set my CI")) {
-          customClass += " transform scale-95"; // Make specific buttons smaller
-        }
+        // Use natural sizing for all buttons
+        const customClass = "text-xs rounded-full px-3 py-1.5 hover:bg-primary hover:text-primary-foreground transition-colors flex items-center whitespace-nowrap";
         
         return (
           <Button
@@ -36,8 +29,8 @@ export const SelectableOptions: React.FC<SelectableOptionsProps> = ({
             className={customClass}
             onClick={() => onSelectOption(option)}
           >
-            <span className="truncate">{option.label}</span>
-            <ArrowUp className="h-3 w-3 flex-shrink-0" />
+            {option.label}
+            <ArrowUp className="h-3 w-3 ml-1 flex-shrink-0" />
           </Button>
         );
       })}
