@@ -17,18 +17,30 @@ export const SelectableOptions: React.FC<SelectableOptionsProps> = ({
   
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2 w-full">
-      {options.map((option) => (
-        <Button
-          key={option.id}
-          variant="outline"
-          size="sm"
-          className="text-xs rounded-full px-4 hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center gap-1 w-full"
-          onClick={() => onSelectOption(option)}
-        >
-          {option.label}
-          <ArrowUp className="h-3 w-3" />
-        </Button>
-      ))}
+      {options.map((option) => {
+        // Apply custom sizing based on the label
+        let customClass = "text-xs rounded-full px-4 hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center gap-1 w-full";
+        
+        if (option.label.includes("open source") || option.label.includes("Open source")) {
+          customClass += " sm:col-span-2"; // Make "Open source" related buttons larger
+        } else if (option.label.includes("My packages") || option.label.includes("my packages") || 
+                  option.label.includes("Set my CI") || option.label.includes("set my CI")) {
+          customClass += " transform scale-95"; // Make specific buttons smaller
+        }
+        
+        return (
+          <Button
+            key={option.id}
+            variant="outline"
+            size="sm"
+            className={customClass}
+            onClick={() => onSelectOption(option)}
+          >
+            {option.label}
+            <ArrowUp className="h-3 w-3" />
+          </Button>
+        );
+      })}
     </div>
   );
 };
