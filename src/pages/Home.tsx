@@ -14,9 +14,9 @@ const Home: React.FC = () => {
   const initialRender = useRef(true);
   const chatQueryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
-  // Sample data for statistics - in a real app, this would come from an API or state
+  // Sample data for statistics - Updated CI completion percentage to 67%
   const statsData = {
-    ciCompletionPercentage: 78,
+    ciCompletionPercentage: 67,
     blockedPackages: 3,
     totalPackages: 12486,
     dataConsumption: 1528
