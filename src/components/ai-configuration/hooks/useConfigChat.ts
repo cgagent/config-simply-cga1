@@ -51,20 +51,20 @@ export const useConfigChat = (
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
         role: 'bot',
-        content: 'Taking you to the CI Configuration section to see the detailed diff view...'
+        content: 'Taking you to the Repositories page...'
       };
 
       setMessages(prev => [...prev, botResponse]);
 
-      // Navigate to CI Configuration section
+      // Navigate to Repositories page
       if (onNavigate) {
         setTimeout(() => {
-          onNavigate('/ci-configuration');
+          onNavigate('/repositories');
         }, 1000);
       } else {
         toast({
           title: "Navigation not available",
-          description: "The CI Configuration section navigation is not available in this context.",
+          description: "The Repositories navigation is not available in this context.",
           variant: "destructive"
         });
       }
@@ -261,7 +261,7 @@ Your CI workflow is now fully integrated with JFrog!`;
         // Update options to show what's next
         setOptions([
           { id: 'docker', label: 'Configure Docker', value: 'I also want to configure Docker' },
-          { id: 'view_diff', label: 'View in CI Configuration', value: 'I want to see the CI Configuration' },
+          { id: 'view_diff', label: 'View Repositories', value: 'I want to see the Repositories' },
           { id: 'done', label: 'That\'s all I need', value: 'Thanks, that\'s all I need for now' }
         ]);
 
@@ -543,7 +543,7 @@ The green lines show the JFrog configuration that you need to add to your workfl
 You can see a more detailed diff visualization in the CI Configuration section.`;
 
           const npmOptions = [
-            { id: 'view_diff', label: 'View in CI Configuration', value: 'I want to see the detailed diff in CI Configuration' },
+            { id: 'view_diff', label: 'View Repositories', value: 'I want to see the Repositories' },
             { id: 'docker', label: 'Add Docker', value: 'I also use Docker' },
             { id: 'done', label: 'No, I\'m done', value: 'No, that\'s all I need' }
           ];
