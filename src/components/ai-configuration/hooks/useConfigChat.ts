@@ -30,6 +30,12 @@ export const useConfigChat = (
   const { toast } = useToast();
 
   const handleSelectOption = (option: ChatOption) => {
+    // If this is a check on GitHub request, just open the link in a new tab without further processing
+    if (option.id === 'Check on GitHub') {
+      window.open('https://github.com/yonarbel/demoid/pull/1/files', '_blank');
+      return; // Return early without adding messages or processing further
+    }
+
     // Use the selected option as the user's message
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -358,12 +364,13 @@ You can see a more detailed diff visualization in the CI Configuration section.`
 
         // Update options based on the response
         setOptions([
+          { id: 'Check on GitHub', label: 'Check on GitHub', value: 'I want to check on GitHub' },
           { id: 'Merge PR', label: 'Merge PR', value: 'I want to merge the pull request' },
           { id: 'Abort PR', label: 'Abort PR', value: 'I want to abort the pull request' },
         ]);
 
         setIsProcessing(false);
-      }, 8000);
+      }, 5000);
 
       return;
     }
