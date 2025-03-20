@@ -27,9 +27,10 @@ interface NavBarProps {
   className?: string;
   onHomeLinkClick?: () => void;
   onExpandChange?: (expanded: boolean) => void;
+  onNavigateFromCI?: () => void;
 }
 
-const NavBar: React.FC<NavBarProps> = ({ className, onHomeLinkClick, onExpandChange }) => {
+const NavBar: React.FC<NavBarProps> = ({ className, onHomeLinkClick, onExpandChange, onNavigateFromCI }) => {
   const [expanded, setExpanded] = useState(false);
   const [hasNotifications, setHasNotifications] = useState(true);
   const location = useLocation();
@@ -61,6 +62,12 @@ const NavBar: React.FC<NavBarProps> = ({ className, onHomeLinkClick, onExpandCha
       if (onHomeLinkClick) {
         onHomeLinkClick();
       }
+    } else if (path === '/repositories' && location.pathname === '/ci-configuration') {
+      // If navigating from CI configuration to repositories, trigger the callback
+      if (onNavigateFromCI) {
+        onNavigateFromCI();
+      }
+      navigate(path);
     } else {
       navigate(path);
     }

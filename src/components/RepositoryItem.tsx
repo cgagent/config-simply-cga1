@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Repository } from '@/types/repository';
 import { ChevronDown, ChevronRight, Cog, PlugZap } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -23,6 +23,15 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
   const [repoState, setRepoState] = useState(repository);
   const hasWorkflows = repoState.workflows && repoState.workflows.length > 0;
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (repository.showStatusTransition) {
+      console.log("Repository item received status change for", repository.name, 
+                  "prev:", repository.previousPackageTypeStatus, 
+                  "current:", repository.packageTypeStatus);
+    }
+    setRepoState(repository);
+  }, [repository]);
   
   const calculatePackageTypeCoverage = () => {
     if (!repoState.packageTypeStatus) return 0;
@@ -124,6 +133,8 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
             isFullyConfigured={isFullyConfigured}
             coveragePercentage={coveragePercentage}
             missingPackageTypes={missingPackageTypes}
+            previousPackageTypeStatus={repoState.previousPackageTypeStatus}
+            showStatusTransition={repoState.showStatusTransition}
           />
         </div>
 

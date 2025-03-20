@@ -58,9 +58,7 @@ export const useConfigChat = (
 
       // Navigate to Repositories page
       if (onNavigate) {
-        setTimeout(() => {
-          onNavigate('/repositories');
-        }, 1000);
+        onNavigate('/repositories');
       } else {
         toast({
           title: "Navigation not available",

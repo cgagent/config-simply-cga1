@@ -8,13 +8,17 @@ const CIConfigurationPage: React.FC = () => {
   const location = useLocation();
   
   // Use the shared repository context
-  const { updateRepositoryStatus } = useRepositories();
+  const { repositories, updateRepositoryStatus } = useRepositories();
   
   // Always use 'infrastructure' as the repository name for this demo
   const repositoryName = 'infrastructure';
   
   // Use the shared repository update function
   const handleMergeSuccess = (repoName: string, packageType: string) => {
+    // Get the current repository state
+    const currentRepo = repositories.find(repo => repo.name === repoName);
+    
+    // Always update the status - the animation and state tracking is handled in the context
     updateRepositoryStatus(repoName, packageType);
   };
 

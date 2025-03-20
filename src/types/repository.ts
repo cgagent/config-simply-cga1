@@ -1,4 +1,3 @@
-
 export interface Workflow {
   id: string; 
   name: string; 
@@ -20,6 +19,8 @@ export interface Repository {
   orgName?: string;
   workflows?: Workflow[];
   packageTypeStatus?: Record<string, boolean>;
+  previousPackageTypeStatus?: Record<string, boolean>;
+  showStatusTransition?: boolean;
 }
 
 export const languageColors: Record<string, string> = {

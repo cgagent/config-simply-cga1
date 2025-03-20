@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -8,6 +7,7 @@ import {
   Users,
   MessageSquare
 } from 'lucide-react';
+import { useRepositories } from '@/contexts/RepositoryContext';
 
 const navItems = [
   { name: 'Home', path: '/home', icon: <Home className="w-5 h-5" /> },
@@ -18,11 +18,17 @@ const navItems = [
 interface SideNavigationProps {
   className?: string;
   onHomeLinkClick?: () => void;
+  onNavigateFromCI?: () => void;
 }
 
-const SideNavigation: React.FC<SideNavigationProps> = ({ className, onHomeLinkClick }) => {
+const SideNavigation: React.FC<SideNavigationProps> = ({ 
+  className, 
+  onHomeLinkClick,
+  onNavigateFromCI 
+}) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { repositories, updateRepositoryStatus } = useRepositories();
   
   // CI Configuration page is part of the repositories section
   const isActive = (path: string) => {
@@ -45,6 +51,12 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ className, onHomeLinkCl
       } else {
         navigate('/home');
       }
+    } else if (path === '/repositories' && location.pathname === '/ci-configuration') {
+      // If navigating from CI configuration to repositories, trigger the callback
+      if (onNavigateFromCI) {
+        onNavigateFromCI();
+      }
+      navigate(path);
     } else {
       navigate(path);
     }

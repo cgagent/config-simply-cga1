@@ -11,7 +11,7 @@ import CIConfiguration from "./pages/CIConfiguration";
 import Users from "./pages/Users";
 import NotFound from "./pages/NotFound";
 import { useEffect, useState } from "react";
-import { RepositoryProvider } from "./contexts/RepositoryContext";
+import { RepositoryProvider, useRepositories } from "./contexts/RepositoryContext";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +20,7 @@ const MainLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
+  const { repositories, updateRepositoryStatus } = useRepositories();
 
   // Handler for resetting to home page (closing chat if active)
   const handleHomeClick = () => {
@@ -30,11 +31,20 @@ const MainLayout = () => {
     }
   };
 
+  // Handler for navigating from CI configuration to repositories
+  const handleNavigateFromCI = () => {
+    const currentRepo = repositories.find(repo => repo.name === 'infrastructure');
+    if (currentRepo) {
+      updateRepositoryStatus('infrastructure', 'npm');
+    }
+  };
+
   return (
     <div className="flex h-screen space-gradient tech-grid">
       <NavBar 
         onHomeLinkClick={handleHomeClick} 
         onExpandChange={setSidebarExpanded} 
+        onNavigateFromCI={handleNavigateFromCI}
       />
       <div 
         className={`flex-1 transition-all duration-300 overflow-auto ${
