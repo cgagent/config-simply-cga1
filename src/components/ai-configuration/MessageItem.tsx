@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Bot, User, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -38,28 +37,28 @@ export const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
     >
       <motion.div 
         className={cn(
-          "max-w-[85%] rounded-lg p-4 shadow-md border",
+          "max-w-[85%] rounded-lg p-4 shadow-md border backdrop-blur-sm",
           isBot 
-            ? "bg-card border-border/60 mr-8 rounded-tl-none" 
-            : "bg-ocean-700/95 text-white border-ocean-600 ml-8 rounded-tr-none"
+            ? "bg-blue-900/10 border-blue-800/30 mr-8 rounded-tl-none" 
+            : "bg-gradient-to-r from-blue-800 to-blue-700 text-blue-100 border-blue-600/30 ml-8 rounded-tr-none"
         )}
         whileHover={{ scale: 1.01 }}
         transition={{ duration: 0.2 }}
       >
         <div className="flex items-center mb-2">
           <div className={cn(
-            "p-1 rounded-full",
-            isBot ? "bg-muted-foreground/10" : "bg-ocean-500/80"
+            "p-1 rounded-full border",
+            isBot ? "bg-blue-800/30 border-blue-700/30" : "bg-blue-700/80 border-blue-600/30"
           )}>
             {isBot ? (
-              <Bot className="w-4 h-4 mr-1" />
+              <Bot className="w-4 h-4 mr-1 text-blue-300" />
             ) : (
-              <User className="w-4 h-4 mr-1 text-white" />
+              <User className="w-4 h-4 mr-1 text-blue-200" />
             )}
           </div>
           <span className={cn(
             "text-xs font-medium ml-2",
-            isBot ? "text-foreground" : "text-white"
+            isBot ? "text-blue-200" : "text-blue-100"
           )}>
             {isBot ? 'JFrog Assistant' : 'You'}
           </span>
@@ -67,7 +66,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
             <Button 
               variant="ghost" 
               size="sm" 
-              className="ml-auto h-8 w-8 p-0 rounded-full hover:bg-muted-foreground/10"
+              className="ml-auto h-8 w-8 p-0 rounded-full hover:bg-blue-800/20 text-blue-300"
               onClick={() => copyToClipboard(message.content)}
             >
               <Copy className="h-3.5 w-3.5" />
@@ -77,7 +76,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
         
         <div className={cn(
           "whitespace-pre-wrap",
-          !isBot && "text-white"
+          isBot ? "text-blue-100" : "text-blue-100"
         )}>
           {message.content.includes('```') ? (
             <CodeBlock 

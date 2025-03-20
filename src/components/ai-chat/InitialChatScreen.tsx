@@ -31,7 +31,7 @@ export const InitialChatScreen: React.FC<InitialChatScreenProps> = ({
       <h1 className="text-2xl font-bold text-center mb-6 text-blue-100 space-glow">
         How can I assist you today?
       </h1>
-      <div className="w-auto max-w-xl px-6">
+      <div className="w-auto px-6">
         <ChatInput 
           isProcessing={isProcessing} 
           onSendMessage={onSendMessage}

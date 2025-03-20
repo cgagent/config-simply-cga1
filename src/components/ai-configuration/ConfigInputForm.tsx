@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Textarea } from '@/components/ui/textarea';
@@ -32,7 +31,7 @@ export const ConfigInputForm: React.FC<ConfigInputFormProps> = ({
 
   return (
     <motion.div 
-      className="p-3 border-t bg-background"
+      className="p-3 border-t border-blue-800/30 bg-blue-950/20 backdrop-blur-sm"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -43,14 +42,16 @@ export const ConfigInputForm: React.FC<ConfigInputFormProps> = ({
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Type your configuration query..."
-          className="resize-none min-h-[60px] bg-gray-100 dark:bg-gray-850 transition-colors duration-200"
+          className="resize-none min-h-[60px] bg-blue-900/20 border-blue-800/30 text-blue-100 placeholder:text-blue-300/50 transition-colors duration-200"
           disabled={isProcessing}
         />
         <motion.div whileTap={{ scale: 0.95 }}>
           <Button 
             onClick={handleSend} 
             disabled={isProcessing || !message.trim()} 
-            className="h-10 w-10 rounded-full p-0 flex items-center justify-center bg-primary text-primary-foreground"
+            variant="primary"
+            size="icon"
+            className="rounded-full"
           >
             <Send className="h-4 w-4" />
           </Button>

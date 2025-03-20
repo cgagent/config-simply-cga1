@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Repository } from '@/types/repository';
-import { ChevronDown, ChevronRight, Cog } from 'lucide-react';
+import { ChevronDown, ChevronRight, Cog, PlugZap } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -133,7 +133,7 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
             size="sm"
             onClick={handleConfigure}
           >
-            <Cog className="h-4 w-4 mr-2" />
+            <PlugZap className="h-4 w-4 mr-2" />
             Set
           </Button>
         </div>

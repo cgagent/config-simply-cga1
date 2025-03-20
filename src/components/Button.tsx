@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { cn } from '@/lib/utils';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'link';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'danger';
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
   icon?: React.ReactNode;
@@ -11,14 +10,15 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', loading, icon, children, ...props }, ref) => {
-    const baseStyles = "inline-flex items-center justify-center gap-2 font-medium rounded-md transition-colors focus-visible:outline-none disabled:opacity-50 disabled:pointer-events-none";
+    const baseStyles = "inline-flex items-center justify-center gap-2 font-medium rounded-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 disabled:opacity-50 disabled:pointer-events-none";
     
     const variants = {
-      primary: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm",
-      secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-      outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-      ghost: "hover:bg-accent hover:text-accent-foreground",
-      link: "text-primary underline-offset-4 hover:underline"
+      primary: "bg-gradient-to-r from-blue-800 to-blue-600 text-white hover:from-blue-700 hover:to-blue-500 border border-blue-500/20 shadow-md hover:shadow-lg",
+      secondary: "bg-blue-900/40 text-blue-100 hover:bg-blue-800/50 border border-blue-700/30",
+      outline: "border border-blue-700/30 bg-blue-900/10 text-blue-100 hover:bg-blue-800/30 backdrop-blur-sm",
+      ghost: "text-blue-100 hover:bg-blue-900/30 hover:text-white",
+      link: "text-blue-400 hover:text-blue-300 underline-offset-4 hover:underline",
+      danger: "bg-gradient-to-r from-red-800 to-red-600 text-white hover:from-red-700 hover:to-red-500 border border-red-500/20 shadow-md hover:shadow-lg"
     };
     
     const sizes = {
