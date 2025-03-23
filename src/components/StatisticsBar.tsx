@@ -54,10 +54,6 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
 
   return (
     <div className="p-6 space-y-6">
-      <h2 className="text-2xl font-semibold mb-4 text-blue-100 space-glow">
-        Platform Insights
-      </h2>
-      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* CI Completion Card */}
         <motion.div
@@ -107,9 +103,9 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
               <PackageX className="h-5 w-5 text-red-400" />
             </div>
             <div>
-              <span className="text-xl font-semibold text-white space-glow">{blockedPackages} / 1010</span>
+              <span className="text-xl items-center font-semibold text-white space-glow">{blockedPackages}</span>
               <p className="text-xs text-blue-200/60 mt-2">
-                Packages stored and used in your organization
+                Malicious packages blocked from entering your organization in the past month
               </p>
             </div>
           </Card>
