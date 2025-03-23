@@ -103,13 +103,13 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
         >
           <Card className="space-card p-6 h-full flex flex-col justify-between backdrop-blur-sm">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-blue-100/80">Prevented Packages</h3>
+              <h3 className="text-sm font-medium text-blue-100/80">Malicious Packages</h3>
               <PackageX className="h-5 w-5 text-red-400" />
             </div>
             <div>
               <span className="text-xl font-semibold text-white space-glow">{blockedPackages} / 1010</span>
               <p className="text-xs text-blue-200/60 mt-2">
-                Packages blocked due to security vulnerabilities
+                Packages stored and used in your organization
               </p>
             </div>
           </Card>
@@ -127,7 +127,7 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
         >
           <Card className="space-card p-6 h-full flex flex-col justify-between backdrop-blur-sm">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-blue-100/80">My Packages</h3>
+              <h3 className="text-sm font-medium text-blue-100/80">Total Packages</h3>
               <Package className="h-5 w-5 text-blue-400" />
             </div>
             <div>
