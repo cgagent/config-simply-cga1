@@ -144,12 +144,7 @@ const NavBar: React.FC<NavBarProps> = ({ className, onHomeLinkClick, onExpandCha
         >
           <div className="relative">
             <BellIcon className="w-5 h-5" />
-            {hasNotifications && (
-              <span className="absolute -top-1 -right-1 flex h-2 w-2">
-                <span className=" absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-              </span>
-            )}
+           
           </div>
           {expanded && <span className="ml-3">Notifications</span>}
         </button>
