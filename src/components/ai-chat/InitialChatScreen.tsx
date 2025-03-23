@@ -22,8 +22,8 @@ export const InitialChatScreen: React.FC<InitialChatScreenProps> = ({
   return (
     <div className="flex flex-col items-center justify-center h-full pt-0">
       <div className="flex items-center justify-center mb-4">
-        <div className="relative h-20 w-20 bg-blue-900/50 rounded-full flex items-center justify-center shadow-lg border border-blue-700/30 space-glow">
-          <div className="animate-pulse">
+        <div className="relative h-20 w-20 ">
+          <div className="">
             <FlyFrogIcon />
           </div>
         </div>
