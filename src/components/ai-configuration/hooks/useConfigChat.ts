@@ -83,28 +83,8 @@ Let's select the package managers you would like to configure from the list belo
     // If this is an npm configuration request, add a "working on it" message
     if (option.id === 'npm') {
       // Add a brief delay before showing the "working on it" message
-      setTimeout(() => {
-        if (option.value.includes("Let's configure your npm")) {
-          const workingMessage: Message = {
-            id: (Date.now() + 1).toString(),
-            role: 'bot',
-            content: 'Scanning your git repository structure....'
-          };
-          setMessages(prev => [...prev, workingMessage]);
-        }
-      }, 300);
+  
 
-      setTimeout(() => {
-        setIsProcessing(true);
-        if (option.value.includes("Let's configure your npm")) {
-          const workflowMessage: Message = {
-            id: (Date.now() + 1).toString(),
-            role: 'bot',
-            content: 'Validating your workflow configuration....'
-          };
-          setMessages(prev => [...prev, workflowMessage]);
-        }
-      }, 1500);
       setIsProcessing(true);
       setTimeout(() => {
       
@@ -574,7 +554,7 @@ You can see a more detailed diff visualization in the CI Configuration section.`
         } else {
           response = `I understand you're asking about "${messageContent}". To configure JFrog with your CI workflow, I need to know which CI server you're using and which package managers your project uses. Could you provide more details?`;
           newOptions = [
-            { id: 'npm', label: 'GitHub Actions', value: "Great! Let's configure your npm package manager" },
+            { id: 'npm', label: 'GitHub Actions', value: "Great! Let's configure your npm package manager while scanning your Git repository structure and validating your workflow configuration" },
             { id: 'docker', label: 'Docker', value: 'I use Docker' },
             { id: 'maven', label: 'Jenkins', value: 'I use Jenkins with Maven' }
           ];

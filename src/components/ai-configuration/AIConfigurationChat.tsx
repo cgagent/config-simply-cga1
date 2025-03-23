@@ -27,7 +27,7 @@ const AIConfigurationChat: React.FC<AIConfigurationChatProps> = ({
   } = useConfigChat(repositoryName, (path) => navigate(path), onMergeSuccess);
 
   return (
-    <div className="flex flex-col h-[600px] border border-blue-800/30 rounded-lg overflow-hidden shadow-lg space-card">
+    <div className="flex flex-col flex-1 border border-blue-800/30 rounded-lg overflow-hidden shadow-lg space-card">
       <div className="bg-gradient-to-r from-blue-900 to-blue-800 p-3 border-b border-blue-700/30">
         <h3 className="text-blue-100 font-medium flex items-center space-glow">
           <div className="w-8 h-8 mr-2 flex items-center justify-center bg-blue-800/30 rounded-full backdrop-blur-sm border border-blue-600/20 shadow-inner">
