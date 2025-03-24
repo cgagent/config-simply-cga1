@@ -66,7 +66,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           </div>
           
           <div className="prose prose-sm max-w-none dark:prose-invert prose-pre:bg-blue-900/30 prose-pre:text-blue-100 prose-code:text-blue-300">
-            <ReactMarkdown>
+            <ReactMarkdown className="whitespace-pre-wrap">
               {message.content}
             </ReactMarkdown>
           </div>
@@ -74,4 +74,9 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
       </motion.div>
     </motion.div>
   );
+  
+  // The issue might be with how ReactMarkdown is handling whitespace
+  // Try preserving whitespace by adding a className with white-space: pre-wrap
+  // or by using the rehypeRaw plugin if needed
+  // Another approach is to check if the message content is being trimmed before it reaches this component
 };

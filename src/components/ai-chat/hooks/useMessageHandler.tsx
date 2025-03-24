@@ -60,6 +60,7 @@ export const useMessageHandler = () => {
       setTimeout(() => {
         try {
           const aiResponse = specialQueryResult.getResponse();
+          console.log("AI response:", aiResponse);
           addBotMessage(aiResponse);
         } catch (error) {
           console.error("Error generating AI response:", error);
