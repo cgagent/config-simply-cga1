@@ -42,7 +42,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
             ? "bg-blue-900/10 border-blue-800/30 mr-8 rounded-tl-none" 
             : "bg-gradient-to-r from-blue-800 to-blue-700 text-blue-100 border-blue-600/30 ml-8 rounded-tr-none"
         )}
-        whileHover={{ scale: 1.01 }}
+     
         transition={{ duration: 0.2 }}
       >
         <div className="flex items-center mb-2">
