@@ -122,6 +122,7 @@ export const RepositoryProvider: React.FC<RepositoryProviderProps> = ({ children
             packageTypes: updatedPackageTypes,
             packageTypeStatus: updatedPackageTypeStatus,
             previousPackageTypeStatus: previousPackageTypeStatus,
+            lastUpdated: 'Today',
             showStatusTransition: true,
             // Add a workflow if there isn't one
             workflows: repo.workflows && repo.workflows.length > 0 ? repo.workflows : [
