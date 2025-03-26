@@ -56,7 +56,7 @@ bad-actor-addon: Had a payload to exfiltrate private data.`;
 • **Latest version published:** 1.8.3
 • **Downloaded by:** yahavi@acme.com
 • **Affected git repositories:** ACME/frontend-app (branch: main), ACME/backend-api (branch: main)
-• **Vulnerabilities:** Your org version 1.5.1 has known vulnerabilities: CVE-2024-39338
+• **Vulnerabilities:** axios version 1.5.1 has known vulnerabilities: CVE-2024-39338
 • **Vulnerability description:** axios 1.5.1 allows SSRF via unexpected behavior where requests for path relative URLs get processed as protocol relative URLs
 • **Severity:** High
     `;
