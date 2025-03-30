@@ -1,10 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
+import { Toggle } from '@/components/ui/toggle';
 import FullSnippetView from './FullSnippetView';
 import { 
   generateJFrogSetupSnippet,
@@ -78,28 +78,15 @@ const CISnippetDisplay: React.FC<CISnippetDisplayProps> = ({
         Here's the code snippet you need to add to your CI configuration.
       </p>
       
-      <div className="flex items-center justify-between border-b border-gray-200 pb-2 mb-3">
-        <div className="text-xs font-medium text-gray-800">
-          Choose your view:
-        </div>
-        <div className="flex space-x-2">
-          <Button
-            variant={viewMode === 'snippet' ? 'default' : 'outline'}
-            size="sm"
-            className="text-xs h-8 px-3"
-            onClick={() => setViewMode('snippet')}
-          >
-            Basic Snippet
-          </Button>
-          <Button
-            variant={viewMode === 'full' ? 'default' : 'outline'}
-            size="sm"
-            className="text-xs h-8 px-3"
-            onClick={() => setViewMode('full')}
-          >
-            Full Workflow
-          </Button>
-        </div>
+      <div className="border-b border-gray-200 pb-2 mb-3">
+        <Toggle
+          variant="outline"
+          className="text-xs h-8 px-3 data-[state=on]:bg-blue-600 data-[state=on]:text-white"
+          pressed={viewMode === 'full'}
+          onPressedChange={(pressed) => setViewMode(pressed ? 'full' : 'snippet')}
+        >
+          {viewMode === 'snippet' ? 'Show Full Workflow' : 'Show Basic Snippet'}
+        </Toggle>
       </div>
       
       {isUpdating ? (
