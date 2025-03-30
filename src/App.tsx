@@ -10,6 +10,7 @@ import AccountSetup from "./pages/AccountSetup";
 import Home from "./pages/Home";
 import Repositories from "./pages/Repositories";
 import CIConfiguration from "./pages/CIConfiguration";
+import SetMyCI from "./pages/SetMyCI";
 import Users from "./pages/Users";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
@@ -88,6 +89,7 @@ const App = () => {
                 <Route path="/home" element={<Home />} />
                 <Route path="/repositories" element={<Repositories />} />
                 <Route path="/ci-configuration" element={<CIConfiguration />} />
+                <Route path="/set-my-ci" element={<SetMyCI />} />
                 <Route path="/users" element={<Users />} />
                 <Route path="/profile" element={<Profile />} />
               </Route>
