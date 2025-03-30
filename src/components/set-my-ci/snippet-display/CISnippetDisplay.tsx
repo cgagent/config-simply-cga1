@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
 import FullSnippetView from './FullSnippetView';
 import { 
   generateJFrogSetupSnippet,
@@ -24,7 +24,7 @@ const CISnippetDisplay: React.FC<CISnippetDisplayProps> = ({
   selectedCI,
   selectedPackages
 }) => {
-  const [showFullWorkflow, setShowFullWorkflow] = useState(false);
+  const [viewMode, setViewMode] = useState<'snippet' | 'full'>('snippet');
   const [snippets, setSnippets] = useState({
     basic: '',
     full: ''
@@ -78,16 +78,27 @@ const CISnippetDisplay: React.FC<CISnippetDisplayProps> = ({
         Here's the code snippet you need to add to your CI configuration.
       </p>
       
-      <div className="flex items-center justify-end mb-2">
-        <div className="flex items-center space-x-2">
-          <Switch 
-            id="full-workflow"
-            checked={showFullWorkflow}
-            onCheckedChange={setShowFullWorkflow}
-          />
-          <Label htmlFor="full-workflow" className="text-xs font-medium text-gray-800">
-            Show full workflow
-          </Label>
+      <div className="flex items-center justify-between border-b border-gray-200 pb-2 mb-3">
+        <div className="text-xs font-medium text-gray-800">
+          Choose your view:
+        </div>
+        <div className="flex space-x-2">
+          <Button
+            variant={viewMode === 'snippet' ? 'default' : 'outline'}
+            size="sm"
+            className="text-xs h-8 px-3"
+            onClick={() => setViewMode('snippet')}
+          >
+            Basic Snippet
+          </Button>
+          <Button
+            variant={viewMode === 'full' ? 'default' : 'outline'}
+            size="sm"
+            className="text-xs h-8 px-3"
+            onClick={() => setViewMode('full')}
+          >
+            Full Workflow
+          </Button>
         </div>
       </div>
       
@@ -96,7 +107,7 @@ const CISnippetDisplay: React.FC<CISnippetDisplayProps> = ({
           <Skeleton className="h-6 w-full" />
           <Skeleton className="h-40 w-full" />
         </div>
-      ) : showFullWorkflow ? (
+      ) : viewMode === 'full' ? (
         <FullSnippetView 
           snippet={snippets.full} 
           onCopy={copyToClipboard} 
