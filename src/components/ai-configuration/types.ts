@@ -1,8 +1,7 @@
-
 export interface Message {
   id: string;
   role: 'user' | 'bot';
-  content: string;
+  content: React.ReactNode;
 }
 
 export interface ChatOption {
