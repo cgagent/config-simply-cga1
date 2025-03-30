@@ -53,7 +53,7 @@ const UserTable: React.FC<UserTableProps> = ({
           {users.map((user) => (
             <TableRow 
               key={user.id} 
-              className={`border-border hover:bg-muted/30 group ${user.status === 'pending' ? 'bg-blue-950/10' : ''}`}
+              className={`border-border hover:bg-muted/30 group ${user.status === 'pending' ? 'bg-blue-950/20 opacity-75' : ''}`}
             >
               <TableCell className="font-medium text-foreground">
                 <div className="flex items-center gap-3">
@@ -82,7 +82,7 @@ const UserTable: React.FC<UserTableProps> = ({
                   )}
                   <span>
                     {user.status === 'pending' ? 
-                      'Pending User' : 
+                      '' : 
                       `${user.firstName} ${user.lastName}`
                     }
                   </span>
