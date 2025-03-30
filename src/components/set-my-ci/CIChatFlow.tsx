@@ -85,7 +85,7 @@ export const CIChatFlow: React.FC<CIChatFlowProps> = ({
         { 
           id: 'continue-to-implementation',
           label: 'Continue to Implementation', 
-          value: 'I'm ready to continue to the implementation guide'
+          value: 'I\'m ready to continue to the implementation guide'
         }
       ]);
     }
@@ -95,7 +95,7 @@ export const CIChatFlow: React.FC<CIChatFlowProps> = ({
         { 
           id: 'finish',
           label: 'Finish', 
-          value: 'I've implemented the changes and I'm done with the setup'
+          value: 'I\'ve implemented the changes and I\'m done with the setup'
         },
         { 
           id: 'back-to-snippets',
@@ -168,7 +168,7 @@ export const CIChatFlow: React.FC<CIChatFlowProps> = ({
         { 
           id: 'continue',
           label: 'Continue', 
-          value: 'I'm done selecting package managers, show me the configuration'
+          value: 'I\'m done selecting package managers, show me the configuration'
         }
       ]);
     }
