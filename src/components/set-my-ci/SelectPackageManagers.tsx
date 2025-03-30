@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Package, Check } from 'lucide-react';
+import { Package, Check, Docker, FileCode, Github } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 interface SelectPackageManagersProps {
@@ -10,6 +10,20 @@ interface SelectPackageManagersProps {
   onPreviousStep: () => void;
   canProceed: boolean;
 }
+
+// Helper function to get the appropriate icon for each package type
+const getPackageIcon = (type: string) => {
+  switch (type) {
+    case 'docker':
+      return <Docker className="h-5 w-5 mr-2 text-blue-300" />;
+    case 'npm':
+      return <FileCode className="h-5 w-5 mr-2 text-blue-300" />;
+    case 'github':
+      return <Github className="h-5 w-5 mr-2 text-blue-300" />;
+    default:
+      return <Package className="h-5 w-5 mr-2 text-blue-300" />;
+  }
+};
 
 const packageManagers = [
   { id: 'docker', name: 'Docker' },
@@ -25,9 +39,9 @@ const SelectPackageManagers: React.FC<SelectPackageManagersProps> = ({
   onTogglePackage
 }) => {
   return (
-    <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-      <h2 className="text-xl font-bold mb-2 text-gray-900">Step 2: Select Package Managers</h2>
-      <p className="text-gray-700 text-sm mb-3">
+    <div className="bg-blue-900/5 p-4 rounded-lg border border-blue-700/20 shadow-sm">
+      <h2 className="text-xl font-bold mb-2 text-blue-100">Step 2: Select Package Managers</h2>
+      <p className="text-blue-200 text-sm mb-3">
         Choose the package managers used in your project.
       </p>
       
@@ -35,31 +49,31 @@ const SelectPackageManagers: React.FC<SelectPackageManagersProps> = ({
         {packageManagers.map((pkg) => (
           <div 
             key={pkg.id}
-            className={`flex items-center border rounded-md p-2 cursor-pointer hover:bg-gray-50 transition-colors ${
+            className={`flex items-center border rounded-md p-2 cursor-pointer hover:bg-blue-900/20 transition-colors ${
               selectedPackages.includes(pkg.id) 
-                ? 'border-gray-600 bg-gray-100 ring-1 ring-gray-400/30 shadow-sm' 
-                : 'border-gray-300'
+                ? 'border-blue-600 bg-blue-900/30 ring-1 ring-blue-600/30 shadow-sm' 
+                : 'border-blue-800/30'
             }`}
             onClick={() => onTogglePackage(pkg.id)}
           >
-            <Package className="h-5 w-5 mr-2 text-gray-700" />
-            <span className="font-medium text-sm text-gray-800">{pkg.name}</span>
+            {getPackageIcon(pkg.id)}
+            <span className="font-medium text-sm text-blue-100">{pkg.name}</span>
             {selectedPackages.includes(pkg.id) && (
-              <Check className="h-4 w-4 ml-auto text-gray-700" />
+              <Check className="h-4 w-4 ml-auto text-blue-300" />
             )}
           </div>
         ))}
       </div>
       
       {selectedPackages.length > 0 && (
-        <div className="p-2 bg-gray-50 rounded-md border border-gray-300 mb-3">
-          <h3 className="text-sm font-medium mb-1 text-gray-800">Selected:</h3>
+        <div className="p-2 bg-blue-900/20 rounded-md border border-blue-800/30 mb-3">
+          <h3 className="text-sm font-medium mb-1 text-blue-100">Selected:</h3>
           <div className="flex flex-wrap gap-1">
             {selectedPackages.map((pkg) => {
               const manager = packageManagers.find(p => p.id === pkg);
               return (
-                <Badge key={pkg} variant="secondary" className="flex items-center gap-1 py-0.5 px-2 bg-gray-200 text-gray-800 border border-gray-400 text-xs">
-                  <Package className="h-3 w-3" />
+                <Badge key={pkg} variant="secondary" className="flex items-center gap-1 py-0.5 px-2 bg-blue-800/50 text-blue-100 border border-blue-700/50 text-xs">
+                  {getPackageIcon(pkg)}
                   {manager?.name || pkg}
                   <button 
                     className="ml-1 hover:text-destructive text-sm font-medium"
