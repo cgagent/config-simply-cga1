@@ -7,4 +7,5 @@ export interface User {
   role: 'Admin' | 'Developer';
   lastLoginDate: string;
   developerApp: boolean;
+  status?: 'active' | 'pending';
 }

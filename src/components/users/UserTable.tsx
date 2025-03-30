@@ -8,12 +8,18 @@ import {
   TableRow, 
   TableCell 
 } from '@/components/ui/table';
-import { Calendar, Mail } from 'lucide-react';
+import { Calendar, Mail, AlertCircle } from 'lucide-react';
 import { User } from '@/types/user';
 import UserRoleCell from './UserRoleCell';
 import UserDeveloperAppCell from './UserDeveloperAppCell';
 import UserActionsCell from './UserActionsCell';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { 
+  Tooltip, 
+  TooltipContent, 
+  TooltipTrigger 
+} from '@/components/ui/tooltip';
+import { Badge } from '@/components/ui/badge';
 
 interface UserTableProps {
   users: User[];
@@ -45,19 +51,41 @@ const UserTable: React.FC<UserTableProps> = ({
         </TableHeader>
         <TableBody>
           {users.map((user) => (
-            <TableRow key={user.id} className="border-border hover:bg-muted/30 group">
+            <TableRow 
+              key={user.id} 
+              className={`border-border hover:bg-muted/30 group ${user.status === 'pending' ? 'bg-blue-950/10' : ''}`}
+            >
               <TableCell className="font-medium text-foreground">
                 <div className="flex items-center gap-3">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage 
-                      src={`https://i.pravatar.cc/150?u=${user.email}`} 
-                      alt={`${user.firstName} ${user.lastName}`} 
-                    />
-                    <AvatarFallback>
-                      {user.firstName[0]}{user.lastName[0]}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span>{user.firstName} {user.lastName}</span>
+                  {user.status === 'pending' ? (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="flex items-center">
+                          <AlertCircle className="h-8 w-8 text-blue-400" />
+                          <Badge className="ml-2 bg-blue-500/80" variant="secondary">Pending</Badge>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="text-xs">User hasn't completed registration</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  ) : (
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage 
+                        src={`https://i.pravatar.cc/150?u=${user.email}`} 
+                        alt={`${user.firstName} ${user.lastName}`} 
+                      />
+                      <AvatarFallback>
+                        {user.firstName?.[0] || ''}{user.lastName?.[0] || ''}
+                      </AvatarFallback>
+                    </Avatar>
+                  )}
+                  <span>
+                    {user.status === 'pending' ? 
+                      'Pending User' : 
+                      `${user.firstName} ${user.lastName}`
+                    }
+                  </span>
                 </div>
               </TableCell>
               <TableCell className="flex items-center gap-2 text-muted-foreground">
@@ -69,10 +97,17 @@ const UserTable: React.FC<UserTableProps> = ({
               </TableCell>
               <TableCell className="flex items-center gap-2 text-muted-foreground">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
-                {formatDate(user.lastLoginDate)}
+                {user.status === 'pending' ? 
+                  'Not logged in yet' : 
+                  formatDate(user.lastLoginDate)
+                }
               </TableCell>
               <TableCell>
-                <UserDeveloperAppCell developerApp={user.developerApp} />
+                {user.status === 'pending' ? (
+                  <span className="text-muted-foreground text-sm italic">N/A</span>
+                ) : (
+                  <UserDeveloperAppCell developerApp={user.developerApp} />
+                )}
               </TableCell>
               <TableCell>
                 <UserActionsCell user={user} onDeleteClick={onDeleteClick} />

@@ -18,7 +18,8 @@ const UsersPage: React.FC = () => {
       email: 'john.doe@example.com',
       role: 'Admin',
       lastLoginDate: '2023-10-15T14:30:00Z',
-      developerApp: true
+      developerApp: true,
+      status: 'active'
     },
     {
       id: '2',
@@ -27,7 +28,8 @@ const UsersPage: React.FC = () => {
       email: 'jane.smith@example.com',
       role: 'Developer',
       lastLoginDate: '2023-10-14T09:15:00Z',
-      developerApp: false
+      developerApp: false,
+      status: 'active'
     },
     {
       id: '3',
@@ -36,7 +38,18 @@ const UsersPage: React.FC = () => {
       email: 'mike.johnson@example.com',
       role: 'Developer',
       lastLoginDate: '2023-10-13T16:45:00Z',
-      developerApp: true
+      developerApp: true,
+      status: 'active'
+    },
+    {
+      id: '4',
+      firstName: '',
+      lastName: '',
+      email: 'pending.user@example.com',
+      role: 'Developer',
+      lastLoginDate: '2023-10-13T16:45:00Z',
+      developerApp: false,
+      status: 'pending'
     }
   ]);
 
@@ -60,19 +73,22 @@ const UsersPage: React.FC = () => {
       setUsers(users.map(user => user.id === userData.id ? userData : user));
       toast({
         title: "User updated",
-        description: `${userData.firstName} ${userData.lastName}'s information has been updated.`
+        description: userData.status === 'pending' 
+          ? `Pending user (${userData.email}) has been updated.`
+          : `${userData.firstName} ${userData.lastName}'s information has been updated.`
       });
     } else {
       const newUser = {
         ...userData,
         id: String(Date.now()),
         lastLoginDate: new Date().toISOString(),
-        developerApp: false
+        developerApp: false,
+        status: 'pending'
       };
       setUsers([...users, newUser]);
       toast({
-        title: "User added",
-        description: `${newUser.firstName} ${newUser.lastName} has been added to the team.`
+        title: "User invited",
+        description: `An invitation has been sent to ${newUser.email}.`
       });
     }
     setIsFormOpen(false);
@@ -90,7 +106,9 @@ const UsersPage: React.FC = () => {
     if (user) {
       toast({
         title: "Role updated",
-        description: `${user.firstName} ${user.lastName}'s role has been updated to ${newRole}.`
+        description: user.status === 'pending'
+          ? `Pending user (${user.email})'s role has been updated to ${newRole}.`
+          : `${user.firstName} ${user.lastName}'s role has been updated to ${newRole}.`
       });
     }
   };
@@ -116,7 +134,9 @@ const UsersPage: React.FC = () => {
       setUsers(users.filter(user => user.id !== userToDelete.id));
       toast({
         title: "User deleted",
-        description: `${userToDelete.firstName} ${userToDelete.lastName} has been removed from JFrog.`,
+        description: userToDelete.status === 'pending'
+          ? `Pending user (${userToDelete.email}) has been removed.`
+          : `${userToDelete.firstName} ${userToDelete.lastName} has been removed from JFrog.`,
         variant: "destructive"
       });
       setDeleteDialogOpen(false);
@@ -131,7 +151,7 @@ const UsersPage: React.FC = () => {
           <h1 className="text-3xl font-bold text-foreground">User Management</h1>
           <Button onClick={handleAddUser} className="gap-2">
             <UserPlus className="h-4 w-4" />
-            Add User
+            Invite User
           </Button>
         </div>
         

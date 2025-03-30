@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -30,7 +29,16 @@ import {
 } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
-const formSchema = z.object({
+const pendingUserSchema = z.object({
+  id: z.string().optional(),
+  email: z.string().email({ message: "Please enter a valid email address." }),
+  role: z.enum(['Admin', 'Developer'], {
+    required_error: "Please select a role.",
+  }),
+  status: z.literal('pending').default('pending'),
+});
+
+const activeUserSchema = z.object({
   id: z.string().optional(),
   firstName: z.string().min(2, { message: "First name must be at least 2 characters." }),
   lastName: z.string().min(2, { message: "Last name must be at least 2 characters." }),
@@ -40,6 +48,7 @@ const formSchema = z.object({
   }),
   lastLoginDate: z.string().optional(),
   developerApp: z.boolean().default(false),
+  status: z.literal('active').default('active'),
 });
 
 interface UserFormProps {
@@ -50,29 +59,45 @@ interface UserFormProps {
 }
 
 const UserForm: React.FC<UserFormProps> = ({ user, isOpen, onClose, onSubmit }) => {
+  const isActiveUser = user && (user.status === 'active' || (user.firstName && user.lastName));
+  const formSchema = isActiveUser ? activeUserSchema : pendingUserSchema;
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: user ? {
-      ...user
+      ...user,
+      status: user.status || 'active'
     } : {
-      firstName: '',
-      lastName: '',
       email: '',
       role: 'Developer',
-      developerApp: false,
+      status: 'pending',
     },
   });
 
-  const handleSubmit = (values: z.infer<typeof formSchema>) => {
-    onSubmit({
-      id: values.id || String(Date.now()),
-      firstName: values.firstName,
-      lastName: values.lastName,
-      email: values.email,
-      role: values.role,
-      lastLoginDate: values.lastLoginDate || new Date().toISOString(),
-      developerApp: values.developerApp,
-    });
+  const handleSubmit = (values: any) => {
+    if (isActiveUser) {
+      onSubmit({
+        id: values.id || String(Date.now()),
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email,
+        role: values.role,
+        lastLoginDate: values.lastLoginDate || new Date().toISOString(),
+        developerApp: values.developerApp,
+        status: 'active',
+      });
+    } else {
+      onSubmit({
+        id: values.id || String(Date.now()),
+        firstName: '',
+        lastName: '',
+        email: values.email,
+        role: values.role,
+        lastLoginDate: new Date().toISOString(),
+        developerApp: false,
+        status: 'pending',
+      });
+    }
   };
 
   return (
@@ -80,41 +105,43 @@ const UserForm: React.FC<UserFormProps> = ({ user, isOpen, onClose, onSubmit }) 
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>
-            {user ? `Edit ${user.firstName} ${user.lastName}` : 'Add New User'}
+            {isActiveUser ? `Edit ${user?.firstName} ${user?.lastName}` : 'Invite New User'}
           </DialogTitle>
         </DialogHeader>
         
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 py-4">
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="firstName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>First Name</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="lastName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Last Name</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            {isActiveUser && (
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>First Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
             
             <FormField
               control={form.control}
@@ -155,8 +182,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, isOpen, onClose, onSubmit }) 
               )}
             />
             
-            {/* Only show Developer App status when editing an existing user */}
-            {user && (
+            {isActiveUser && (
               <FormField
                 control={form.control}
                 name="developerApp"
@@ -190,7 +216,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, isOpen, onClose, onSubmit }) 
                 Cancel
               </Button>
               <Button type="submit">
-                {user ? 'Update User' : 'Add User'}
+                {isActiveUser ? 'Update User' : 'Invite User'}
               </Button>
             </DialogFooter>
           </form>
