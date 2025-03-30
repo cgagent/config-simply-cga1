@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Package, Check, Docker, FileCode, Github } from 'lucide-react';
+import { Package, Check, FileCode, Github, Database, Code2, Boxes } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 interface SelectPackageManagersProps {
@@ -15,11 +15,19 @@ interface SelectPackageManagersProps {
 const getPackageIcon = (type: string) => {
   switch (type) {
     case 'docker':
-      return <Docker className="h-5 w-5 mr-2 text-blue-300" />;
+      return <Boxes className="h-5 w-5 mr-2 text-blue-300" />;
     case 'npm':
       return <FileCode className="h-5 w-5 mr-2 text-blue-300" />;
     case 'github':
       return <Github className="h-5 w-5 mr-2 text-blue-300" />;
+    case 'nuget':
+      return <Code2 className="h-5 w-5 mr-2 text-blue-300" />;
+    case 'python':
+      return <Code2 className="h-5 w-5 mr-2 text-blue-300" />;
+    case 'maven':
+      return <Database className="h-5 w-5 mr-2 text-blue-300" />;
+    case 'go':
+      return <Code2 className="h-5 w-5 mr-2 text-blue-300" />;
     default:
       return <Package className="h-5 w-5 mr-2 text-blue-300" />;
   }
