@@ -1,4 +1,3 @@
-
 import { CISelection, ChatStepOption } from './types';
 import { 
   generateJFrogSetupSnippet, 

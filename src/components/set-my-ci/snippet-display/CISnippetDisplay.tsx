@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -33,13 +32,10 @@ const CISnippetDisplay: React.FC<CISnippetDisplayProps> = ({
   const [isUpdating, setIsUpdating] = useState(true); // Set to true initially
   const { toast } = useToast();
   
-  // Update snippets whenever selectedPackages changes
   useEffect(() => {
     setIsUpdating(true);
     
-    // Small timeout to show the loading state
     const timer = setTimeout(() => {
-      // Combine the setup and package specific into one basic snippet
       const setupSnippet = generateJFrogSetupSnippet(selectedCI);
       const packageSnippet = generatePackageSpecificSnippets(selectedPackages);
       
@@ -55,7 +51,6 @@ const CISnippetDisplay: React.FC<CISnippetDisplayProps> = ({
     return () => clearTimeout(timer);
   }, [selectedCI, selectedPackages]);
 
-  // Copy to clipboard
   const copyToClipboard = (text: string, message: string) => {
     navigator.clipboard.writeText(text).then(() => {
       toast({
