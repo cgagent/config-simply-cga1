@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   Table, 
@@ -171,12 +172,12 @@ const UsersPage: React.FC = () => {
                 <TableHead className="text-foreground font-semibold">Role</TableHead>
                 <TableHead className="text-foreground font-semibold">Last Login</TableHead>
                 <TableHead className="text-foreground font-semibold">Developer App</TableHead>
-                <TableHead className="text-foreground font-semibold w-20">Actions</TableHead>
+                <TableHead className="text-foreground font-semibold w-20"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {users.map((user) => (
-                <TableRow key={user.id} className="border-border hover:bg-muted/30">
+                <TableRow key={user.id} className="border-border hover:bg-muted/30 group">
                   <TableCell className="font-medium text-foreground">
                     {user.firstName} {user.lastName}
                   </TableCell>
@@ -254,7 +255,7 @@ const UsersPage: React.FC = () => {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="flex justify-center">
+                    <div className="flex justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button 
