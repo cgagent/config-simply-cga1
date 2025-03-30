@@ -51,8 +51,6 @@ const UserForm: React.FC<UserFormProps> = ({ user, isOpen, onClose, onSubmit }) 
     },
   });
 
-  const form = isActiveUser ? activeUserForm : pendingUserForm;
-
   const handleSubmit = (values: ActiveUserFormValues | PendingUserFormValues) => {
     if (isActiveUser) {
       const activeValues = values as ActiveUserFormValues;
@@ -90,21 +88,38 @@ const UserForm: React.FC<UserFormProps> = ({ user, isOpen, onClose, onSubmit }) 
           </DialogTitle>
         </DialogHeader>
         
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 py-4">
-            {isActiveUser && <ActiveUserFormFields form={activeUserForm} />}
-            <CommonUserFormFields form={form} />
-            
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button type="submit">
-                {isActiveUser ? 'Update User' : 'Invite User'}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+        {isActiveUser ? (
+          <Form {...activeUserForm}>
+            <form onSubmit={activeUserForm.handleSubmit(handleSubmit)} className="space-y-4 py-4">
+              <ActiveUserFormFields form={activeUserForm} />
+              <CommonUserFormFields form={activeUserForm} />
+              
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={onClose}>
+                  Cancel
+                </Button>
+                <Button type="submit">
+                  Update User
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        ) : (
+          <Form {...pendingUserForm}>
+            <form onSubmit={pendingUserForm.handleSubmit(handleSubmit)} className="space-y-4 py-4">
+              <CommonUserFormFields form={pendingUserForm} />
+              
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={onClose}>
+                  Cancel
+                </Button>
+                <Button type="submit">
+                  Invite User
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        )}
       </DialogContent>
     </Dialog>
   );
