@@ -31,21 +31,21 @@ const SelectPackageManagers: React.FC<SelectPackageManagersProps> = ({
         Choose the package managers used in your project. You can select multiple options.
       </p>
       
-      <div className="space-y-3 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
         {packageManagers.map((pkg) => (
           <div 
             key={pkg.id}
-            className={`flex items-center border rounded-lg p-4 cursor-pointer hover:bg-muted transition-colors ${
+            className={`flex items-center border rounded-lg p-4 cursor-pointer hover:bg-blue-50 transition-colors ${
               selectedPackages.includes(pkg.id) 
-                ? 'border-primary ring-2 ring-primary/20 bg-primary/5' 
+                ? 'border-primary ring-2 ring-primary/20 bg-blue-100 shadow-md' 
                 : 'border-border'
             }`}
             onClick={() => onTogglePackage(pkg.id)}
           >
-            <Package className="h-5 w-5 mr-3" />
-            <span className="font-medium">{pkg.name}</span>
+            <Package className="h-6 w-6 mr-3 text-blue-600" />
+            <span className="font-medium text-blue-800">{pkg.name}</span>
             {selectedPackages.includes(pkg.id) && (
-              <Check className="h-4 w-4 ml-auto text-primary" />
+              <Check className="h-5 w-5 ml-auto text-blue-600" />
             )}
           </div>
         ))}
@@ -53,12 +53,12 @@ const SelectPackageManagers: React.FC<SelectPackageManagersProps> = ({
       
       {selectedPackages.length > 0 && (
         <div className="mb-6">
-          <h3 className="text-sm font-medium mb-2">Selected Package Managers:</h3>
+          <h3 className="text-sm font-medium mb-2 text-blue-800">Selected Package Managers:</h3>
           <div className="flex flex-wrap gap-2">
             {selectedPackages.map((pkg) => {
               const manager = packageManagers.find(p => p.id === pkg);
               return (
-                <Badge key={pkg} variant="secondary" className="flex items-center gap-1">
+                <Badge key={pkg} variant="secondary" className="flex items-center gap-1 bg-blue-100 text-blue-800 border border-blue-300">
                   <Package className="h-3 w-3" />
                   {manager?.name || pkg}
                   <button 
