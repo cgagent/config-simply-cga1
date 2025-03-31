@@ -1,5 +1,5 @@
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useMessageManagement } from './useMessageManagement';
 import { usePackageSelection } from './usePackageSelection';
 import { useCISelection } from './useCISelection';
@@ -34,12 +34,14 @@ export const useCISetupChat = () => {
   } = usePackageSelection(messages, isProcessing);
 
   const {
-    showCodeSnippets,
-    setShowCodeSnippets,
     copyToClipboard,
     generateSnippet,
     generateFullWorkflow,
-  } = useCodeSnippets(selectedCI);
+    sendSnippetAsMessage
+  } = useCodeSnippets(selectedCI, setMessages, setIsProcessing);
+
+  // Flag to show snippet type selection
+  const [showSnippetTypeSelection, setShowSnippetTypeSelection] = useState(false);
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -93,11 +95,11 @@ export const useCISetupChat = () => {
         const botMessage: Message = {
           id: (Date.now() + 1).toString(),
           role: 'bot',
-          content: `Great! I'll help you configure JFrog with ${selectedPackages.join(', ')}. Here are the code snippets you need to add to your CI workflow:`
+          content: `Great! I'll help you configure JFrog with ${selectedPackages.join(', ')}. Would you like to see a basic setup snippet or a full CI workflow?`
         };
         
         setMessages(prev => [...prev, botMessage]);
-        setShowCodeSnippets(true);
+        setShowSnippetTypeSelection(true);
       } catch (error) {
         console.error("Error generating response:", error);
       } finally {
@@ -106,9 +108,21 @@ export const useCISetupChat = () => {
     }, 1500);
   };
 
-  // Adapt function signatures to match the original hook
-  const adaptedGenerateSnippet = () => generateSnippet(selectedPackages);
-  const adaptedGenerateFullWorkflow = () => generateFullWorkflow(selectedPackages);
+  // Handle snippet type selection
+  const handleSnippetTypeSelection = (type: 'snippet' | 'full') => {
+    // Add user selection as a message
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: type === 'snippet' ? 'Show me the basic setup snippet' : 'Show me the full workflow'
+    };
+    
+    setMessages(prev => [...prev, userMessage]);
+    setShowSnippetTypeSelection(false);
+    
+    // Send the appropriate snippet as a message
+    sendSnippetAsMessage(selectedPackages, type);
+  };
 
   return {
     messages,
@@ -117,15 +131,14 @@ export const useCISetupChat = () => {
     setInputValue,
     selectedPackages,
     showPackageOptions,
-    showCodeSnippets,
+    showSnippetTypeSelection,
     selectedCI,
     messagesEndRef,
     handleCIOption: handleCIOptionWithMessages,
     handlePackageSelection,
     handleContinueWithPackages: handleContinueWithPackagesAndMessages,
+    handleSnippetTypeSelection,
     copyToClipboard,
-    generateSnippet: adaptedGenerateSnippet,
-    generateFullWorkflow: adaptedGenerateFullWorkflow,
     handleSendMessage,
     shouldShowCIOptions
   };
