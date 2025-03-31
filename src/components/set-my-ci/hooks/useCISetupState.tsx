@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 export type CIType = 'github' | 'other' | null;
 
@@ -19,14 +19,14 @@ export function useCISetupState({
   const [currentStep, setCurrentStep] = useState(initialStep);
 
   // Function to handle CI selection
-  const handleCISelection = (ciType: string) => {
+  const handleCISelection = useCallback((ciType: string) => {
     setSelectedCI(ciType as CIType);
     setCurrentStep(2);
-  };
+  }, []);
 
   // Function to handle package manager selection
-  const handlePackageSelection = (packageType: string) => {
-    console.log('Package selection toggled:', packageType);
+  const handlePackageSelection = useCallback((packageType: string) => {
+    console.log('Package selection toggled in hook:', packageType);
     setSelectedPackages(prevSelected => {
       if (prevSelected.includes(packageType)) {
         // Remove if already selected
@@ -36,30 +36,30 @@ export function useCISetupState({
         return [...prevSelected, packageType];
       }
     });
-  };
+  }, []);
 
   // Function to continue to step 3
-  const handleContinueToStep3 = () => {
+  const handleContinueToStep3 = useCallback(() => {
     setCurrentStep(3);
-  };
+  }, []);
 
   // Function to continue to step 4 (completion)
-  const handleContinueToStep4 = () => {
+  const handleContinueToStep4 = useCallback(() => {
     setCurrentStep(4);
-  };
+  }, []);
 
   // Add a function to go to previous step
-  const handlePreviousStep = () => {
+  const handlePreviousStep = useCallback(() => {
     setCurrentStep(prev => Math.max(1, prev - 1));
-  };
+  }, []);
 
   // Format selected packages as text
-  const getSelectedPackagesText = () => {
+  const getSelectedPackagesText = useCallback(() => {
     return selectedPackages.join(', ');
-  };
+  }, [selectedPackages]);
 
   // Check if we can proceed to next step
-  const canProceedToNextStep = (step: number) => {
+  const canProceedToNextStep = useCallback((step: number) => {
     switch (step) {
       case 1:
         return selectedCI !== null;
@@ -68,7 +68,7 @@ export function useCISetupState({
       default:
         return true;
     }
-  };
+  }, [selectedCI, selectedPackages]);
 
   return {
     selectedCI,

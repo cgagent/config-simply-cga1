@@ -37,6 +37,11 @@ export const CIButtonGroup: React.FC<CIButtonGroupProps> = ({
     }
   };
 
+  const handleButtonClick = (id: string) => {
+    console.log('Button clicked:', id);
+    onSelect(id);
+  };
+
   // If we have more than 3 options (for package managers), split them into two rows
   const shouldSplitIntoRows = options.length > 3 && multiSelect;
   let firstRowOptions = options;
@@ -62,7 +67,7 @@ export const CIButtonGroup: React.FC<CIButtonGroupProps> = ({
                     ? "bg-blue-700 text-white border-blue-600" 
                     : "bg-gray-800 text-white hover:bg-gray-700 border-gray-700"
                 }`}
-                onClick={() => onSelect(option.id)}
+                onClick={() => handleButtonClick(option.id)}
               >
                 <div className="flex items-center space-x-2">
                   {getIcon(option.id)}
@@ -87,7 +92,7 @@ export const CIButtonGroup: React.FC<CIButtonGroupProps> = ({
                     ? "bg-blue-700 text-white border-blue-600" 
                     : "bg-gray-800 text-white hover:bg-gray-700 border-gray-700"
                 }`}
-                onClick={() => onSelect(option.id)}
+                onClick={() => handleButtonClick(option.id)}
               >
                 <div className="flex items-center space-x-2">
                   {getIcon(option.id)}
@@ -114,7 +119,7 @@ export const CIButtonGroup: React.FC<CIButtonGroupProps> = ({
                   ? "bg-blue-700 text-white border-blue-600" 
                   : "bg-gray-800 text-white hover:bg-gray-700 border-gray-700"
               }`}
-              onClick={() => onSelect(option.id)}
+              onClick={() => handleButtonClick(option.id)}
             >
               <div className="flex items-center space-x-2">
                 {getIcon(option.id)}

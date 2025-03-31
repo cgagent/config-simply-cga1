@@ -19,6 +19,11 @@ const StepTwo: React.FC<StepTwoProps> = ({
 }) => {
   console.log('StepTwo rendering with selectedPackages:', selectedPackages);
   
+  const handlePackageSelection = (packageId: string) => {
+    console.log('Package selected in StepTwo:', packageId);
+    onPackageSelection(packageId);
+  };
+  
   return (
     <>
       <ChatMessage
@@ -41,7 +46,7 @@ const StepTwo: React.FC<StepTwoProps> = ({
               { id: 'maven', label: 'Maven' },
               { id: 'go', label: 'Go' }
             ]}
-            onSelect={onPackageSelection}
+            onSelect={handlePackageSelection}
             multiSelect={true}
             selectedOptions={selectedPackages}
             showContinueButton={selectedPackages.length > 0}
