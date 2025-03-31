@@ -1,3 +1,4 @@
+
 /**
  * Simulate AI response (would be replaced with actual API call)
  */
@@ -13,8 +14,38 @@ export const simulateAIResponse = (query: string): string => {
   });
 
   // Special case for CI setup query
-  if (lowerQuery.includes('set up my ci') || lowerQuery.includes('set my ci') || lowerQuery.includes('configure ci')) {
-    return "Great! I'm here to help you configure JFrog with your CI workflow. I see that you using GitHub Actions. and i see that you have several package managers in your git repository. Which package managers do you would like to configure?";
+  if (lowerQuery.includes('set up my ci') || 
+      lowerQuery.includes('set my ci') || 
+      lowerQuery.includes('configure ci') ||
+      lowerQuery.includes('setup ci')) {
+    return "Great, let's set up your CI to work with JFrog. Which CI tools are you using?";
+  }
+
+  // Handling for CI tool selection
+  if (lowerQuery.includes('github actions') || lowerQuery.includes('github')) {
+    return "I see you're using GitHub Actions. Would you like to set up CI for NPM, Maven, or both package types?";
+  }
+
+  if (lowerQuery.includes('jenkins') || 
+      lowerQuery.includes('gitlab') || 
+      lowerQuery.includes('travis') ||
+      lowerQuery.includes('circle') ||
+      lowerQuery.includes('other ci')) {
+    return "For your CI system, we'll need to configure JFrog integration. Which package managers are you using in your project?";
+  }
+
+  // Package manager selection responses
+  if (lowerQuery.includes('npm') && !lowerQuery.includes('maven')) {
+    return "Great! For NPM packages with JFrog, we'll need to set up authentication and repository configuration. Would you like to see a configuration example?";
+  }
+
+  if (lowerQuery.includes('maven') && !lowerQuery.includes('npm')) {
+    return "For Maven integration with JFrog, we'll need to update your pom.xml and settings.xml files. Would you like me to show you the necessary configurations?";
+  }
+
+  if ((lowerQuery.includes('npm') && lowerQuery.includes('maven')) ||
+      lowerQuery.includes('both')) {
+    return "I'll help you set up both NPM and Maven with JFrog. Let's start with NPM configuration first. Would you like to see the configuration examples?";
   }
 
   // Special case handling for blocked packages query (placed at the top to give it priority)
@@ -129,4 +160,9 @@ object-assign (4.1.1)`;
   else {
     return "I understand you're asking about \"" + query + "\". Let me provide some information about that. This is a simulated response in our demo application. In a production environment, this would connect to an AI language model API like OpenAI GPT, Anthropic Claude, or Perplexity to provide helpful and accurate responses.";
   }
+};
+
+// Helper function to get a simulated response
+export const getRandomResponse = (query: string): string => {
+  return simulateAIResponse(query);
 };

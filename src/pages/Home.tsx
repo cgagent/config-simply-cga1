@@ -2,14 +2,16 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { AIChat } from '@/components/ai-chat/AIChat';
 import StatisticsBar from '@/components/StatisticsBar';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
 
 const Home: React.FC = () => {
   const [isChatActive, setIsChatActive] = useState(false);
   const [chatInputValue, setChatInputValue] = useState('');
   const [shouldSendMessage, setShouldSendMessage] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const initialRender = useRef(true);
   const chatQueryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -70,6 +72,11 @@ const Home: React.FC = () => {
     
   }, []);
 
+  // Navigate to CI Setup Chat
+  const handleNavigateToCISetup = useCallback(() => {
+    navigate('/ci-setup-chat');
+  }, [navigate]);
+
   // Clean up timeouts when component unmounts
   useEffect(() => {
     return () => {
@@ -94,13 +101,23 @@ const Home: React.FC = () => {
       <main className="flex-1 w-full mx-auto flex flex-col">
         <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 flex flex-col h-[calc(100vh-64px)] pt-6">
           {!isChatActive && (
-            <StatisticsBar 
-              ciCompletionPercentage={statsData.ciCompletionPercentage}
-              blockedPackages={statsData.blockedPackages}
-              totalPackages={statsData.totalPackages}
-              dataConsumption={statsData.dataConsumption}
-              onChatQuery={handleChatQuery}
-            />
+            <>
+              <StatisticsBar 
+                ciCompletionPercentage={statsData.ciCompletionPercentage}
+                blockedPackages={statsData.blockedPackages}
+                totalPackages={statsData.totalPackages}
+                dataConsumption={statsData.dataConsumption}
+                onChatQuery={handleChatQuery}
+              />
+              <div className="mt-4 flex justify-center">
+                <Button 
+                  onClick={handleNavigateToCISetup}
+                  className="bg-blue-700 hover:bg-blue-800 text-white font-medium"
+                >
+                  Set Up CI with JFrog
+                </Button>
+              </div>
+            </>
           )}
           
           <div className="flex-1 flex flex-col border-0 overflow-hidden bg-background dark:bg-background">

@@ -10,6 +10,7 @@ import AccountSetup from "./pages/AccountSetup";
 import Home from "./pages/Home";
 import Repositories from "./pages/Repositories";
 import CIConfiguration from "./pages/CIConfiguration";
+import CISetupChat from "./pages/CISetupChat"; // Add the new page
 import Users from "./pages/Users";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
@@ -88,6 +89,7 @@ const App = () => {
                 <Route path="/home" element={<Home />} />
                 <Route path="/repositories" element={<Repositories />} />
                 <Route path="/ci-configuration" element={<CIConfiguration />} />
+                <Route path="/ci-setup-chat" element={<CISetupChat />} /> {/* Add the new route */}
                 <Route path="/users" element={<Users />} />
                 <Route path="/profile" element={<Profile />} />
               </Route>

@@ -1,5 +1,5 @@
 
-import { simulateAIResponse } from '../utils/aiResponseUtils';
+import { simulateAIResponse, getRandomResponse } from '../utils/aiResponseUtils';
 
 export const useSpecialQueries = () => {
   const processSpecialQuery = (content: string) => {
@@ -31,7 +31,7 @@ bad-actor-addon: Had a payload to exfiltrate private data.`;
     // For other queries, use the general AI response simulator
     return {
       handled: false,
-      getResponse: () => simulateAIResponse(content)
+      getResponse: () => getRandomResponse(content)
     };
   };
 
