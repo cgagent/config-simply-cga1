@@ -24,8 +24,8 @@ const CISetupChat = () => {
     getSelectedPackagesText
   } = useCISetupState();
   
-  const [messages, setMessages] = useState<Array<{ id: number, component: React.ReactNode }>>([
-    { id: 1, component: <StepOne onSelectCI={handleCISelection} selectedCI={selectedCI} /> }
+  const [messages, setMessages] = useState<Array<{ id: string, component: React.ReactNode }>>([
+    { id: 'step-1-initial', component: <StepOne onSelectCI={handleCISelection} selectedCI={selectedCI} /> }
   ]);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -47,7 +47,7 @@ const CISetupChat = () => {
         setMessages(prev => [
           ...prev,
           { 
-            id: Date.now(), 
+            id: `step-2-${Date.now()}`, 
             component: (
               <StepTwo 
                 ciName={ciName} 
@@ -92,7 +92,7 @@ const CISetupChat = () => {
         setMessages(prev => [
           ...prev,
           { 
-            id: Date.now(), 
+            id: `step-3-${Date.now()}`, 
             component: (
               <StepThree 
                 packagesText={getSelectedPackagesText()} 
@@ -117,14 +117,14 @@ const CISetupChat = () => {
         setMessages(prev => [
           ...prev,
           { 
-            id: Date.now(), 
+            id: `step-4-${Date.now()}`, 
             component: (
               <StepFour 
                 onComplete={() => {
                   setSetupComplete(true);
                   setMessages(prevMessages => [
                     ...prevMessages,
-                    { id: Date.now(), component: <CompletionStep /> }
+                    { id: `completion-${Date.now()}`, component: <CompletionStep /> }
                   ]);
                 }} 
               />
@@ -147,7 +147,7 @@ const CISetupChat = () => {
               ...msg,
               component: (
                 <StepTwo 
-                  key={selectedPackages.join(',')} // Add key to force rerender
+                  key={`step2-${selectedPackages.join(',')}`} // Add key to force rerender
                   ciName={ciName} 
                   onPackageSelection={handlePackageSelection} 
                   selectedPackages={selectedPackages} 
@@ -178,7 +178,7 @@ const CISetupChat = () => {
         setMessages(prev => [
           ...prev,
           {
-            id: Date.now(),
+            id: `user-msg-${latestMessage.id}`,
             component: (
               <ChatMessage 
                 type="system" 

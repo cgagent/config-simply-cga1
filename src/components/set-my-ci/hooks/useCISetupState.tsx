@@ -28,12 +28,14 @@ export function useCISetupState({
 
   // Function to handle CI selection
   const handleCISelection = useCallback((ciType: string) => {
+    console.log('CI Selection:', ciType);
     setSelectedCI(ciType as CIType);
     
     // Add message about CI selection
     const ciName = ciType === 'github' ? 'GitHub Actions' : 'Other CI Systems';
     addUserMessage(`I'd like to set up ${ciName} for my project.`);
     
+    // This is important - ensure we move to step 2 after CI selection
     setCurrentStep(2);
   }, []);
 
@@ -54,15 +56,16 @@ export function useCISetupState({
 
   // Function to add a user message
   const addUserMessage = useCallback((text: string) => {
-    setUserMessages(prev => [
-      ...prev, 
-      {
-        id: Date.now().toString(),
-        text,
-        type: 'user',
-        timestamp: new Date()
-      }
-    ]);
+    const newMessage = {
+      id: Date.now().toString(),
+      text,
+      type: 'user' as const,
+      timestamp: new Date()
+    };
+    
+    console.log('Adding user message:', newMessage);
+    
+    setUserMessages(prev => [...prev, newMessage]);
   }, []);
 
   // Function to handle free text message
@@ -122,10 +125,12 @@ export function useCISetupState({
     
   }, [currentStep, addUserMessage, selectedPackages]);
 
-  // Debug effect to track package selection changes
+  // Debug effect to track state changes
   useEffect(() => {
-    console.log('Selected packages updated:', selectedPackages);
-  }, [selectedPackages]);
+    console.log('Current step:', currentStep);
+    console.log('Selected CI:', selectedCI);
+    console.log('Selected packages:', selectedPackages);
+  }, [currentStep, selectedCI, selectedPackages]);
 
   // Function to continue to step 3
   const handleContinueToStep3 = useCallback(() => {
