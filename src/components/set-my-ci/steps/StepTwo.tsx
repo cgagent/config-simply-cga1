@@ -17,6 +17,8 @@ const StepTwo: React.FC<StepTwoProps> = ({
   selectedPackages, 
   onContinue 
 }) => {
+  console.log('StepTwo rendering with selectedPackages:', selectedPackages);
+  
   return (
     <>
       <ChatMessage
@@ -40,7 +42,7 @@ const StepTwo: React.FC<StepTwoProps> = ({
               { id: 'go', label: 'Go' }
             ]}
             onSelect={onPackageSelection}
-            multiSelect
+            multiSelect={true}
             selectedOptions={selectedPackages}
             showContinueButton={selectedPackages.length > 0}
             onContinue={onContinue}

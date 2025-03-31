@@ -26,6 +26,7 @@ export function useCISetupState({
 
   // Function to handle package manager selection
   const handlePackageSelection = (packageType: string) => {
+    console.log('Package selection toggled:', packageType);
     setSelectedPackages(prevSelected => {
       if (prevSelected.includes(packageType)) {
         // Remove if already selected

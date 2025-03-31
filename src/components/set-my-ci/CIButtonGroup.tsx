@@ -56,10 +56,10 @@ export const CIButtonGroup: React.FC<CIButtonGroupProps> = ({
             {firstRowOptions.map((option) => (
               <Button
                 key={option.id}
-                variant={selectedOptions?.includes(option.id) ? "default" : "outline"}
+                variant={selectedOptions?.includes(option.id) ? "primary" : "outline"}
                 className={`justify-start py-3 px-4 h-auto text-left ${
                   selectedOptions?.includes(option.id) 
-                    ? "bg-gray-800 text-white" 
+                    ? "bg-blue-700 text-white border-blue-600" 
                     : "bg-gray-800 text-white hover:bg-gray-700 border-gray-700"
                 }`}
                 onClick={() => onSelect(option.id)}
@@ -81,10 +81,10 @@ export const CIButtonGroup: React.FC<CIButtonGroupProps> = ({
             {secondRowOptions.map((option) => (
               <Button
                 key={option.id}
-                variant={selectedOptions?.includes(option.id) ? "default" : "outline"}
+                variant={selectedOptions?.includes(option.id) ? "primary" : "outline"}
                 className={`justify-start py-3 px-4 h-auto text-left ${
                   selectedOptions?.includes(option.id) 
-                    ? "bg-gray-800 text-white" 
+                    ? "bg-blue-700 text-white border-blue-600" 
                     : "bg-gray-800 text-white hover:bg-gray-700 border-gray-700"
                 }`}
                 onClick={() => onSelect(option.id)}
@@ -108,10 +108,10 @@ export const CIButtonGroup: React.FC<CIButtonGroupProps> = ({
           {options.map((option) => (
             <Button
               key={option.id}
-              variant={selectedOptions?.includes(option.id) ? "default" : "outline"}
+              variant={selectedOptions?.includes(option.id) ? "primary" : "outline"}
               className={`justify-start py-3 px-4 h-auto text-left ${
                 selectedOptions?.includes(option.id) 
-                  ? "bg-gray-800 text-white" 
+                  ? "bg-blue-700 text-white border-blue-600" 
                   : "bg-gray-800 text-white hover:bg-gray-700 border-gray-700"
               }`}
               onClick={() => onSelect(option.id)}
@@ -135,7 +135,7 @@ export const CIButtonGroup: React.FC<CIButtonGroupProps> = ({
         <div className="flex justify-end mt-4">
           <Button 
             onClick={onContinue}
-            className="px-4 bg-gray-800 text-white hover:bg-gray-700"
+            className="px-4 bg-blue-700 text-white hover:bg-blue-600"
           >
             Continue <ArrowRight className="ml-1 h-4 w-4" />
           </Button>

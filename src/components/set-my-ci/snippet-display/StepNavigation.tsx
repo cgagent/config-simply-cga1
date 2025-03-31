@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 interface StepNavigationProps {
   onPreviousStep: () => void;
@@ -9,19 +10,19 @@ interface StepNavigationProps {
 
 const StepNavigation: React.FC<StepNavigationProps> = ({ onPreviousStep, onNextStep }) => {
   return (
-    <div className="flex justify-end mt-4">
+    <div className="flex justify-end mt-4 space-x-3">
       <Button
         variant="outline"
-        className="mr-2 bg-gray-800 text-white hover:bg-gray-700 border-gray-700"
+        className="bg-gray-800 text-white hover:bg-gray-700 border-gray-700"
         onClick={onPreviousStep}
       >
-        Back
+        <ArrowLeft className="mr-1 h-4 w-4" /> Back
       </Button>
       <Button
-        className="bg-gray-800 text-white hover:bg-gray-700"
+        className="bg-blue-700 text-white hover:bg-blue-600"
         onClick={onNextStep}
       >
-        Continue
+        Continue <ArrowRight className="ml-1 h-4 w-4" />
       </Button>
     </div>
   );
