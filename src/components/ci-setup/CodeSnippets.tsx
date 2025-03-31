@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Copy, HelpCircle, Download } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -19,6 +19,8 @@ const CodeSnippets: React.FC<CodeSnippetsProps> = ({
   generateSnippet,
   generateFullWorkflow
 }) => {
+  // State to toggle between snippet and full workflow
+  const [viewMode, setViewMode] = useState<'snippet' | 'full'>('snippet');
   
   // Function to handle file download
   const handleDownload = (content: string, filename: string) => {
@@ -31,64 +33,72 @@ const CodeSnippets: React.FC<CodeSnippetsProps> = ({
     document.body.removeChild(element);
   };
 
+  // Get the current content based on the selected view mode
+  const getCurrentContent = () => {
+    return viewMode === 'snippet' ? generateSnippet() : generateFullWorkflow();
+  };
+
+  // Get the appropriate filename based on the selected view mode and CI
+  const getFileName = () => {
+    if (viewMode === 'snippet') {
+      return 'jfrog-setup.yml';
+    } else {
+      return selectedCI === 'github' ? 'github-workflow.yml' : 'jenkins-pipeline.groovy';
+    }
+  };
+
   return (
     <div className="mb-4 mt-2 space-y-4">
       <div className="bg-gray-800 rounded-md p-4 shadow-lg">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-white font-semibold">JFrog CI Setup Snippet</span>
-          <div className="flex gap-2">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-8 text-blue-300 hover:text-white hover:bg-blue-900/60"
-              onClick={() => onCopyToClipboard(generateSnippet(), "Setup snippet copied to clipboard")}
-            >
-              <Copy className="h-4 w-4 mr-1" />
-              Copy
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-8 text-blue-300 hover:text-white hover:bg-blue-900/60"
-              onClick={() => handleDownload(generateSnippet(), 'jfrog-setup.yml')}
-            >
-              <Download className="h-4 w-4 mr-1" />
-              Download
-            </Button>
+        <div className="flex flex-col space-y-3">
+          <div className="flex justify-between items-center">
+            <div className="flex space-x-2">
+              <button 
+                className={`px-3 py-1 rounded-md text-sm ${viewMode === 'snippet' 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-gray-700 text-gray-200 hover:bg-gray-600'}`}
+                onClick={() => setViewMode('snippet')}
+              >
+                JFrog CI Setup Snippet
+              </button>
+              <button 
+                className={`px-3 py-1 rounded-md text-sm ${viewMode === 'full' 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-gray-700 text-gray-200 hover:bg-gray-600'}`}
+                onClick={() => setViewMode('full')}
+              >
+                Full CI Workflow Example
+              </button>
+            </div>
+            <div className="flex gap-2">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-8 text-blue-300 hover:text-white hover:bg-blue-900/60"
+                onClick={() => onCopyToClipboard(
+                  getCurrentContent(), 
+                  viewMode === 'snippet' ? "Setup snippet copied to clipboard" : "Full workflow copied to clipboard"
+                )}
+              >
+                <Copy className="h-4 w-4 mr-1" />
+                Copy
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-8 text-blue-300 hover:text-white hover:bg-blue-900/60"
+                onClick={() => handleDownload(getCurrentContent(), getFileName())}
+              >
+                <Download className="h-4 w-4 mr-1" />
+                Download
+              </Button>
+            </div>
           </div>
+          
+          <pre className="bg-gray-900 text-blue-100 p-3 rounded overflow-x-auto text-sm border border-gray-700">
+            {getCurrentContent()}
+          </pre>
         </div>
-        <pre className="bg-gray-900 text-blue-100 p-3 rounded overflow-x-auto text-sm border border-gray-700">
-          {generateSnippet()}
-        </pre>
-      </div>
-
-      <div className="bg-gray-800 rounded-md p-4 shadow-lg">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-white font-semibold">Full CI Workflow Example</span>
-          <div className="flex gap-2">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-8 text-blue-300 hover:text-white hover:bg-blue-900/60"
-              onClick={() => onCopyToClipboard(generateFullWorkflow(), "Full workflow copied to clipboard")}
-            >
-              <Copy className="h-4 w-4 mr-1" />
-              Copy
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-8 text-blue-300 hover:text-white hover:bg-blue-900/60"
-              onClick={() => handleDownload(generateFullWorkflow(), selectedCI === 'github' ? 'github-workflow.yml' : 'jenkins-pipeline.groovy')}
-            >
-              <Download className="h-4 w-4 mr-1" />
-              Download
-            </Button>
-          </div>
-        </div>
-        <pre className="bg-gray-900 text-blue-100 p-3 rounded overflow-x-auto text-sm border border-gray-700">
-          {generateFullWorkflow()}
-        </pre>
       </div>
 
       <Accordion type="single" collapsible className="bg-gray-800 rounded-md p-4 shadow-lg">

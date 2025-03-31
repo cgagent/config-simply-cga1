@@ -33,7 +33,7 @@ const CISetupChat: React.FC = () => {
       <main className="flex-1 w-full mx-auto flex flex-col">
         <div className="max-w-4xl w-full mx-auto px-4 sm:px-6 flex flex-col h-[calc(100vh-64px)] pt-6">
           <div className="flex-1 flex flex-col border-0 overflow-hidden bg-background dark:bg-background">
-            <div className="flex-1 flex flex-col p-4 overflow-hidden">
+            <div className="flex-1 flex flex-col p-4 overflow-y-auto">
               <MessageList messages={messages} isProcessing={isProcessing} />
               
               {shouldShowCIOptions && !isProcessing && (
@@ -58,19 +58,19 @@ const CISetupChat: React.FC = () => {
                 />
               )}
               
-              <div className="pt-4">
-                <ChatInput 
-                  isProcessing={isProcessing} 
-                  onSendMessage={handleSendMessage} 
-                  isInitialState={false}
-                  value={inputValue}
-                  setValue={setInputValue}
-                />
-              </div>
+              <div ref={messagesEndRef} />
+            </div>
+            
+            <div className="pt-4">
+              <ChatInput 
+                isProcessing={isProcessing} 
+                onSendMessage={handleSendMessage} 
+                isInitialState={false}
+                value={inputValue}
+                setValue={setInputValue}
+              />
             </div>
           </div>
-          
-          <div ref={messagesEndRef} />
         </div>
       </main>
     </div>
