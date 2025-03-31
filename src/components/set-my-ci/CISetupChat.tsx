@@ -6,14 +6,18 @@ import StepTwo from './steps/StepTwo';
 import StepThree from './steps/StepThree';
 import StepFour from './steps/StepFour';
 import CompletionStep from './steps/CompletionStep';
+import ChatBox from './ChatBox';
+import { ChatMessage } from './ChatMessage';
 
 const CISetupChat = () => {
   const {
     selectedCI,
     selectedPackages,
     currentStep,
+    userMessages,
     handleCISelection,
     handlePackageSelection,
+    handleChatMessage,
     handleContinueToStep3,
     handleContinueToStep4,
     handlePreviousStep,
@@ -158,6 +162,36 @@ const CISetupChat = () => {
     }
   }, [selectedPackages, currentStep, selectedCI, handlePackageSelection, handleContinueToStep3]);
 
+  // Add user messages to the chat
+  useEffect(() => {
+    if (userMessages.length > 0) {
+      // Only add the latest message if it's not already in the list
+      const latestMessage = userMessages[userMessages.length - 1];
+      const messageExists = messages.some(msg => {
+        if (typeof msg.component === 'string') {
+          return msg.component === latestMessage.text;
+        }
+        return false;
+      });
+      
+      if (!messageExists) {
+        setMessages(prev => [
+          ...prev,
+          {
+            id: Date.now(),
+            component: (
+              <ChatMessage 
+                type="system" 
+                content={latestMessage.text}
+                isUser={true}
+              />
+            )
+          }
+        ]);
+      }
+    }
+  }, [userMessages, messages]);
+
   // Scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -173,6 +207,16 @@ const CISetupChat = () => {
           <div ref={messagesEndRef} />
         </div>
       </div>
+      <ChatBox 
+        onSendMessage={handleChatMessage} 
+        placeholder={
+          currentStep === 1 ? "Type which CI system you want to use..." :
+          currentStep === 2 ? "Tell us which package managers you use..." :
+          currentStep === 3 ? "Type 'continue' to proceed to implementation..." :
+          "Type your message here..."
+        }
+        disabled={setupComplete}
+      />
     </div>
   );
 };
