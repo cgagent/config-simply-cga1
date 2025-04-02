@@ -1,4 +1,3 @@
-
 import React, { useCallback } from 'react';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -53,6 +52,9 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
     hover: { y: -5, boxShadow: '0 10px 15px -3px rgba(0, 0, 100, 0.1)' }
   };
 
+  // Calculate the number of configured repositories
+  const configuredRepos = Math.round((ciCompletionPercentage / 100) * totalPackages);
+
   return (
     <div className="p-6 space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -73,8 +75,8 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
             </div>
             <div className="mb-2">
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-xl font-semibold text-white space-glow">{ciCompletionPercentage}%</span>
-                <span className="text-xs text-blue-200/70">of total</span>
+                <span className="text-xl font-semibold text-white space-glow">{configuredRepos} / {totalPackages}</span>
+                <span className="text-xs text-blue-200/70">repositories</span>
               </div>
               <Progress 
                 value={ciCompletionPercentage} 

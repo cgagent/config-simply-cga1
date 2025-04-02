@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { AIChat } from '@/components/ai-chat/AIChat';
 import StatisticsBar from '@/components/StatisticsBar';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import { useRepositories } from '@/contexts/RepositoryContext';
 
 const Home: React.FC = () => {
   const [isChatActive, setIsChatActive] = useState(false);
@@ -14,12 +14,18 @@ const Home: React.FC = () => {
   const { toast } = useToast();
   const initialRender = useRef(true);
   const chatQueryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { repositories } = useRepositories();
   
-  // Sample data for statistics - Updated CI completion percentage to 67%
+  // Calculate CI completion numbers in the same way as StatusSummary
+  const totalRepos = repositories.length;
+  const configuredRepos = repositories.filter(repo => repo.isConfigured).length;
+  const ciCompletionPercentage = totalRepos > 0 ? Math.round((configuredRepos / totalRepos) * 100) : 0;
+
+  // Sample data for other statistics (keeping these as is for now)
   const statsData = {
-    ciCompletionPercentage: 67,
+    ciCompletionPercentage,
+    totalPackages: totalRepos,
     blockedPackages: 3,
-    totalPackages: 12486,
     dataConsumption: 1528
   };
 
@@ -42,52 +48,18 @@ const Home: React.FC = () => {
     }
   }, [location]);
 
-  // Handler for statistics panel queries
   const handleChatQuery = useCallback((query: string) => {
-    console.log("Chat query initiated:", query);
-    
-    // Clear any existing timeout
-    if (chatQueryTimeoutRef.current) {
-      clearTimeout(chatQueryTimeoutRef.current);
-    }
-    
-    // Activate chat
+    setChatInputValue(query);
+    setShouldSendMessage(true);
     setIsChatActive(true);
-    
-    // Reset any existing state
-    setShouldSendMessage(false);
-    setChatInputValue('');
-    
-    // Sequential operations with timeouts to ensure proper state updates
-    chatQueryTimeoutRef.current = setTimeout(() => {
-      // First set the input value
-      setChatInputValue(query);
-      
-      // Then trigger the send after a short delay
-      chatQueryTimeoutRef.current = setTimeout(() => {
-        setShouldSendMessage(true);
-      }, 150);
-    }, 150);
-    
   }, []);
 
-  // Clean up timeouts when component unmounts
-  useEffect(() => {
-    return () => {
-      if (chatQueryTimeoutRef.current) {
-        clearTimeout(chatQueryTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  // Clear the shouldSendMessage flag after the message has been sent
-  const clearShouldSendMessage = useCallback(() => {
-    setShouldSendMessage(false);
-  }, []);
-
-  // Clear the initial input value after it has been processed
   const clearInitialInputValue = useCallback(() => {
     setChatInputValue('');
+  }, []);
+
+  const clearShouldSendMessage = useCallback(() => {
+    setShouldSendMessage(false);
   }, []);
 
   return (
