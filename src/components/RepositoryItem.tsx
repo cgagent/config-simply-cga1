@@ -25,32 +25,16 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
   const navigate = useNavigate();
   
   useEffect(() => {
-    if (repository.showStatusTransition) {
-      console.log("Repository item received status change for", repository.name, 
-                  "prev:", repository.previousPackageTypeStatus, 
-                  "current:", repository.packageTypeStatus);
-    }
     setRepoState(repository);
   }, [repository]);
   
-  const calculatePackageTypeCoverage = () => {
-    if (!repoState.packageTypeStatus) return 0;
-    
-    const total = Object.keys(repoState.packageTypeStatus).length;
-    if (total === 0) return 0;
-    
-    const connected = Object.values(repoState.packageTypeStatus).filter(Boolean).length;
-    return Math.round((connected / total) * 100);
-  };
-
-  const coveragePercentage = calculatePackageTypeCoverage();
   const missingPackageTypes = repoState.packageTypeStatus 
     ? Object.entries(repoState.packageTypeStatus)
         .filter(([_, isConnected]) => !isConnected)
         .map(([type]) => type)
     : [];
   
-  const isFullyConfigured = coveragePercentage === 100;
+  const isFullyConfigured = missingPackageTypes.length === 0;
 
   const handleConfigure = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -68,9 +52,8 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
       packageTypeStatus: updatedPackageTypeStatus
     };
     
-    const newTotal = Object.keys(updatedPackageTypeStatus).length;
-    const newConnected = Object.values(updatedPackageTypeStatus).filter(Boolean).length;
-    const newCoverage = newTotal > 0 ? Math.round((newConnected / newTotal) * 100) : 100;
+    // const newTotal = Object.keys(updatedPackageTypeStatus).length;
+    // const newConnected = Object.values(updatedPackageTypeStatus).filter(Boolean).length;
     
     setRepoState(updatedRepo);
   };
@@ -111,8 +94,6 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
           {repoState.isConfigured && repoState.packageTypes && repoState.packageTypes.length > 0 ? (
             <PackageTypeBadges 
               packageTypes={repoState.packageTypes}
-              missingPackageTypes={missingPackageTypes}
-              onRemoveMissingPackage={handleRemoveMissingPackage}
             />
           ) : (
             <span className="text-xs text-muted-foreground">-</span>
@@ -131,10 +112,7 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
           <RepositoryStatus
             isConfigured={repoState.isConfigured}
             isFullyConfigured={isFullyConfigured}
-            coveragePercentage={coveragePercentage}
             missingPackageTypes={missingPackageTypes}
-            previousPackageTypeStatus={repoState.previousPackageTypeStatus}
-            showStatusTransition={repoState.showStatusTransition}
           />
         </div>
 

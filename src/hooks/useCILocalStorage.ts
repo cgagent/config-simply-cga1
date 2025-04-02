@@ -106,7 +106,26 @@ export const useCILocalStorage = () => {
   const [repositories, setRepositories] = useState<Repository[]>(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? JSON.parse(stored) : defaultRepositories;
+      if (!stored) return defaultRepositories;
+      
+      // Parse stored repositories
+      const parsedRepositories = JSON.parse(stored);
+      
+      // Ensure infrastructure repository is not configured
+      const updatedRepositories = parsedRepositories.map((repo: Repository) => {
+        if (repo.name === 'infrastructure') {
+          return {
+            ...repo,
+            isConfigured: false,
+            packageTypes: [],
+            workflows: [],
+            packageTypeStatus: undefined
+          };
+        }
+        return repo;
+      });
+      
+      return updatedRepositories;
     } catch (error) {
       console.error('Error loading repositories from localStorage:', error);
       return defaultRepositories;
