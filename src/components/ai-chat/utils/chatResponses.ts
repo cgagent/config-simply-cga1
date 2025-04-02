@@ -2,7 +2,7 @@ import { ChatResponse, ConversationFlow } from './types';
 
 // Types for better type safety
 type PackageManager = 'npm' | 'maven' | 'both';
-type CITool = 'github' | 'jenkins' | 'gitlab' | 'travis' | 'circle' | 'other';
+
 
 // Constants for better maintainability
 const CI_TOOL_PATTERNS = {
@@ -18,6 +18,11 @@ const PACKAGE_MANAGER_PATTERNS = {
   npm: ['npm'],
   maven: ['maven'],
   both: ['both']
+} as const;
+
+const SECURITY_REMIDIATION_PATTERNS = {
+  git: ['git issue', 'create git issue'],
+  email: ['email yahavi@acme.com', 'ping yahavi@acme.com']
 } as const;
 
 // Helper functions for response generation
@@ -39,6 +44,14 @@ const generatePackageManagerResponse = (manager: PackageManager): string => {
   }
 };
 
+const generateSecurityRemidiationResponse = (action: string): string => {
+  switch (action) {
+    case 'git':
+      return "I'll create a Git issue for you. Would you like to provide more details about the issue?";
+    case 'email':
+      return "I'll send an email to yahavi@acme.com. Would you like to provide more details about the issue?";
+  }
+};
 // Define conversation flows
 export const conversationFlows: ConversationFlow[] = [
   {
@@ -63,28 +76,28 @@ export const conversationFlows: ConversationFlow[] = [
         response: generatePackageManagerResponse
       }
     ]
-  }
-];
-
-// Define standalone responses with better organization
-export const standaloneResponses: ChatResponse[] = [
+  },
   {
     id: 'security-risk',
-    patterns: [
-      'identify which packages are at risk',
-      'packages at risk in my organization',
-      'security risk in my organization',
-      'vulnerable packages in my organization',
-      'security vulnerabilities in my organization',
-      'package vulnerabilities in my organization',
-      'are at risk in my organization',
-      'packages at risk',
-      'security risk',
-      'vulnerable packages',
-      'security vulnerabilities',
-      'package vulnerabilities'
-    ],
-    response: `# One package with risks was detected:
+    name: 'Security Risk Flow',
+    steps: [
+      {
+        id: 'identify-risk',
+        patterns: [
+          'identify which packages are at risk',
+          'packages at risk in my organization',
+          'security risk in my organization',
+          'vulnerable packages in my organization',
+          'security vulnerabilities in my organization',
+          'package vulnerabilities in my organization',
+          'are at risk in my organization',
+          'packages at risk',
+          'security risk',
+          'vulnerable packages',
+          'security vulnerabilities',
+          'package vulnerabilities'
+        ],
+        response: `# One package with risks was detected:
 
 ### 📦 axios
 • **Used version:** 1.5.1
@@ -93,8 +106,47 @@ export const standaloneResponses: ChatResponse[] = [
 • **Affected git repositories:** ACME/frontend-app (branch: main), ACME/backend-api (branch: main)
 • **Vulnerabilities:** CVE-2024-39338
 • **Vulnerability description:** axios 1.5.1 allows SSRF via unexpected behavior where requests for path relative URLs get processed as protocol relative URLs
-• **Severity:** High`
-  },
+• **Severity:** High`,
+        nextSteps: ['remidiation-action-selection']
+      },
+      {
+        id: 'remidiation-action-selection',
+        patterns: Object.values(SECURITY_REMIDIATION_PATTERNS).flat(),
+        response: generateSecurityRemidiationResponse,
+      }
+    ]
+  }
+];
+
+// Define standalone responses with better organization
+export const standaloneResponses: ChatResponse[] = [
+//   {
+//     id: 'security-risk',
+//     patterns: [
+//       'identify which packages are at risk',
+//       'packages at risk in my organization',
+//       'security risk in my organization',
+//       'vulnerable packages in my organization',
+//       'security vulnerabilities in my organization',
+//       'package vulnerabilities in my organization',
+//       'are at risk in my organization',
+//       'packages at risk',
+//       'security risk',
+//       'vulnerable packages',
+//       'security vulnerabilities',
+//       'package vulnerabilities'
+//     ],
+//     response: `# One package with risks was detected:
+
+// ### 📦 axios
+// • **Used version:** 1.5.1
+// • **Latest version published:** 1.8.3
+// • **Downloaded by:** yahavi@acme.com
+// • **Affected git repositories:** ACME/frontend-app (branch: main), ACME/backend-api (branch: main)
+// • **Vulnerabilities:** CVE-2024-39338
+// • **Vulnerability description:** axios 1.5.1 allows SSRF via unexpected behavior where requests for path relative URLs get processed as protocol relative URLs
+// • **Severity:** High`
+//   },
   {
     id: 'blocked-packages',
     patterns: [

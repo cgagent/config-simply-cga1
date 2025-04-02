@@ -3,9 +3,8 @@ import { MessageList } from './MessageList';
 import { ConfigInputForm } from './ConfigInputForm';
 import { useConfigChat } from './hooks/useConfigChat';
 import { SelectableOptions } from './SelectableOptions';
-import { FlyFrogIcon } from '@/components/ai-chat/FlyFrogIcon';
 import { useNavigate } from 'react-router-dom';
-import { Repository } from '@/types/repository';
+
 
 interface AIConfigurationChatProps {
   repositoryName?: string;
