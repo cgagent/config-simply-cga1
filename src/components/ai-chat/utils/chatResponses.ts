@@ -64,9 +64,9 @@ const generatePackageManagerResponse = (manager: PackageManager): string => {
 export const generateSecurityRemidiationResponse = (action: string): string => {
   switch (action) {
     case 'git':
-      return "I'll create a Git issue for yahavi@acme.com to upgrade axios version in the ACME/frontend-app and ACME/backend-api repositories.";
+      return "Creating a Git issue for yahavi@acme.com to upgrade axios version in the ACME/frontend-app and ACME/backend-api repositories.";
     case 'email':
-      return "I'll send an email to yahavi@acme.com to upgrade axios version in the ACME/frontend-app and ACME/backend-api repositories.";
+      return "Sending an email to yahavi@acme.com to upgrade axios version in the ACME/frontend-app and ACME/backend-api repositories.";
     default:
       return "I'll help you address this security vulnerability. Would you like to create a Git issue or send an email?";
   }
@@ -82,7 +82,7 @@ const generateSecurityRiskResponse = (): string => {
 • **Affected git repositories:** ACME/frontend-app (branch: main), ACME/backend-api (branch: main)
 • **Vulnerabilities:** CVE-2024-39338
 • **Vulnerability description:** axios 1.5.1 allows SSRF via unexpected behavior where requests for path relative URLs get processed as protocol relative URLs
-• **Severity:** High`;
+• **Severity:** Critical`;
 };
 
 // Define conversation flows

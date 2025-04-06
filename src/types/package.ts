@@ -49,7 +49,7 @@ export const defaultPackageStatistics: PackageStatistics = {
       name: 'axios',
       version: '1.5.1',
       vulnerability: 'CVE-2024-39338',
-      severity: 'High',
+      severity: 'Critical',
       affectedRepos: ['ACME/frontend-app', 'ACME/backend-api']
     }
   ]

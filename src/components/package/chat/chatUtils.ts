@@ -22,7 +22,7 @@ export const processUserQuery = (
   🚨 **CVE-2024-39338**
 
   📝 Description - axios 1.5.1 allows SSRF via unexpected behavior where requests for path relative URLs get processed as protocol relative URLs
-  🔴 Severity: High
+  🔴 Severity: Critical
 
 🔄 **lodash**
 - 📦 Most common version: 4.17.21

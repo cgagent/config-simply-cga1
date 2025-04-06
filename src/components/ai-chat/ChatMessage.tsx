@@ -89,7 +89,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onSelectOptio
           <CVECard
             cveId="CVE-2024-39338"
             description="This CVE is enriched by JFrog Research and provides more accurate information"
-            severity="High"
+            severity="critical"
             packageName="axios"
             packageVersion="1.5.1"
             fixVersion="1.7.4"

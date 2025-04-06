@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 interface CVECardProps {
   cveId: string;
   description: string;
-  severity: "High" | "Medium" | "Low";
+  severity: "critical" | "high" | "medium" | "low";
   packageName: string;
   packageVersion: string;
   fixVersion: string;
@@ -67,13 +67,13 @@ const CVECard: React.FC<CVECardProps> = ({
           <div className="flex items-center">
             <div className={cn(
               "w-6 h-6 rounded-full flex items-center justify-center mr-2",
-              severity === "High" ? "bg-red-900" : 
-              severity === "Medium" ? "bg-yellow-900" : "bg-blue-900"
+              severity === "critical" ? "bg-red-900" : 
+              severity === "high" ? "bg-yellow-900" : "bg-blue-900"
             )}>
               <AlertCircle className={cn(
                 "w-4 h-4",
-                severity === "High" ? "text-red-500" : 
-                severity === "Medium" ? "text-yellow-500" : "text-blue-500"
+                severity === "critical" ? "text-red-500" : 
+                severity === "high" ? "text-yellow-500" : "text-blue-500"
               )} />
             </div>
             <span className="text-white">{severity}</span>
