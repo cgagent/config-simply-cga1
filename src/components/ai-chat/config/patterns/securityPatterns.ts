@@ -39,4 +39,30 @@ export const getAllSecurityRiskPatterns = (): string[] => {
  */
 export const getAllSecurityRemediationPatterns = (): string[] => {
   return Object.values(SECURITY_REMIDIATION_PATTERNS).flat();
+};
+
+/**
+ * Security risk patterns
+ */
+export const securityRiskPatterns = {
+  identifyRisk: [
+    "identify which packages are at risk",
+    "vulnerable packages in my organization",
+    "security vulnerabilities in packages",
+    "packages with security issues",
+    "malicious packages",
+    "blocked packages"
+  ],
+  remediationActionSelection: [
+    "create a git issue for this vulnerability",
+    "notify in slack about this vulnerability",
+    "send an email about this vulnerability"
+  ],
+  maliciousPackages: [
+    "which packages were blocked in the last two weeks",
+    "show me the malicious packages",
+    "list blocked packages",
+    "packages at risk",
+    "security vulnerabilities"
+  ]
 }; 

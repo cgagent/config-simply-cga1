@@ -1,10 +1,10 @@
-import { ciSetupFlow } from './ciSetupFlow';
-import { securityRiskFlow } from './securityRiskFlow';
+import { maliciousPackagesFlow } from './securityFlow';
+import { securityRiskFlow } from './securityFlow';
 
 /**
  * All conversation flows
  */
-export const conversationFlows = {
-  ciSetup: ciSetupFlow,
-  securityRisk: securityRiskFlow
-}; 
+export const conversationFlows = [
+  securityRiskFlow,
+  maliciousPackagesFlow
+]; 
