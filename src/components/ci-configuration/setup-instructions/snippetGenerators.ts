@@ -2,7 +2,7 @@
 import { Repository } from '@/types/repository';
 
 export const generateSetupSnippet = (): string => {
-  return `- name: Setup JFrog
+  return `- name: Setup JFrog3
   uses: jfrog/setup-jfrog@v1
   with:
     subdomain: acme`;
@@ -74,7 +74,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Setup JFrog
+      - name: Setup JFrog4
         uses: jfrog/setup-jfrog@v1
         with:
           subdomain: acme
@@ -122,7 +122,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup JFrog
+      - name: Setup JFrog5
         uses: jfrog/setup-jfrog@v1
         with:
           subdomain: acme
