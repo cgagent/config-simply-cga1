@@ -13,7 +13,6 @@ import AccountSetup from "./pages/AccountSetup";
 import Home from "./pages/Home";
 import Repositories from "./pages/Repositories";
 import CIConfiguration from "./pages/CIConfiguration";
-import CISetupChat from "./pages/CISetupChat";
 import Users from "./pages/Users";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
@@ -76,7 +75,6 @@ const protectedRoutes = [
   { path: '/home', element: <Home /> },
   { path: '/repositories', element: <Repositories /> },
   { path: '/ci-configuration', element: <CIConfiguration /> },
-  { path: '/ci-setup-chat', element: <CISetupChat /> },
   { path: '/users', element: <Users /> },
   { path: '/profile', element: <Profile /> },
 ];
