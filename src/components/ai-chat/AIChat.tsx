@@ -34,11 +34,11 @@ export const AIChat: React.FC<AIChatProps> = ({
     handleSecurityRemediation,
     showCIConfig,
     repository,
-    resetMessages
+    fullReset
   } = useMessageHandler();
   
   // Reset detection when navigating
-  const { lastProcessedInputRef, processingRef } = useResetDetection({ resetMessages });
+  useResetDetection({ resetMessages: fullReset });
   
   // Automatic message sending
   useAutoSendMessage({

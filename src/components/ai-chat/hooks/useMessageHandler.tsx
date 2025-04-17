@@ -1,12 +1,16 @@
 import { useToast } from '@/hooks/use-toast';
-import { useCIConfiguration } from './useCIConfiguration';
-import { useSpecialQueries } from './useSpecialQueries';
 import { useMessageState } from './useMessageState';
 import { ChatOption } from '@/components/ai-configuration/types';
 import { generateSecurityRemidiationResponse } from '../utils/chatResponses';
+import { isCIConfigurationQuery, getSampleRepository, Repository } from '../config/patterns/ciPatterns';
+import { checkSpecialQuery } from '../config/patterns/specialQueriesPatterns';
+import { getRandomResponse } from '../utils/aiResponseUtils';
+import { useState } from 'react';
 
 export const useMessageHandler = () => {
   const { toast } = useToast();
+  const [showCIConfig, setShowCIConfig] = useState(false);
+  const [repository, setRepository] = useState<Repository | null>(null);
   
   const {
     messages,
@@ -18,15 +22,6 @@ export const useMessageHandler = () => {
     addBotMessage,
     resetMessages
   } = useMessageState();
-  
-  const {
-    showCIConfig,
-    repository,
-    handleCIConfiguration,
-    resetCIConfiguration
-  } = useCIConfiguration();
-  
-  const { processSpecialQuery } = useSpecialQueries();
 
   const handleSecurityRemediation = (option: ChatOption) => {
     // Add user's selection as a message
@@ -53,20 +48,31 @@ export const useMessageHandler = () => {
       console.log("Original content:", content);
       
       // First, check if this is a CI configuration request
-      const ciResult = handleCIConfiguration(content);
-      if (ciResult.handled) {
+      if (isCIConfigurationQuery(content)) {
+        // Set repository data
+        setRepository(getSampleRepository());
+        setShowCIConfig(true);
+        
         // Add a 2.5-second delay for CI configuration response
         setTimeout(() => {
-          addBotMessage(ciResult.response);
+          addBotMessage("Great, let's set up your CI to work with JFrog. Which CI tools are you using?");
           setIsProcessing(false);
         }, 2500); // 2.5 seconds delay for "thinking"
         return;
       }
       
       // Next, check if this is a special query
-      const specialQueryResult = processSpecialQuery(content);
-      if (specialQueryResult.handled) {
-        addBotMessage(specialQueryResult.response);
+      const specialQueryType = checkSpecialQuery(content);
+      if (specialQueryType === 'blockedPackages') {
+        console.log("Blocked packages query detected");
+        
+        const blockResponse = `In the past 2 weeks, we blocked the following malicious npm packages:
+
+evil-package-101: Attempted to steal user credentials.
+malware-lib: Contained scripts to inject ransomware.
+bad-actor-addon: Had a payload to exfiltrate private data.`;
+        
+        addBotMessage(blockResponse);
         setIsProcessing(false);
         return;
       }
@@ -74,7 +80,7 @@ export const useMessageHandler = () => {
       // Handle other queries with a slight delay to simulate processing
       setTimeout(() => {
         try {
-          const aiResponse = specialQueryResult.getResponse();
+          const aiResponse = getRandomResponse(content);
           console.log("AI response:", aiResponse);
           addBotMessage(aiResponse);
         } catch (error) {
@@ -100,14 +106,13 @@ export const useMessageHandler = () => {
   };
 
   const handleSelectQuery = (query: string) => {
-    // Modified: Instead of sending the message directly, just set it in the input field
     setInputValue(query);
-    // Removed automatic message sending
   };
 
   const fullReset = () => {
     resetMessages();
-    resetCIConfiguration();
+    setShowCIConfig(false);
+    setRepository(null);
   };
 
   return {
@@ -118,8 +123,8 @@ export const useMessageHandler = () => {
     handleSendMessage,
     handleSelectQuery,
     handleSecurityRemediation,
+    fullReset,
     showCIConfig,
-    repository,
-    resetMessages: fullReset // Use the combined reset function
+    repository
   };
 };

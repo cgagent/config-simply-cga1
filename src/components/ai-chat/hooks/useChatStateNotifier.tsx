@@ -1,8 +1,8 @@
 
 import { useEffect } from 'react';
-
+import { Message } from '../constants';
 interface UseChatStateNotifierProps {
-  messages: Array<any>;
+  messages: Array<Message>;
   onChatStateChange?: (isChatActive: boolean) => void;
 }
 
