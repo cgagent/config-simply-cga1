@@ -7,7 +7,7 @@ import {
   ActionOptionsMessage,
   Message
 } from '../types/messageTypes';
-import { ChatOption } from '../../ai-configuration/types';
+import { ChatOption } from '@/components/shared/types';
 import { 
   ParsedContent, 
   SecurityAlertParsedContent, 

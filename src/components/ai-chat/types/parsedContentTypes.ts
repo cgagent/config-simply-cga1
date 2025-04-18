@@ -1,4 +1,4 @@
-import { ChatOption } from '../../ai-configuration/types';
+import { ChatOption } from '@/components/shared/types';
 import { MessageType } from './messageTypes';
 
 /**

@@ -1,12 +1,18 @@
 import React from 'react';
 import { MessageList } from './MessageList';
 import { ChatInput } from './ChatInput';
+import { useMessageHandler } from './hooks/useMessageHandler';
+import { useTypingAnimation } from './hooks/useTypingAnimation';
+import { useInitialInput } from './hooks/useInitialInput';
+import { useAutoSendMessage } from './hooks/useAutoSendMessage';
+import { useResetDetection } from './hooks/useResetDetection';
+import { useChatStateNotifier } from './hooks/useChatStateNotifier';
 import { Message } from './constants';
 import { AIConfigurationChat } from '@/components/ai-configuration';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { useNavigate } from 'react-router-dom';
 import { useRepositories } from '@/contexts/RepositoryContext';
-import { ChatOption } from '@/components/ai-configuration/types';
+import { ChatOption as SharedChatOption } from '@/components/shared/types';
 
 interface Repository {
   name: string;
@@ -20,7 +26,7 @@ interface ConversationScreenProps {
   setInputValue: (value: string) => void;
   onSendMessage: (content: string) => void;
   onSelectQuery: (query: string) => void;
-  onSelectOption?: (option: ChatOption) => void;
+  onSelectOption?: (option: SharedChatOption) => void;
   showCIConfig: boolean;
   repository?: Repository;
 }

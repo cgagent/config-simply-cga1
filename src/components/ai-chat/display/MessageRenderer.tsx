@@ -1,6 +1,6 @@
 import React from 'react';
 import { Message, isSecurityAlertMessage, isPackageInfoMessage, isCIConfigMessage, isActionOptionsMessage } from '../types/messageTypes';
-import { ChatOption } from '../../ai-configuration/types';
+import { ChatOption } from '@/components/shared/types';
 import { cn } from '@/lib/utils';
 import { Bot, User, Copy } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';

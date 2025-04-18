@@ -4,7 +4,7 @@ import { Message } from './constants';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Bot } from 'lucide-react';
-import { ChatOption } from '@/components/ai-configuration/types';
+import { ChatOption } from '@/components/shared/types';
 
 // Thinking animation component with three dots
 const ThinkingAnimation = () => {

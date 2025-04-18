@@ -1,4 +1,4 @@
-import { ChatOption } from '@/components/shared/types';
+import { ChatOption } from './index';
 
 /**
  * Represents the different types of messages that can be displayed in the chat

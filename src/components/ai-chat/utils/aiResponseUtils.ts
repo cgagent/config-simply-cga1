@@ -1,5 +1,6 @@
 import { conversationFlows } from '../config/flows';
 import { standaloneResponses } from '../config/responses/standaloneResponses';
+import { ChatResponse, ChatResponseContent, isResponseFunction } from '@/components/shared/types/chatTypes';
 
 // Track conversation state
 let currentFlow: string | null = null;

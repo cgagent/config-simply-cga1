@@ -1,5 +1,3 @@
-import { ChatResponseContent } from '../../utils/types';
-
 /**
  * Type for package manager
  */

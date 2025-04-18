@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import CVECard from '../CVECard';
 import { SelectableOptions } from '../ai-configuration/SelectableOptions';
-import { ChatOption } from '../ai-configuration/types';
+import { ChatOption } from '@/components/shared/types';
 
 interface ChatMessageProps {
   message: Message;

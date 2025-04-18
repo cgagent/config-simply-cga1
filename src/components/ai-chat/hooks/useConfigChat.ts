@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { Message, ChatOption } from '../../ai-configuration/types';
+import { Message, ChatOption } from '@/components/shared/types';
 import { conversationFlows } from '../config/flows';
 import { CONFIG_PATTERNS } from '../config/patterns/configPatterns';
 import { configResponses } from '../config/responses/configResponses';

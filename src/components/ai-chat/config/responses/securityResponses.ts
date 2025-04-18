@@ -1,5 +1,4 @@
-import { ChatResponseContent } from '../../utils/types';
-import { ChatOption } from '../../../ai-configuration/types';
+import { ChatOption } from '@/components/shared/types';
 
 /**
  * Generates a response for security remediation actions

@@ -1,6 +1,6 @@
 import { useToast } from '@/hooks/use-toast';
 import { useMessageState } from './useMessageState';
-import { ChatOption } from '@/components/ai-configuration/types';
+import { ChatOption } from '@/components/shared/types';
 import { generateSecurityRemediationResponse } from '../config/responses/securityResponses';
 import { isCIConfigurationQuery, getSampleRepository, Repository } from '../config/patterns/ciPatterns';
 import { checkSpecialQuery } from '../config/patterns/specialQueriesPatterns';
