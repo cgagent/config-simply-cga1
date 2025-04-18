@@ -1,5 +1,3 @@
-import { ChatResponseContent } from '../../utils/types';
-
 /**
  * Generates a response for npm configuration
  */
