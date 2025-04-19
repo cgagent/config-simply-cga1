@@ -1,5 +1,6 @@
 # AI Chat Component
 
+The goal of this component is to create a simulator of an AI chat that assists the user with various DevOps and Security tasks. The modular design implemented in this component is aimed to ease the introduction and changing the content of the interactions in order to expedite the demo-feedback-change cycle.
 This component implements an AI-powered chat interface with specialized handling for security alerts and other message types.
 
 ## Folder Structure
