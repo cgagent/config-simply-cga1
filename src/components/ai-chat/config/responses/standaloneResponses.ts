@@ -1,4 +1,4 @@
-import { ChatResponse } from '@/components/shared/types/chatTypes';
+import { ChatResponse } from '@/components/ai-chat/types/chatTypes';
 
 /**
  * Standalone responses for common queries

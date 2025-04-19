@@ -1,7 +1,5 @@
 import { conversationFlows } from '../config/flows';
 import { standaloneResponses } from '../config/responses/standaloneResponses';
-import { ChatResponse, ChatResponseContent, isResponseFunction } from '@/components/shared/types/chatTypes';
-import { releasePackageNameOptions, branchSelectionOptions } from '../config/constants/releaseConstants';
 import { ChatOption } from '@/components/shared/types';
 
 // Track conversation state
@@ -35,14 +33,24 @@ export const simulateAIResponse = (query: string): string => {
           lowerQuery.includes(pattern)
         );
 
-        if (matchingPattern) {
-          // Special handling for release flow confirmation
-          if (currentFlow === 'release' && currentStep === 'confirmation') {
+        // Check if this is an action selection
+        const isActionSelection = currentActionOptions && 
+          currentActionOptions.some(option => 
+            option.value.toLowerCase() === lowerQuery || 
+            option.id.toLowerCase() === lowerQuery
+          );
+
+        // If there's a matching pattern or this is an action selection, proceed
+        if (matchingPattern || isActionSelection) {
+          // Check if this is the end of the flow
+          if (currentStepData.isEndOfFlow) {
             // End the flow and return the final response
             currentFlow = null;
             currentStep = null;
             currentActionOptions = null;
-            return "Great! I've initiated the release process. You'll be notified once it's complete.";
+            return typeof currentStepData.response === 'function' 
+              ? currentStepData.response(lowerQuery)
+              : currentStepData.response;
           }
 
           // If there are next steps, update the current step
@@ -53,9 +61,6 @@ export const simulateAIResponse = (query: string): string => {
             const nextStepData = flow.steps.find(s => s.id === currentStep);
             if (nextStepData && nextStepData.actionOptions) {
               currentActionOptions = nextStepData.actionOptions;
-            } else if (flow.id === 'release' && currentStep === 'branch-selection') {
-              // Special case: set branch selection options for the branch-selection step
-              currentActionOptions = branchSelectionOptions;
             } else {
               currentActionOptions = null;
             }
@@ -82,9 +87,9 @@ export const simulateAIResponse = (query: string): string => {
       currentFlow = flow.id;
       currentStep = initialStep.id;
       
-      // Set action options for specific flows
-      if (flow.id === 'release' && currentStep === 'initial') {
-        currentActionOptions = releasePackageNameOptions;
+      // Set action options for the initial step if available
+      if (initialStep.actionOptions) {
+        currentActionOptions = initialStep.actionOptions;
       } else {
         currentActionOptions = null;
       }

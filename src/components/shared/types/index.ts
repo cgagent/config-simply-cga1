@@ -24,5 +24,5 @@ export interface ChatOption {
 
 // Re-export all other types
 export * from './messageTypes';
-export * from './chatTypes';
+export * from '../../ai-chat/types/chatTypes';
 export * from './uiTypes'; 

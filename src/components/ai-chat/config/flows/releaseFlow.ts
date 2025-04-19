@@ -56,7 +56,8 @@ export const releaseFlow: ConversationFlow = {
       id: 'confirmation',
       patterns: ['yes', 'proceed', 'continue', 'confirm', 'ok', 'sure', 'go ahead', 'let\'s do it', 'do it', 'start', 'begin'],
       response: "I'll start the release process now. I'll create a release branch and set up the necessary configurations. You'll be notified once the release is complete.",
-      nextSteps: []
+      nextSteps: [],
+      isEndOfFlow: true
     }
   ]
 }; 

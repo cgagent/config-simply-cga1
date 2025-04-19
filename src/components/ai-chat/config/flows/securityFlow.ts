@@ -19,7 +19,8 @@ export const securityRiskFlow: ConversationFlow = {
     {
       id: 'remediation-action-selection',
       patterns: securityRiskPatterns.remediationActionSelection,
-      response: securityRiskResponses.remediationActionSelection
+      response: securityRiskResponses.remediationActionSelection,
+      isEndOfFlow: true
     }
   ]
 };
@@ -40,7 +41,8 @@ export const maliciousPackagesFlow: ConversationFlow = {
     {
       id: 'remediation-action-selection',
       patterns: securityRiskPatterns.remediationActionSelection,
-      response: securityRiskResponses.remediationActionSelection
+      response: securityRiskResponses.remediationActionSelection,
+      isEndOfFlow: true
     }
   ]
 }; 

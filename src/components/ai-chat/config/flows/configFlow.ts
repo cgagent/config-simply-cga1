@@ -63,7 +63,8 @@ export const configFlow: ConversationFlow = {
           return configResponses.checkOnGithub();
         }
         return configResponses.initial;
-      }
+      },
+      isEndOfFlow: true
     }
   ]
 }; 

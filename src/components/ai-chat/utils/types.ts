@@ -12,6 +12,8 @@ export interface ConversationStep {
   nextSteps?: string[];
   /** Optional action options to display for this step */
   actionOptions?: import('@/components/shared/types').ChatOption[];
+  /** Flag indicating if this is the end of the flow */
+  isEndOfFlow?: boolean;
 }
 
 /**

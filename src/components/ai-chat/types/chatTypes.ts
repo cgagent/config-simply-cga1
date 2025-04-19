@@ -1,3 +1,5 @@
+import { ChatOption } from '@/components/shared/types';
+
 /**
  * Represents a response function that can take an input string and return a formatted response
  */
@@ -32,6 +34,10 @@ export interface ConversationStep {
   response: ChatResponseContent;
   /** Optional array of next step IDs in the conversation flow */
   nextSteps?: string[];
+  /** Optional action options to display for this step */
+  actionOptions?: ChatOption[];
+  /** Flag indicating if this is the end of the flow */
+  isEndOfFlow?: boolean;
 }
 
 /**

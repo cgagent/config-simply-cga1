@@ -3,5 +3,5 @@
  */
 export * from './ciPatterns';
 export * from './securityPatterns';
-export * from './specialQueriesPatterns';
-export * from './configPatterns'; 
+export * from './configPatterns';
+export * from './confirmationPatterns'; 
