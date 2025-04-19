@@ -1,7 +1,7 @@
 import { conversationFlows } from '../config/flows';
 import { standaloneResponses } from '../config/responses/standaloneResponses';
 import { ChatResponse, ChatResponseContent, isResponseFunction } from '@/components/shared/types/chatTypes';
-import { releasePackageNameOptions } from '../config/constants/releaseConstants';
+import { releasePackageNameOptions, branchSelectionOptions } from '../config/constants/releaseConstants';
 import { ChatOption } from '@/components/shared/types';
 
 // Track conversation state
@@ -36,13 +36,34 @@ export const simulateAIResponse = (query: string): string => {
         );
 
         if (matchingPattern) {
+          // Special handling for release flow confirmation
+          if (currentFlow === 'release' && currentStep === 'confirmation') {
+            // End the flow and return the final response
+            currentFlow = null;
+            currentStep = null;
+            currentActionOptions = null;
+            return "Great! I've initiated the release process. You'll be notified once it's complete.";
+          }
+
           // If there are next steps, update the current step
           if (currentStepData.nextSteps && currentStepData.nextSteps.length > 0) {
             currentStep = currentStepData.nextSteps[0];
+            
+            // Set action options for the next step if available
+            const nextStepData = flow.steps.find(s => s.id === currentStep);
+            if (nextStepData && nextStepData.actionOptions) {
+              currentActionOptions = nextStepData.actionOptions;
+            } else if (flow.id === 'release' && currentStep === 'branch-selection') {
+              // Special case: set branch selection options for the branch-selection step
+              currentActionOptions = branchSelectionOptions;
+            } else {
+              currentActionOptions = null;
+            }
           } else {
-            // End of flow
+            // End of flow - no next steps
             currentFlow = null;
             currentStep = null;
+            currentActionOptions = null;
           }
 
           // Return the response, handling both string and function responses
@@ -109,4 +130,14 @@ export const getRandomResponse = (query: string): string => {
 // Helper function to get current action options
 export const getCurrentActionOptions = () => {
   return currentActionOptions;
+};
+
+// Helper function to get current flow
+export const getCurrentFlow = () => {
+  return currentFlow;
+};
+
+// Helper function to get current step
+export const getCurrentStep = () => {
+  return currentStep;
 };

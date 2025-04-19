@@ -4,9 +4,32 @@ import { ChatOption } from '@/components/shared/types';
 import { generateSecurityRemediationResponse } from '../config/responses/securityResponses';
 import { isCIConfigurationQuery, getSampleRepository, Repository } from '../config/patterns/ciPatterns';
 import { checkSpecialQuery } from '../config/patterns/specialQueriesPatterns';
-import { getRandomResponse, getCurrentActionOptions } from '../utils/aiResponseUtils';
+import { getRandomResponse, getCurrentActionOptions, simulateAIResponse, getCurrentFlow, getCurrentStep } from '../utils/aiResponseUtils';
 import { useState } from 'react';
 import { MessageFactory } from '../utils/messageFactory';
+import { 
+  RELEASE_PACKAGE_NAME_ACTIONS, 
+  BRANCH_SELECTION_ACTIONS, 
+  ENVIRONMENT_SELECTION_ACTIONS,
+  RELEASE_TYPE_SELECTION_ACTIONS,
+  branchSelectionOptions,
+  environmentSelectionOptions,
+  releaseTypeSelectionOptions
+} from '../config/constants/releaseConstants';
+import { conversationFlows } from '../config/flows';
+import { isResponseFunction } from '@/components/shared/types/chatTypes';
+
+// Type for release package name actions
+type ReleasePackageNameAction = typeof RELEASE_PACKAGE_NAME_ACTIONS[keyof typeof RELEASE_PACKAGE_NAME_ACTIONS];
+
+// Type for branch selection actions
+type BranchSelectionAction = typeof BRANCH_SELECTION_ACTIONS[keyof typeof BRANCH_SELECTION_ACTIONS];
+
+// Type for environment selection actions
+type EnvironmentSelectionAction = typeof ENVIRONMENT_SELECTION_ACTIONS[keyof typeof ENVIRONMENT_SELECTION_ACTIONS];
+
+// Type for release type selection actions
+type ReleaseTypeSelectionAction = typeof RELEASE_TYPE_SELECTION_ACTIONS[keyof typeof RELEASE_TYPE_SELECTION_ACTIONS];
 
 export const useMessageHandler = () => {
   const { toast } = useToast();
@@ -29,11 +52,126 @@ export const useMessageHandler = () => {
     addUserMessage(option.value);
     setIsProcessing(true);
 
-    // Handle the remediation action using predefined responses
+    // Check if this is a release flow option
+    if (Object.values(RELEASE_PACKAGE_NAME_ACTIONS).includes(option.id as ReleasePackageNameAction)) {
+      // Handle release flow option
+      setTimeout(() => {
+        try {
+          // First simulate the response to update the conversation state
+          // This will move the flow to the branch-selection step
+          simulateAIResponse(option.value);
+          
+          // Explicitly set the branch selection options
+          // This ensures we have the correct options for the branch selection step
+          const branchOptions = branchSelectionOptions;
+          
+          // Use the branch selection response
+          const responseText = "Which branch should we release from?";
+          
+          // Create an action options message with the branch selection options
+          const actionOptionsMessage = MessageFactory.createActionOptionsMessage(responseText, branchOptions);
+          addBotMessage(actionOptionsMessage);
+        } catch (error) {
+          console.error("Error handling release option:", error);
+          addBotMessage("I encountered an error processing your selection. Please try again.");
+        } finally {
+          setIsProcessing(false);
+        }
+      }, 1000);
+      return;
+    }
+
+    // Check if this is a branch selection option
+    if (Object.values(BRANCH_SELECTION_ACTIONS).includes(option.id as BranchSelectionAction)) {
+      // Handle branch selection option
+      setTimeout(() => {
+        try {
+          // Simulate the response to update the conversation state
+          simulateAIResponse(option.value);
+          
+          // Explicitly set the environment selection options
+          // This ensures we have the correct options for the environment selection step
+          const envOptions = environmentSelectionOptions;
+          
+          // Use the environment selection response
+          const responseText = "Which environment should we release to?";
+          
+          // Create an action options message with the environment selection options
+          const actionOptionsMessage = MessageFactory.createActionOptionsMessage(responseText, envOptions);
+          addBotMessage(actionOptionsMessage);
+        } catch (error) {
+          console.error("Error handling branch option:", error);
+          addBotMessage("I encountered an error processing your selection. Please try again.");
+        } finally {
+          setIsProcessing(false);
+        }
+      }, 1000);
+      return;
+    }
+
+    // Check if this is an environment selection option
+    if (Object.values(ENVIRONMENT_SELECTION_ACTIONS).includes(option.id as EnvironmentSelectionAction)) {
+      // Handle environment selection option
+      setTimeout(() => {
+        try {
+          // Simulate the response to update the conversation state
+          simulateAIResponse(option.value);
+          
+          // Explicitly set the release type selection options
+          // This ensures we have the correct options for the release type selection step
+          const releaseTypeOptions = releaseTypeSelectionOptions;
+          
+          // Use the release type selection response
+          const responseText = "What type of release is this?";
+          
+          // Create an action options message with the release type selection options
+          const actionOptionsMessage = MessageFactory.createActionOptionsMessage(responseText, releaseTypeOptions);
+          addBotMessage(actionOptionsMessage);
+        } catch (error) {
+          console.error("Error handling environment option:", error);
+          addBotMessage("I encountered an error processing your selection. Please try again.");
+        } finally {
+          setIsProcessing(false);
+        }
+      }, 1000);
+      return;
+    }
+
+    // Check if this is a release type selection option
+    if (Object.values(RELEASE_TYPE_SELECTION_ACTIONS).includes(option.id as ReleaseTypeSelectionAction)) {
+      // Handle release type selection option
+      setTimeout(() => {
+        try {
+          // Simulate the response to update the conversation state
+          simulateAIResponse(option.value);
+          
+          // Use the confirmation response
+          const responseText = "Perfect! I'll help you create a release with these details. Would you like to proceed with the release?";
+          
+          // For confirmation, we don't have predefined options
+          // So we just send a regular text message
+          addBotMessage(responseText);
+        } catch (error) {
+          console.error("Error handling release type option:", error);
+          addBotMessage("I encountered an error processing your selection. Please try again.");
+        } finally {
+          setIsProcessing(false);
+        }
+      }, 1000);
+      return;
+    }
+
+    // Handle security remediation actions
     setTimeout(() => {
-      const response = generateSecurityRemediationResponse(option.id);
-      addBotMessage(response);
-      setIsProcessing(false);
+      try {
+        const response = generateSecurityRemediationResponse(option.id);
+        addBotMessage(response);
+      } catch (error) {
+        console.error("Error handling security remediation:", error);
+        addBotMessage("I encountered an error processing your selection. Please try again.");
+      } finally {
+        setIsProcessing(false);
+      }
     }, 1000);
   };
 
@@ -81,17 +219,43 @@ bad-actor-addon: Had a payload to exfiltrate private data.`;
       // Handle other queries with a slight delay to simulate processing
       setTimeout(() => {
         try {
+          // Add debug logging for current flow and step
+          console.log("Before getRandomResponse - Current flow and step:", {
+            currentFlow: getCurrentFlow(),
+            currentStep: getCurrentStep()
+          });
+          
           const aiResponse = getRandomResponse(content);
           console.log("AI response:", aiResponse);
           
+          // Add debug logging for current flow and step after getRandomResponse
+          console.log("After getRandomResponse - Current flow and step:", {
+            currentFlow: getCurrentFlow(),
+            currentStep: getCurrentStep()
+          });
+          
           // Check if there are action options for this response
           const actionOptions = getCurrentActionOptions();
-          if (actionOptions && actionOptions.length > 0) {
+          
+          // If we're in the confirmation step and the user confirms, we should not show action options
+          const isConfirmation = content.toLowerCase().includes('yes') || 
+                                content.toLowerCase().includes('proceed') || 
+                                content.toLowerCase().includes('continue') || 
+                                content.toLowerCase().includes('confirm') ||
+                                content.toLowerCase().includes('ok') ||
+                                content.toLowerCase().includes('sure') ||
+                                content.toLowerCase().includes('go ahead') ||
+                                content.toLowerCase().includes('let\'s do it') ||
+                                content.toLowerCase().includes('do it') ||
+                                content.toLowerCase().includes('start') ||
+                                content.toLowerCase().includes('begin');
+          
+          if (actionOptions && actionOptions.length > 0 && !isConfirmation) {
             // Create an action options message
             const actionOptionsMessage = MessageFactory.createActionOptionsMessage(aiResponse, actionOptions);
             addBotMessage(actionOptionsMessage);
           } else {
-            // Regular text message
+            // Send a regular text message
             addBotMessage(aiResponse);
           }
         } catch (error) {

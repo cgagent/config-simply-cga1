@@ -70,7 +70,7 @@ export const defaultPackageStatistics: PackageStatistics = {
       name: 'frontend-app',
       version: '1.2.3',
       type: 'npm',
-      releaseDate: '2024-06-15T14:30:00Z',
+      releaseDate: '2025-03-12T14:30:00Z',
       repository: 'production',
       status: 'passed'
     },
@@ -82,17 +82,18 @@ export const defaultPackageStatistics: PackageStatistics = {
       releaseDate: '2025-04-14T10:15:00Z',
       repository: 'staging',
       status: 'warning'
-    },
-    {
-      id: '3',
-      name: 'shared-components',
-      version: '0.5.0',
-      type: 'npm',
-      releaseDate: '2024-06-13T16:45:00Z',
-      repository: 'production',
-      status: 'passed'
-    },
+    }
+    // ,
     // {
+    //   id: '3',
+    //   name: 'shared-components',
+    //   version: '0.5.0',
+    //   type: 'npm',
+    //   releaseDate: '2024-06-13T16:45:00Z',
+    //   repository: 'production',
+    //   status: 'passed'
+    // },
+    // // {
     //   id: '4',
     //   name: 'infrastructure',
     //   version: '1.0.0',
