@@ -10,6 +10,7 @@ import { ChatInput } from '../ChatInput';
 import { MessageList } from '../MessageList';
 import { useNavigate } from 'react-router-dom';
 import { useRepositories } from '@/contexts/RepositoryContext';
+import { MessageType } from '../types/messageTypes';
 
 // Mock react-router-dom
 vi.mock('react-router-dom', () => ({
@@ -71,6 +72,7 @@ vi.mock('../hooks/useMessageHandler', () => ({
     handleSendMessage: vi.fn(),
     handleSelectQuery: vi.fn(),
     handleSecurityRemediation: vi.fn(),
+    handleActionSelection: vi.fn(),
     showCIConfig: false,
     repository: null,
     fullReset: vi.fn(),
@@ -108,8 +110,8 @@ describe('AIChat', () => {
     // Mock useMessageHandler to return some messages
     vi.mocked(useMessageHandler).mockReturnValueOnce({
       messages: [
-        { id: '1', role: 'user', content: 'Hello' },
-        { id: '2', role: 'bot', content: 'Hi there!' },
+        { id: '1', role: 'user', content: 'Hello', type: 'text' as MessageType, timestamp: Date.now() },
+        { id: '2', role: 'assistant', content: 'Hi there!', type: 'text' as MessageType, timestamp: Date.now() },
       ],
       isProcessing: false,
       inputValue: '',
@@ -117,8 +119,9 @@ describe('AIChat', () => {
       handleSendMessage: vi.fn(),
       handleSelectQuery: vi.fn(),
       handleSecurityRemediation: vi.fn(),
-      showCIConfig: false,
+      handleActionSelection: vi.fn(),
       repository: null,
+      showCIConfig: false,
       fullReset: vi.fn(),
     });
 
@@ -155,6 +158,7 @@ describe('AIChat', () => {
       handleSendMessage: vi.fn(),
       handleSelectQuery: vi.fn(),
       handleSecurityRemediation: vi.fn(),
+      handleActionSelection: vi.fn(),
       showCIConfig: false,
       repository: null,
       fullReset: vi.fn(),
