@@ -20,6 +20,8 @@ export interface ChatResponse {
   patterns: string[];
   /** The response content (static or dynamic) */
   response: ChatResponseContent;
+  /** Optional array of action options to display */
+  options?: ChatOption[];
 }
 
 /**

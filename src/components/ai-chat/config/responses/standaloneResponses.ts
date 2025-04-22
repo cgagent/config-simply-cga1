@@ -36,8 +36,17 @@ bad-actor-addon: Had a payload to exfiltrate private data.`
   },
   {
     id: 'user-management',
-    patterns: ['user', 'account'],
-    response: "User management allows you to control access to your organization's resources. You can add users, define roles, and set permissions in the User Management section."
+    patterns: ['user', 'account', 'invite'],
+    response: "Let's invite users to your organization. Which role would you like to give to these users?",
+    options: [
+      { id: 'admin-role', label: 'Admin', value: 'admin' },
+      { id: 'developer-role', label: 'Developer', value: 'developer' }
+    ]
+  },
+  {
+    id: 'user-role-selected',
+    patterns: ['admin', 'developer'],
+    response: (role: string) => `Great! You've selected the ${role} role. Please provide the email addresses of the users you'd like to invite, separated by commas.`
   },
   {
     id: 'http-request-packages',
