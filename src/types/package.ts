@@ -43,74 +43,53 @@ export interface PackageStatistics {
     affectedRepos: string[];
   }[];
   latestPackages: LatestPackage[];
+  latestBuilds: {
+    id: string;
+    repository: string;
+    buildNumber: string;
+    status: 'passed' | 'warning' | 'failed';
+    buildDate: string;
+  }[];
 }
 
 // Default demo data
 export const defaultPackageStatistics: PackageStatistics = {
   totalPackages: 154,
-  blockedPackages: 3,
-  dataConsumption: 1528,
+  blockedPackages: 12,
+  dataConsumption: 1024 * 1024 * 1024 * 2.5, // 2.5 GB
   packageTypeCounts: {
-    docker: 3,
-    maven: 8,
-    npm: 12
+    docker: 45,
+    maven: 67,
+    npm: 42
   },
   riskyPackages: [
     {
-      name: 'axios',
-      version: '1.5.1',
-      vulnerability: 'CVE-2024-39338',
-      severity: 'Critical',
-      affectedRepos: ['ACME/frontend-app', 'ACME/backend-api']
+      name: "lodash",
+      version: "4.17.15",
+      vulnerability: "CVE-2021-23337",
+      severity: "high",
+      affectedRepos: ["frontend-app", "common"]
     }
   ],
   latestPackages: [
     {
-      id: '1',
-      name: 'frontend-app',
-      version: '1.2.3',
-      type: 'npm',
-      releaseDate: '2025-03-12T14:30:00Z',
-      repository: 'production',
-      status: 'passed'
-    },
-    {
-      id: '2',
-      name: 'backend-api',
-      version: '2.0.1',
-      type: 'maven',
-      releaseDate: '2025-04-14T10:15:00Z',
-      repository: 'staging',
-      status: 'warning'
+      id: "1",
+      name: "frontend-app",
+      version: "1.2.3",
+      type: "docker",
+      releaseDate: new Date().toISOString(),
+      repository: "frontend-app",
+      status: "passed"
     }
-    // ,
-    // {
-    //   id: '3',
-    //   name: 'shared-components',
-    //   version: '0.5.0',
-    //   type: 'npm',
-    //   releaseDate: '2024-06-13T16:45:00Z',
-    //   repository: 'production',
-    //   status: 'passed'
-    // },
-    // // {
-    //   id: '4',
-    //   name: 'infrastructure',
-    //   version: '1.0.0',
-    //   type: 'docker',
-    //   releaseDate: '2024-06-12T09:30:00Z',
-    //   repository: 'production',
-    //   status: 'passed'
-    // },
-    // {
-    //   id: '5',
-    //   name: 'data-processor',
-    //   version: '0.8.2',
-    //   type: 'python',
-    //   releaseDate: '2024-06-11T11:20:00Z',
-    //   repository: 'staging',
-    //   status: 'failed'
-    // }
+  ],
+  latestBuilds: [
+    {
+      id: "1",
+      repository: "frontend-app",
+      buildNumber: "1234",
+      status: "passed",
+      buildDate: new Date().toISOString()
+    }
   ]
 };
 

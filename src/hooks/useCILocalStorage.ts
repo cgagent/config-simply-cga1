@@ -283,6 +283,24 @@ export const useCILocalStorage = () => {
     });
   }, []);
 
+  /**
+   * Adds a new build to the latest builds list
+   */
+  const addLatestBuild = useCallback((build: PackageStatistics['latestBuilds'][0]) => {
+    setPackageStats(prev => {
+      // Create a new array with the new build at the beginning
+      const updatedLatestBuilds = [build, ...prev.latestBuilds];
+      
+      // Limit to the 5 most recent builds
+      const limitedLatestBuilds = updatedLatestBuilds.slice(0, 5);
+      
+      return {
+        ...prev,
+        latestBuilds: limitedLatestBuilds
+      };
+    });
+  }, []);
+
   return {
     repositories,
     updateRepositoryStatus,
@@ -292,6 +310,7 @@ export const useCILocalStorage = () => {
     setPackageStats,
     blockedPackages,
     setBlockedPackages,
-    addLatestPackage
+    addLatestPackage,
+    addLatestBuild
   };
 }; 

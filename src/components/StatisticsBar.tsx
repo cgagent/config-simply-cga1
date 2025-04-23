@@ -166,7 +166,7 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
         </Card>
       </motion.div>
 
-      {/* Latest Packages Card */}
+      {/* Recent Activity Card */}
       <motion.div
         variants={cardVariants}
         initial="initial"
@@ -176,74 +176,49 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
       >
         <Card className="space-card p-4 h-full flex flex-col backdrop-blur-sm">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-blue-100/80">My Packages</h3>
-            <Package className="h-5 w-5 text-blue-400" />
+            <h3 className="text-sm font-medium text-blue-100/80">Recent Activity</h3>
+            <div className="flex items-center space-x-2">
+              <Package className="h-4 w-4 text-blue-400" />
+              <GitBranch className="h-4 w-4 text-blue-400" />
+            </div>
           </div>
+          
+          {/* Recent Packages Section */}
           <div 
-            className="group cursor-pointer hover:bg-blue-950/30 p-2 rounded-lg transition-all duration-200 border border-transparent hover:border-blue-800/30 relative"
+            className="group cursor-pointer hover:bg-blue-950/30 p-2 rounded-lg transition-all duration-200 border border-transparent hover:border-blue-800/30 relative mb-3"
             onClick={handleLatestPackagesClick}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <Package className="h-4 w-4 text-blue-400" />
-                <span className="text-sm font-medium text-blue-100/80">Recent Release</span>
+                <span className="text-sm font-medium text-blue-100/80">Recent Package</span>
               </div>
               <ChevronRight className="h-4 w-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
             {packageStats.latestPackages && packageStats.latestPackages.length > 0 ? (
-              <div className="mt-2 space-y-2">
-                {packageStats.latestPackages.slice(0, 2).map((pkg, index) => (
-                  <div key={pkg.id}>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <div className="mr-2">
-                          {getPackageTypeIcon(pkg.type)}
-                        </div>
-                        <span className="text-sm text-white space-glow">{pkg.name}</span>
-                        <span className="text-xs text-blue-200/70 ml-2">v{pkg.version}</span>
-                      </div>
-                      <div className="flex items-center">
-                        {getStatusIcon(pkg.status)}
-                      </div>
+              <div className="mt-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="mr-2">
+                      {getPackageTypeIcon(packageStats.latestPackages[0].type)}
                     </div>
-                    {index === 0 && (
-                      <p className="text-xs text-blue-200/60 mt-1">
-                        Published {formatDistanceToNow(new Date(pkg.releaseDate), { addSuffix: true })}
-                      </p>
-                    )}
-                    {index === 1 && (
-                      <p className="text-xs text-blue-200/60 mt-1">
-                        Published {formatDistanceToNow(new Date(pkg.releaseDate), { addSuffix: true })}
-                      </p>
-                    )}
+                    <span className="text-sm text-white space-glow">{packageStats.latestPackages[0].name}</span>
+                    <span className="text-xs text-blue-200/70 ml-2">v{packageStats.latestPackages[0].version}</span>
                   </div>
-                ))}
-                {packageStats.latestPackages.length > 2 && (
-                  <p className="text-xs text-blue-200/60">
-                    +{packageStats.latestPackages.length - 2} more releases
-                  </p>
-                )}
+                  <div className="flex items-center">
+                    {getStatusIcon(packageStats.latestPackages[0].status)}
+                  </div>
+                </div>
+                <p className="text-xs text-blue-200/60 mt-1">
+                  Published {formatDistanceToNow(new Date(packageStats.latestPackages[0].releaseDate), { addSuffix: true })}
+                </p>
               </div>
             ) : (
               <p className="text-xs text-blue-200/60 mt-2">No recent package releases</p>
             )}
           </div>
-        </Card>
-      </motion.div>
 
-      {/* Latest Builds Card */}
-      <motion.div
-        variants={cardVariants}
-        initial="initial"
-        animate="animate"
-        whileHover="hover"
-        transition={{ duration: 0.3, delay: 0.3 }}
-      >
-        <Card className="space-card p-4 h-full flex flex-col backdrop-blur-sm">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-blue-100/80">My Builds</h3>
-            <GitBranch className="h-5 w-5 text-blue-400" />
-          </div>
+          {/* Recent Builds Section */}
           <div 
             className="group cursor-pointer hover:bg-blue-950/30 p-2 rounded-lg transition-all duration-200 border border-transparent hover:border-blue-800/30 relative"
             onClick={handleLatestBuildsClick}
@@ -251,38 +226,28 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <GitBranch className="h-4 w-4 text-blue-400" />
-                <span className="text-sm font-medium text-blue-100/80">Recent Builds</span>
+                <span className="text-sm font-medium text-blue-100/80">Recent Build</span>
               </div>
               <ChevronRight className="h-4 w-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
-            <div className="mt-2 space-y-2">
-              <div>
+            {packageStats.latestBuilds && packageStats.latestBuilds.length > 0 ? (
+              <div className="mt-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <span className="text-sm text-white space-glow">frontend-app</span>
-                    <span className="text-xs text-blue-200/70 ml-2">#1234</span>
+                    <span className="text-sm text-white space-glow">{packageStats.latestBuilds[0].repository}</span>
+                    <span className="text-xs text-blue-200/70 ml-2">#{packageStats.latestBuilds[0].buildNumber}</span>
                   </div>
                   <div className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
+                    {getStatusIcon(packageStats.latestBuilds[0].status)}
                   </div>
                 </div>
                 <p className="text-xs text-blue-200/60 mt-1">
-                  Published 2 minutes ago
+                  Built {formatDistanceToNow(new Date(packageStats.latestBuilds[0].buildDate), { addSuffix: true })}
                 </p>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <span className="text-sm text-white space-glow">backend-api</span>
-                  <span className="text-xs text-blue-200/70 ml-2">#1233</span>
-                </div>
-                <div className="flex items-center">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                </div>
-              </div>
-              <p className="text-xs text-blue-200/60 mt-1">
-                Published 5 minutes ago
-              </p>
-            </div>
+            ) : (
+              <p className="text-xs text-blue-200/60 mt-2">No recent builds</p>
+            )}
           </div>
         </Card>
       </motion.div>
