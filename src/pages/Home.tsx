@@ -83,6 +83,8 @@ const Home: React.FC = () => {
             />
           )}
           
+          {/* Removed the Generate Token button */}
+
           <div className="flex-1 flex flex-col border-0 overflow-hidden bg-background dark:bg-background">
             <div className="flex-1 flex flex-col p-4 overflow-hidden">
               <AIChat 

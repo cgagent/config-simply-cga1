@@ -14,6 +14,10 @@ export const SUGGESTED_QUERIES = [
   {
     label: "Invite a user",
     query: "I would like to invite a user to my organization. Can you help me with that?"
+  },
+  {
+    label: "Generate Token",
+    query: "I would like to generate a token. Can you help me with that?"
   }
 ];
 
@@ -23,4 +27,4 @@ export interface Message {
   id: string;
   role: 'user' | 'bot';
   content: string;
-} 
+}
