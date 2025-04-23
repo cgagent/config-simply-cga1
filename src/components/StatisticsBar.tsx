@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { useRepositories } from '@/contexts/RepositoryContext';
 import { formatDistanceToNow } from 'date-fns';
 import { packageTypeColors } from '@/types/package';
+import Chart from 'chart.js/auto';
 
 interface StatisticsBarProps {
   ciCompletionPercentage: number;
@@ -111,15 +112,82 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
     }
   };
 
+  // Initialize Chart.js for Data Consumption
+  React.useEffect(() => {
+    const ctx = document.getElementById('data-consumption-chart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+        datasets: [
+          {
+            label: 'Data Consumption (GB)',
+            data: [1, 2, 3.5, 5],
+            borderColor: '#4CAF50',
+            backgroundColor: 'rgba(76, 175, 80, 0.2)',
+            fill: true,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Weeks',
+            },
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'GB',
+            },
+            beginAtZero: true,
+          },
+        },
+      },
+    });
+  }, []);
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      {/* Blocked Malicious Packages Card */}
+      {/* Data Consumption Card */}
       <motion.div
         variants={cardVariants}
         initial="initial"
         animate="animate"
         whileHover="hover"
         transition={{ duration: 0.3, delay: 0.1 }}
+      >
+        <Card className="space-card p-4 h-full flex flex-col backdrop-blur-sm">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-medium text-blue-100/80">Data Consumption</h3>
+          </div>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-2xl font-semibold text-white space-glow">5 GB</span>
+              <span className="text-xs text-blue-200/70">This Month</span>
+            </div>
+            <div className="mt-4">
+              <canvas id="data-consumption-chart" className="w-full h-24"></canvas>
+            </div>
+          </div>
+        </Card>
+      </motion.div>
+
+      {/* Blocked Malicious Packages Card */}
+      <motion.div
+        variants={cardVariants}
+        initial="initial"
+        animate="animate"
+        whileHover="hover"
+        transition={{ duration: 0.3, delay: 0.2 }}
       >
         <Card className="space-card p-4 h-full flex flex-col backdrop-blur-sm">
           <div className="flex items-center justify-between mb-3">
@@ -172,7 +240,7 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
         initial="initial"
         animate="animate"
         whileHover="hover"
-        transition={{ duration: 0.3, delay: 0.2 }}
+        transition={{ duration: 0.3, delay: 0.3 }}
       >
         <Card className="space-card p-4 h-full flex flex-col backdrop-blur-sm">
           <div className="flex items-center justify-between mb-3">
