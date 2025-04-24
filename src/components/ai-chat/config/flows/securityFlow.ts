@@ -6,7 +6,7 @@ import { securityRemediationOptions } from '../constants/securityConstants';
 /**
  * Security risk flow
  */
-export const securityRiskFlow: ConversationFlow = {
+export const securityFlow: ConversationFlow = {
   id: 'security-risk',
   name: 'Security Risk',
   steps: [

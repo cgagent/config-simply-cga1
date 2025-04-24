@@ -1,6 +1,5 @@
 import { ConversationFlow } from '../../types/chatTypes';
-import { securityRiskFlow } from './securityRiskFlow';
-import { maliciousPackagesFlow } from './maliciousPackagesFlow';
+import { securityFlow, maliciousPackagesFlow } from './securityFlow';
 import { configFlow } from './configFlow';
 import { releaseFlow } from './releaseFlow';
 import { userInviteFlow } from './userInviteFlow';
@@ -9,7 +8,7 @@ import { userInviteFlow } from './userInviteFlow';
  * All conversation flows
  */
 export const conversationFlows: ConversationFlow[] = [
-  securityRiskFlow,
+  securityFlow,
   maliciousPackagesFlow,
   configFlow,
   releaseFlow,

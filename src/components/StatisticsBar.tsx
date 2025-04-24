@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { CheckCircle, Package, PackageX, Database, ShieldBan, MonitorDot, Biohazard, Skull, AlertTriangle, XCircle, ChevronRight, GitBranch } from 'lucide-react';
@@ -9,6 +9,7 @@ import { useRepositories } from '@/contexts/RepositoryContext';
 import { formatDistanceToNow } from 'date-fns';
 import { packageTypeColors } from '@/types/package';
 import Chart from 'chart.js/auto';
+import { User } from '@/types/user';
 
 interface StatisticsBarProps {
   ciCompletionPercentage: number;
@@ -17,6 +18,70 @@ interface StatisticsBarProps {
   dataConsumption: number;
   onChatQuery?: (query: string) => void;
 }
+
+// Mock users data - this would typically come from an API or central state management
+const initialUsers: User[] = [
+  {
+    id: '1',
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'john.doe@example.com',
+    role: 'Admin',
+    lastLoginDate: '2023-10-15T14:30:00Z',
+    developerApp: true,
+    status: 'active'
+  },
+  {
+    id: '2',
+    firstName: 'Jane',
+    lastName: 'Smith',
+    email: 'jane.smith@example.com',
+    role: 'Developer',
+    lastLoginDate: '2023-10-14T09:15:00Z',
+    developerApp: false,
+    status: 'active'
+  },
+  {
+    id: '3',
+    firstName: 'Mike',
+    lastName: 'Johnson',
+    email: 'mike.johnson@example.com',
+    role: 'Developer',
+    lastLoginDate: '2023-10-13T16:45:00Z',
+    developerApp: true,
+    status: 'active'
+  },
+  {
+    id: '4',
+    firstName: '',
+    lastName: '',
+    email: 'pending.user@example.com',
+    role: 'Developer',
+    lastLoginDate: '2023-10-13T16:45:00Z',
+    developerApp: false,
+    status: 'pending'
+  },
+  {
+    id: '7',
+    firstName: '',
+    lastName: '',
+    email: 'pending.user4@example.com',
+    role: 'Developer',
+    lastLoginDate: '',
+    developerApp: false,
+    status: 'pending'
+  },
+  {
+    id: '8',
+    firstName: '',
+    lastName: '',
+    email: 'pending.user5@example.com',
+    role: 'Admin',
+    lastLoginDate: '',
+    developerApp: false,
+    status: 'pending'
+  }
+];
 
 const StatisticsBar: React.FC<StatisticsBarProps> = ({
   ciCompletionPercentage,
@@ -27,10 +92,17 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
 }) => {
   const navigate = useNavigate();
   const { repositories, packageStats } = useRepositories();
+  const [users, setUsers] = useState<User[]>(initialUsers);
 
   // Calculate repository statistics
   const totalRepos = repositories.length;
   const configuredRepos = repositories.filter(repo => repo.isConfigured).length;
+
+  // Calculate user statistics
+  const totalUsers = users.length;
+  const activeUsers = users.filter(user => user.status !== 'pending').length;
+  const activeToPendingRatio = `${activeUsers} / ${totalUsers}`;
+  const pendingUsers = totalUsers - activeUsers;
 
   const handleCICompletionClick = useCallback(() => {
     console.log('Navigating to CI page');
@@ -68,7 +140,7 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
 
   const handlePackageAtRiskClick = useCallback(() => {
     if (onChatQuery) {
-      onChatQuery("Identify which packages are at risk in my organization");
+      onChatQuery("identify which packages are at risk in my organization");
     }
   }, [onChatQuery]);
 
@@ -114,45 +186,48 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
 
   // Initialize Chart.js for Data Consumption
   React.useEffect(() => {
-    const ctx = document.getElementById('data-consumption-chart').getContext('2d');
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-        datasets: [
-          {
-            label: 'Data Consumption (GB)',
-            data: [1, 2, 3.5, 5],
-            borderColor: '#4CAF50',
-            backgroundColor: 'rgba(76, 175, 80, 0.2)',
-            fill: true,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            display: false,
-          },
+    const canvas = document.getElementById('data-consumption-chart') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+          datasets: [
+            {
+              label: 'Data Consumption (GB)',
+              data: [1, 2, 3.5, 5],
+              borderColor: '#4CAF50',
+              backgroundColor: 'rgba(76, 175, 80, 0.2)',
+              fill: true,
+            },
+          ],
         },
-        scales: {
-          x: {
-            title: {
-              display: true,
-              text: 'Weeks',
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: false,
             },
           },
-          y: {
-            title: {
-              display: true,
-              text: 'GB',
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Weeks',
+              },
             },
-            beginAtZero: true,
+            y: {
+              title: {
+                display: true,
+                text: 'GB',
+              },
+              beginAtZero: true,
+            },
           },
         },
-      },
-    });
+      });
+    }
   }, []);
 
   return (
@@ -344,13 +419,15 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <span className="text-2xl font-semibold text-white space-glow">21 / 30</span>
+                  <span className="text-2xl font-semibold text-white space-glow">{activeToPendingRatio}</span>
                   <span className="text-xs text-blue-200/70">developers connected</span>
                 </div>
                 <ChevronRight className="h-4 w-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <p className="text-xs text-blue-200/60 mt-1">
-                ⚠️ 9 Developers are not protected
+                {pendingUsers === 0 
+                  ? "All developers are protected" 
+                  : `⚠️ ${pendingUsers} ${pendingUsers === 1 ? 'Developer is' : 'Developers are'} not protected`}
               </p>
             </div>
           </div>

@@ -31,6 +31,12 @@
 import { conversationFlows } from '../config/flows';
 import { standaloneResponses } from '../config/responses/standaloneResponses';
 import { ChatOption } from '@/components/shared/types';
+import { SECURITY_RISK_PATTERNS } from '../config/patterns/securityPatterns';
+
+// Add priority pattern matching
+const PRIORITY_PATTERNS = {
+  'security-risk': SECURITY_RISK_PATTERNS.identify
+};
 
 // Track conversation state
 let currentFlow: string | null = null;
@@ -122,7 +128,36 @@ export const simulateAIResponse = (query: string): string => {
     }
   }
 
-  // If not in a flow or no match in current flow, check for new flow starts
+  // Before checking all flows, check priority patterns for exact matches
+  // This ensures the correct flow is triggered for specific commands
+  for (const [flowId, patterns] of Object.entries(PRIORITY_PATTERNS)) {
+    // Find the flow by ID
+    const flow = conversationFlows.find(f => f.id === flowId);
+    if (flow) {
+      // Check if any pattern is an exact match
+      const exactMatch = patterns.some(pattern => 
+        lowerQuery === pattern.toLowerCase()
+      );
+      
+      if (exactMatch) {
+        const initialStep = flow.steps[0];
+        currentFlow = flow.id;
+        currentStep = initialStep.id;
+        
+        if (initialStep.actionOptions) {
+          currentActionOptions = initialStep.actionOptions;
+        } else {
+          currentActionOptions = null;
+        }
+        
+        return typeof initialStep.response === 'function'
+          ? initialStep.response(lowerQuery)
+          : initialStep.response;
+      }
+    }
+  }
+
+  // If not in a flow or no priority match, check for new flow starts
   for (const flow of conversationFlows) {
     const initialStep = flow.steps[0];
     if (initialStep.patterns.some(pattern => lowerQuery.includes(pattern))) {
