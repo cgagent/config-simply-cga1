@@ -53,8 +53,9 @@ import { useRepositories } from '@/contexts/RepositoryContext';
 import { PackageTableMessage, isPackageTableMessage } from '../types/messageTypes';
 import { formatDistanceToNow } from 'date-fns';
 import { PACKAGE_FLOW_ID, packageFollowUpOptions } from '../config/flows/packageFlow';
+import { TOKEN_FLOW_ID } from '../config/flows/tokenFlow';
 
-
+// Original hook format
 export const useMessageHandler = () => {
   const { toast } = useToast();
   const [showCIConfig, setShowCIConfig] = useState(false);
@@ -106,6 +107,13 @@ export const useMessageHandler = () => {
     }
   }, [currentFlowId, setCurrentFlow]);
 
+  // Inside the useMessageHandler hook definition, add these state variables
+  const [tokenFlowState, setTokenFlowState] = useState<null | {
+    step: 'name' | 'expiration' | 'confirmation';
+    tokenName?: string;
+    tokenExpiration?: string;
+  }>(null);
+
   /**
    * Map option ID and flow ID to the appropriate field update
    */
@@ -144,6 +152,57 @@ export const useMessageHandler = () => {
     // Add user's selection as a message
     addUserMessage(option.value);
     setIsProcessing(true);
+
+    // Check if we're in the token flow
+    if (tokenFlowState) {
+      setTimeout(() => {
+        try {
+          if (tokenFlowState.step === 'expiration') {
+            // Store the token expiration and move to confirmation step
+            const tokenExpiration = option.value;
+            setTokenFlowState({
+              ...tokenFlowState,
+              step: 'confirmation',
+              tokenExpiration
+            });
+            
+            // Show confirmation options
+            const message = MessageFactory.createActionOptionsMessage(
+              `**Token summary:**\n• Name: "${tokenFlowState.tokenName}"\n• Type: Read-only access\n• Expiration: ${tokenExpiration}\n\nGenerate this token now?`,
+              [
+                { id: 'confirm-yes', label: 'Generate Token', value: 'Yes' },
+                { id: 'confirm-no', label: 'Cancel', value: 'No' }
+              ]
+            );
+            addBotMessage(message);
+          }
+          else if (tokenFlowState.step === 'confirmation') {
+            // Handle final confirmation
+            if (option.id === 'confirm-yes') {
+              // Generate a mock token
+              const mockToken = `jfrog_at_${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`;
+              
+              // End the token flow
+              setTokenFlowState(null);
+              
+              // Show success message
+              addBotMessage(`✅ **Token generated**\n\n**Details:**\n• Type: Read-only\n• Token: \`${mockToken}\`\n\n⚠️ Copy this token now - it won't be displayed again.`);
+            } else {
+              // Cancel token generation
+              setTokenFlowState(null);
+              addBotMessage(`Token generation cancelled.\n\nSay "generate token" to start over with different settings.`);
+            }
+          }
+        } catch (error) {
+          console.error("Error processing token action:", error);
+          addBotMessage("I encountered an error processing your selection. Please try again.");
+        } finally {
+          setIsProcessing(false);
+        }
+        return;
+      }, 1000);
+      return;
+    }
 
     // Get the current flow and step
     const currentFlowId = getCurrentFlow();
@@ -249,12 +308,94 @@ export const useMessageHandler = () => {
     setIsProcessing(true);
     
     try {
-      // Enhanced logging for debugging
-      console.log("Original content:", content);
-      
       // Process the message with a slight delay to simulate processing
       setTimeout(() => {
         try {
+          // Check if we're in the token flow
+          if (tokenFlowState) {
+            // Handle token flow based on current step
+            if (tokenFlowState.step === 'name') {
+              // Store the token name and move to expiration step
+              const tokenName = content.trim();
+              setTokenFlowState({
+                step: 'expiration',
+                tokenName
+              });
+              
+              // Show duration options
+              const message = MessageFactory.createActionOptionsMessage(
+                `Your token name will be "${tokenName}"\n\nWhat should be your token duration?`,
+                [
+                  { id: 'expiration-never', label: 'Never', value: 'Never' },
+                  { id: 'expiration-1day', label: '1 Day', value: '1 Day' },
+                  { id: 'expiration-3days', label: '3 Days', value: '3 Days' },
+                  { id: 'expiration-7days', label: '7 Days', value: '7 Days' },
+                  { id: 'expiration-1month', label: '1 Month', value: '1 Month' },
+                  { id: 'expiration-1year', label: '1 Year', value: '1 Year' }
+                ]
+              );
+              addBotMessage(message);
+              setIsProcessing(false);
+              return;
+            } 
+            else if (tokenFlowState.step === 'expiration') {
+              // Store the token expiration and move to confirmation step
+              const tokenExpiration = content.trim();
+              setTokenFlowState({
+                ...tokenFlowState,
+                step: 'confirmation',
+                tokenExpiration
+              });
+              
+              // Show confirmation options
+              const message = MessageFactory.createActionOptionsMessage(
+                `**Token summary:**\n• Name: "${tokenFlowState.tokenName}"\n• Type: Read-only access\n• Expiration: ${tokenExpiration}\n\nGenerate this token now?`,
+                [
+                  { id: 'confirm-yes', label: 'Generate Token', value: 'Yes' },
+                  { id: 'confirm-no', label: 'Cancel', value: 'No' }
+                ]
+              );
+              addBotMessage(message);
+              setIsProcessing(false);
+              return;
+            }
+            else if (tokenFlowState.step === 'confirmation') {
+              // Handle final confirmation
+              if (content.toLowerCase().includes('yes') || content.toLowerCase().includes('generate')) {
+                // Generate a mock token
+                const mockToken = `jfrog_at_${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`;
+                
+                // End the token flow
+                setTokenFlowState(null);
+                
+                // Show success message
+                addBotMessage(`✅ **Token generated**\n\n**Details:**\n• Type: Read-only\n• Token: \`${mockToken}\`\n\n⚠️ Copy this token now - it won't be displayed again.`);
+              } else {
+                // Cancel token generation
+                setTokenFlowState(null);
+                addBotMessage(`Token generation cancelled.\n\nSay "generate token" to start over with different settings.`);
+              }
+              setIsProcessing(false);
+              return;
+            }
+          }
+          
+          // Check if this is starting a token flow
+          if (content.toLowerCase().includes('token') || 
+              content.toLowerCase().includes('generate token') || 
+              content.includes('create token')) {
+            
+            // Start the token flow
+            setTokenFlowState({
+              step: 'name'
+            });
+            
+            // Show initial prompt
+            addBotMessage("To generate a new access token, please name it first with a descriptive name that will help you identify this token later.\n\nWhat would you like to name your token?");
+            setIsProcessing(false);
+            return;
+          }
+          
           // Store the current flow and step before processing
           const beforeFlowId = getCurrentFlow();
           const beforeStepId = getCurrentStep();
@@ -266,6 +407,29 @@ export const useMessageHandler = () => {
           
           // Get the AI response using the existing utility
           const aiResponse = getRandomResponse(content);
+          
+          // Add debugging for token flow
+          console.log("AI Response:", {
+            content: content,
+            response: aiResponse,
+            currentFlow: getCurrentFlow(),
+            currentStep: getCurrentStep()
+          });
+          
+          // Special handling for token flow
+          if (getCurrentFlow() === TOKEN_FLOW_ID) {
+            console.log("Token flow detected, current step:", getCurrentStep());
+            // The token flow will be handled by the flow mechanism
+            // This ensures the flow advances properly through the steps
+          }
+          
+          // Special handling for empty responses from getRandomResponse (token flow)
+          if (aiResponse === "") {
+            console.log("Empty response detected, letting flow mechanism handle it");
+            // Let the flow mechanism take care of it
+            setIsProcessing(false);
+            return;
+          }
           
           // Check if the flow or step has changed
           const afterFlowId = getCurrentFlow();
@@ -408,12 +572,18 @@ export const useMessageHandler = () => {
                     
                     console.log("Formatted packages for display:", JSON.stringify(formattedPackages, null, 2));
                     
+                    // Debug log before creating the message
+                    console.log("About to create package table message with formatted packages");
+                    
                     // Create a package table message with follow-up options
                     const message = MessageFactory.createPackageTableMessage(
                       "Here are the latest 5 packages published in your organization:",
                       formattedPackages,
                       packageFollowUpOptions
                     );
+                    
+                    // Debug log after creating the message
+                    console.log("Created package table message:", JSON.stringify(message, null, 2));
                     
                     addBotMessage(message);
                     setIsProcessing(false);
@@ -565,12 +735,18 @@ export const useMessageHandler = () => {
               
               console.log("Formatted packages for display:", JSON.stringify(formattedPackages, null, 2));
               
+              // Debug log before creating the message
+              console.log("About to create package table message with formatted packages");
+              
               // Create a package table message with follow-up options
               const message = MessageFactory.createPackageTableMessage(
                 "Here are the latest 5 packages published in your organization:",
                 formattedPackages,
                 packageFollowUpOptions
               );
+              
+              // Debug log after creating the message
+              console.log("Created package table message:", JSON.stringify(message, null, 2));
               
               addBotMessage(message);
               setIsProcessing(false);

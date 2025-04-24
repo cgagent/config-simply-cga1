@@ -91,6 +91,17 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onSelectOptio
   const isUser = message.role === 'user';
   const { toast } = useToast();
   
+  // Debug logging to see what messages we're receiving
+  console.log("ChatMessage rendering with message:", {
+    id: message.id,
+    role: message.role,
+    type: (message as any).type || 'unknown',
+    hasTypeField: 'type' in message,
+    isPackageTable: 'type' in message && (message as any).type === 'package-table',
+    hasPackages: 'packages' in message,
+    content: message.content.substring(0, 100) + (message.content.length > 100 ? '...' : '')
+  });
+  
   // Check if the message contains a package table
   const containsPackageTable = !isUser && hasPackageTable(message.content);
   const packageTableRows = containsPackageTable ? parsePackageTable(message.content) : [];

@@ -204,9 +204,14 @@ const PackageTableRenderer: React.FC<{
   message: Message;
   onSelectOption?: (option: ChatOption) => void;
 }> = ({ message, onSelectOption }) => {
+  console.log("PackageTableRenderer - Input message:", JSON.stringify(message, null, 2));
+  
   if (!isPackageTableMessage(message)) {
+    console.log("PackageTableRenderer - Not a package table message, using TextMessageRenderer instead");
     return <TextMessageRenderer message={message} />;
   }
+
+  console.log("PackageTableRenderer - Message is a valid package table, rendering table UI");
 
   // Check if the message has options - it might be a combined message with options
   const hasOptions = 'options' in message && Array.isArray((message as any).options);

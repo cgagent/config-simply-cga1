@@ -1,29 +1,31 @@
+import { ChatOption } from '@/components/shared/types';
+
 /**
- * Represents a single step in a conversation flow
+ * Interface for a step in a conversation flow
  */
-export interface ConversationStep {
+export interface ConversationFlowStep {
   /** Unique identifier for the step */
   id: string;
-  /** Array of patterns that trigger this step */
+  /** Patterns to match user input for this step */
   patterns: string[];
-  /** The response content for this step */
+  /** Response text or function to generate a response */
   response: string | ((input: string) => string);
-  /** Optional array of next step IDs in the conversation flow */
+  /** Optional action options to show with this step */
+  actionOptions?: ChatOption[];
+  /** Optional array of next step IDs */
   nextSteps?: string[];
-  /** Optional action options to display for this step */
-  actionOptions?: import('@/components/shared/types').ChatOption[];
-  /** Flag indicating if this is the end of the flow */
+  /** Whether this is the end of the flow */
   isEndOfFlow?: boolean;
 }
 
 /**
- * Represents a complete conversation flow with multiple steps
+ * Interface for a conversation flow
  */
 export interface ConversationFlow {
   /** Unique identifier for the flow */
   id: string;
   /** Display name for the flow */
   name: string;
-  /** Array of steps in the conversation flow */
-  steps: ConversationStep[];
+  /** Steps in the conversation flow */
+  steps: ConversationFlowStep[];
 } 

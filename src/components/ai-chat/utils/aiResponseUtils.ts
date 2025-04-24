@@ -35,11 +35,17 @@ import { SECURITY_RISK_PATTERNS } from '../config/patterns/securityPatterns';
 import { PACKAGE_PATTERNS } from '../config/patterns/packagePatterns';
 import { packageResponses } from '../config/responses/packageResponses';
 import { PACKAGE_FLOW_ID } from '../config/flows/packageFlow';
+import { TOKEN_FLOW_ID } from '../config/flows/tokenFlow';
 
 // Add priority pattern matching
-const PRIORITY_PATTERNS = {
-  'security-risk': SECURITY_RISK_PATTERNS.identify,
-  'packages': PACKAGE_PATTERNS.latestPackages
+const PRIORITY_PATTERNS: Record<string, string[]> = {
+  [TOKEN_FLOW_ID]: [
+    'generate token',
+    'create token',
+    'new token',
+    'token'
+  ],
+  // Add more flows as needed
 };
 
 // Global repository context data
@@ -222,6 +228,40 @@ export const simulateAIResponse = (query: string): string => {
 // Helper function to get a simulated response
 export const getRandomResponse = (query: string): string | any => {
   const lowerQuery = query.toLowerCase();
+  
+  // First check if this is a token generation request
+  if (lowerQuery.includes('token') || 
+      lowerQuery.includes('generate token') || 
+      lowerQuery.includes('create token')) {
+    console.log("Token generation request detected, letting flow handle it");
+    
+    // Check if we're already in the token flow
+    if (currentFlow === TOKEN_FLOW_ID) {
+      console.log("Already in token flow, current step:", currentStep);
+      // Let the flow handle advancement through the steps
+      // Return empty string to signal that flow should handle it
+      return "";
+    }
+    
+    // Initialize the token flow if not already in it
+    const tokenFlow = conversationFlows.find(f => f.id === TOKEN_FLOW_ID);
+    if (tokenFlow) {
+      console.log("Starting token flow");
+      // Set initial state for token flow
+      currentFlow = TOKEN_FLOW_ID;
+      currentStep = tokenFlow.steps[0].id;
+      if (tokenFlow.steps[0].actionOptions) {
+        currentActionOptions = tokenFlow.steps[0].actionOptions;
+      }
+      // Return the initial response from the flow
+      return typeof tokenFlow.steps[0].response === 'function'
+        ? tokenFlow.steps[0].response(query)
+        : tokenFlow.steps[0].response;
+    }
+    
+    // Return empty string to let the flow take over
+    return "";
+  }
   
   // Handle package flow special cases
   if (currentFlow === PACKAGE_FLOW_ID) {

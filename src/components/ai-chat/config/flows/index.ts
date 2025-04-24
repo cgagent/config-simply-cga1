@@ -1,18 +1,16 @@
-import { ConversationFlow } from '../../types/chatTypes';
-import { securityFlow, maliciousPackagesFlow } from './securityFlow';
-import { configFlow } from './configFlow';
 import { releaseFlow } from './releaseFlow';
-import { userInviteFlow } from './userInviteFlow';
 import { packageFlow } from './packageFlow';
+import { securityFlow, maliciousPackagesFlow } from './securityFlow';
+import { tokenFlow } from './tokenFlow';
+import { ConversationFlow } from '../../utils/types';
 
 /**
- * All conversation flows
+ * Collection of all conversation flows
  */
 export const conversationFlows: ConversationFlow[] = [
+  releaseFlow,
+  packageFlow,
   securityFlow,
   maliciousPackagesFlow,
-  configFlow,
-  releaseFlow,
-  userInviteFlow,
-  packageFlow
+  tokenFlow
 ]; 

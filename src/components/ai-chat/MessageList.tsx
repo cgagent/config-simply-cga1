@@ -36,6 +36,9 @@ interface MessageListProps {
 }
 
 export const MessageList: React.FC<MessageListProps> = ({ messages, isProcessing = false, onSelectOption }) => {
+  // Debug log to see what messages we're receiving
+  console.log("MessageList rendering with messages:", JSON.stringify(messages, null, 2));
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
