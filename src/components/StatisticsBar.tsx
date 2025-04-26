@@ -110,13 +110,19 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
   }, [navigate]);
 
   const handleBlockedPackagesClick = useCallback(() => {
-    if (onChatQuery) {
+    console.log('StatisticsBar: Triggering blocked packages query');
+    if (window.openAIChatWithQuery) {
+      window.openAIChatWithQuery("which packages were blocked in the last two weeks?");
+    } else if (onChatQuery) {
       onChatQuery("which packages were blocked in the last two weeks?");
     }
   }, [onChatQuery]);
 
   const handleTotalPackagesClick = useCallback(() => {
-    if (onChatQuery) {
+    console.log('StatisticsBar: Triggering packages at risk query');
+    if (window.openAIChatWithQuery) {
+      window.openAIChatWithQuery("show me the packages that are at risk in my organization");
+    } else if (onChatQuery) {
       onChatQuery("show me the packages that are at risk in my organization");
     }
   }, [onChatQuery]);
@@ -127,19 +133,28 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
   }, [navigate]);
 
   const handleLatestPackagesClick = useCallback(() => {
-    if (onChatQuery) {
+    console.log('StatisticsBar: Triggering latest packages query');
+    if (window.openAIChatWithQuery) {
+      window.openAIChatWithQuery("Show me the latest published packages in my organization");
+    } else if (onChatQuery) {
       onChatQuery("Show me the latest published packages in my organization");
     }
   }, [onChatQuery]);
 
   const handleLatestBuildsClick = useCallback(() => {
-    if (onChatQuery) {
+    console.log('StatisticsBar: Triggering latest builds query');
+    if (window.openAIChatWithQuery) {
+      window.openAIChatWithQuery("Show me the last 5 builds in my organization");
+    } else if (onChatQuery) {
       onChatQuery("Show me the last 5 builds in my organization");
     }
   }, [onChatQuery]);
 
   const handlePackageAtRiskClick = useCallback(() => {
-    if (onChatQuery) {
+    console.log('StatisticsBar: Triggering packages at risk query');
+    if (window.openAIChatWithQuery) {
+      window.openAIChatWithQuery("identify which packages are at risk in my organization");
+    } else if (onChatQuery) {
       onChatQuery("identify which packages are at risk in my organization");
     }
   }, [onChatQuery]);

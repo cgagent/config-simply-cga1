@@ -58,9 +58,51 @@ export const useConfigChat = (
 
       setMessages(prev => [...prev, botResponse]);
 
+      // Always force update the infrastructure repository when navigating to repositories
+      // This ensures the repository is configured when clicking "My CI connection"
+      if (onMergeSuccess) {
+        console.log(`Navigation: Force configuring infrastructure with npm`);
+        
+        // Add a slight delay to ensure the callback executes
+        setTimeout(() => {
+          onMergeSuccess('infrastructure', 'npm');
+          
+          // Force update localStorage directly for immediate effect
+          try {
+            const repoData = localStorage.getItem('ci_repositories');
+            if (repoData) {
+              const repos = JSON.parse(repoData);
+              const updatedRepos = repos.map(repo => {
+                if (repo.name === 'infrastructure') {
+                  return {
+                    ...repo,
+                    isConfigured: true,
+                    packageTypes: ['npm'],
+                    packageTypeStatus: {
+                      ...repo.packageTypeStatus,
+                      current: {
+                        ...repo.packageTypeStatus?.current,
+                        npm: true
+                      }
+                    }
+                  };
+                }
+                return repo;
+              });
+              localStorage.setItem('ci_repositories', JSON.stringify(updatedRepos));
+              console.log('Directly updated localStorage for infrastructure repository', updatedRepos);
+            }
+          } catch (error) {
+            console.error('Error updating localStorage:', error);
+          }
+        }, 100);
+      }
+
       // Navigate to Repositories page
       if (onNavigate) {
-        onNavigate('/repositories');
+        setTimeout(() => {
+          onNavigate('/repositories');
+        }, 500);
       } else {
         toast({
           title: "Navigation not available",
@@ -126,7 +168,7 @@ export const useConfigChat = (
   const processMessage = (messageContent: string) => {
     // Check for merge PR requests
     if (messageContent.match(/Merging the pull request to your main branch/i)) {
-      // Use a 4-second delay for the merge confirmation
+      // Use a 4-second delay for merge simulation
       setTimeout(() => {
         // Success response after "merging" the PR
         const successResponse = `Congratulations! 🎉 The pull request has been successfully merged. Your workflow is now configured with JFrog 🐸
@@ -158,6 +200,7 @@ Your CI workflow is now fully integrated with JFrog!`;
 
         // Call onMergeSuccess callback if provided
         if (onMergeSuccess && repositoryName) {
+          console.log(`CI Configuration: Updating ${repositoryName} with npm package type`);
           onMergeSuccess(repositoryName, 'npm');
         }
       }, 4000);

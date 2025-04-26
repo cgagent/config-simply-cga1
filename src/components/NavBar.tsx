@@ -81,11 +81,12 @@ const NavBar: React.FC<NavBarProps> = ({ className, onHomeLinkClick, onExpandCha
 
   const handleNavClick = (path: string) => {
     if (path === '/home') {
-      if (location.pathname === '/home') {
-        navigate('/home', { state: { resetChat: true }, replace: true });
-      } else {
-        navigate('/home');
+      console.log("NavBar: Navigating to home, forcing chat reset");
+      if (window.resetAIChat) {
+        window.resetAIChat();
       }
+      
+      navigate('/home', { replace: true });
       
       if (onHomeLinkClick) {
         onHomeLinkClick();

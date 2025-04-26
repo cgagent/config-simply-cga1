@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -47,12 +46,14 @@ const SideNavigation: React.FC<SideNavigationProps> = ({
         onHomeLinkClick();
       }
       
-      // If we're already on the home page, we need to use state to trigger a reset
-      if (location.pathname === '/home') {
-        navigate('/home', { state: { resetChat: true }, replace: true });
-      } else {
-        navigate('/home');
+      // Use global reset function
+      console.log("SideNav: Using global reset mechanism");
+      if (window.resetAIChat) {
+        window.resetAIChat();
       }
+      
+      // Navigate without state
+      navigate('/home', { replace: true });
     } else if (path === '/repositories' && location.pathname === '/ci-configuration') {
       // If navigating from CI configuration to repositories, trigger the callback
       if (onNavigateFromCI) {

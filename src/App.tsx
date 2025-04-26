@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Outlet, useLocation, useNavigate } from "react-router-dom";
 import NavBar from "@/components/NavBar";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { RepositoryProvider, useRepositories } from "./contexts/RepositoryContext";
 
 // Import pages
@@ -37,17 +37,19 @@ const MainLayout = () => {
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
   const { repositories, updateRepositoryStatus } = useRepositories();
 
-  const handleHomeClick = () => {
-    if (location.pathname === '/home') {
-      navigate('/home', { state: { resetChat: true }, replace: true });
+  const handleHomeClick = useCallback(() => {
+    console.log('App: Navigating to Home with global chat reset');
+    // Use global reset if available, otherwise fallback to clean navigation
+    if (window.resetAIChat) {
+      window.resetAIChat();
     }
-  };
+    navigate('/home', { replace: true });
+  }, [navigate]);
 
   const handleNavigateFromCI = () => {
-    const currentRepo = repositories.find(repo => repo.name === 'infrastructure');
-    if (currentRepo) {
-      updateRepositoryStatus('infrastructure', 'npm');
-    }
+    // Remove automatic configuration of infrastructure repository
+    console.log('Navigating from CI configuration page');
+    // No automatic configuration of infrastructure repository
   };
 
   return (

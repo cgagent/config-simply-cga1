@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import RepositoryHeader from '@/components/RepositoryHeader';
 import RepositoryList from '@/components/RepositoryList';
 import StatusSummary from '@/components/StatusSummary';
@@ -14,7 +14,39 @@ interface Organization {
 
 const RepositoriesPage: React.FC = () => {
   // Use the shared repository context
-  const { repositories, addRepository } = useRepositories();
+  const { repositories, addRepository, updateRepositoryStatus } = useRepositories();
+
+  // Force reset infrastructure repository on initial page load
+  useEffect(() => {
+    // On component mount, force reload repository configuration from localStorage
+    try {
+      const repoData = localStorage.getItem('ci_repositories');
+      if (repoData) {
+        console.log('Repositories page: Checking infrastructure repository status');
+        const repos = JSON.parse(repoData);
+        const infraRepo = repos.find(repo => repo.name === 'infrastructure');
+        
+        // If infrastructure is found in localStorage and it's configured,
+        // force update the UI without changing localStorage
+        if (infraRepo && infraRepo.isConfigured) {
+          console.log('Repositories page: Infrastructure repository is configured');
+          
+          // Set a flag in sessionStorage to indicate we've seen the configured state
+          sessionStorage.setItem('infrastructure_configured', 'true');
+          
+          // Force a window reload if coming from CI configuration flow
+          const fromCIConfig = sessionStorage.getItem('from_ci_config');
+          if (fromCIConfig === 'true') {
+            console.log('Coming from CI config, resetting flag');
+            sessionStorage.removeItem('from_ci_config');
+            // No need to reload, just update if needed
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error checking repository status:', error);
+    }
+  }, []);
 
   // Mock organizations data
   const [organizations, setOrganizations] = useState<Organization[]>([
@@ -27,6 +59,8 @@ const RepositoriesPage: React.FC = () => {
   const [selectedRepo, setSelectedRepo] = useState<Repository | null>(null);
   
   const handleConfigureRepository = (repo: Repository) => {
+    // When configuring a repository, set a flag to indicate we're going to CI config
+    sessionStorage.setItem('from_ci_config', 'true');
     setSelectedRepo(repo);
   };
 

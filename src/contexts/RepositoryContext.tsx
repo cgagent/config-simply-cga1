@@ -88,6 +88,8 @@ export const RepositoryProvider: React.FC<RepositoryProviderProps> = ({ children
       return;
     }
     
+    console.log(`RepositoryContext: Updating ${repoName} with package type ${packageType}`);
+    
     // Handle the 'both' case by updating both npm and maven
     if (packageType === 'both') {
       updateRepositoryStatus(repoName, 'npm');
@@ -95,7 +97,22 @@ export const RepositoryProvider: React.FC<RepositoryProviderProps> = ({ children
     } else {
       updateRepositoryStatus(repoName, packageType);
     }
-  }, [hasRepository, updateRepositoryStatus]);
+    
+    // Force save to localStorage immediately after update
+    setTimeout(() => {
+      const updatedRepos = repositories.map(repo => {
+        if (repo.name === repoName) {
+          return {
+            ...repo,
+            isConfigured: true // Ensure repository is marked as configured
+          };
+        }
+        return repo;
+      });
+      localStorage.setItem('ci_repositories', JSON.stringify(updatedRepos));
+      console.log('Repository configuration saved to localStorage:', updatedRepos);
+    }, 100);
+  }, [hasRepository, updateRepositoryStatus, repositories]);
 
   /**
    * Validate and add a new repository

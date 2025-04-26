@@ -122,6 +122,9 @@ const generateDemoPackageStats = (): PackageStatistics => {
 export const useCILocalStorage = () => {
   const [repositories, setRepositories] = useState<Repository[]>(() => {
     try {
+      // Force reset infrastructure repository on load
+      localStorage.removeItem(STORAGE_KEY);
+      
       const stored = localStorage.getItem(STORAGE_KEY);
       if (!stored) return defaultRepositories;
       
@@ -351,8 +354,10 @@ export const useCILocalStorage = () => {
    * Updates the status of a repository's package type
    */
   const updateRepositoryStatus = useCallback((repoName: string, packageType: PackageType) => {
+    console.log(`useCILocalStorage: Updating ${repoName} with package type ${packageType}`);
+    
     setRepositories(prevRepositories => {
-      return prevRepositories.map(repo => {
+      const updatedRepositories = prevRepositories.map(repo => {
         if (repo.name === repoName) {
           const currentStatus = repo.packageTypeStatus?.current || createEmptyPackageTypeStatus();
           const previousStatus = { ...currentStatus };
@@ -364,9 +369,10 @@ export const useCILocalStorage = () => {
           };
           
           // Update package types array
-          const updatedPackageTypes = repo.packageTypes?.includes(packageType)
-            ? repo.packageTypes
-            : [...(repo.packageTypes || []), packageType];
+          let updatedPackageTypes = repo.packageTypes || [];
+          if (!updatedPackageTypes.includes(packageType)) {
+            updatedPackageTypes = [...updatedPackageTypes, packageType];
+          }
           
           // Create or update workflows
           const hasWorkflow = repo.workflows?.some(w => w.packageTypes?.includes(packageType));
@@ -374,9 +380,9 @@ export const useCILocalStorage = () => {
             ? repo.workflows
             : [...(repo.workflows || []), createWorkflow(packageType)];
           
-          return {
+          const updatedRepo = {
             ...repo,
-            isConfigured: updatedPackageTypes.length > 0,
+            isConfigured: true,  // Explicitly set to true
             packageTypes: updatedPackageTypes,
             packageTypeStatus: {
               current: updatedCurrentStatus,
@@ -386,9 +392,22 @@ export const useCILocalStorage = () => {
             lastUpdated: 'Today',
             workflows: updatedWorkflows
           };
+          
+          console.log(`Repository ${repoName} updated:`, updatedRepo);
+          return updatedRepo;
         }
         return repo;
       });
+      
+      // Force save to localStorage immediately
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedRepositories));
+        console.log('Repository status saved to localStorage');
+      } catch (error) {
+        console.error('Error saving repository status to localStorage:', error);
+      }
+      
+      return updatedRepositories;
     });
   }, [createWorkflow]);
 

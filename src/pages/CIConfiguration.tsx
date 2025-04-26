@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
 import { AIConfigurationChat } from '@/components/ai-configuration';
 import { motion } from 'framer-motion';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useRepositories, PackageManagerType } from '@/contexts/RepositoryContext';
+import { useToast } from '@/hooks/use-toast';
 
 const CIConfigurationPage: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   
   // Use the shared repository context
   const { repositories, updateRepositoryStatus } = useRepositories();
@@ -18,8 +21,14 @@ const CIConfigurationPage: React.FC = () => {
     // Get the current repository state
     const currentRepo = repositories.find(repo => repo.name === repoName);
     
+    // Log the repository state for debugging
+    console.log('Repository before update:', currentRepo);
+    console.log(`Updating repository ${repoName} with package type ${packageType}`);
+    
     // Always update the status - the animation and state tracking is handled in the context
     updateRepositoryStatus(repoName, packageType);
+    
+    // No toast notification needed
   };
 
   return (
