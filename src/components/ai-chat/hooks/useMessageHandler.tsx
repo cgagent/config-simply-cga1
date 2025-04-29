@@ -613,24 +613,49 @@ Generate token for CI pipeline with 7 Days`);
       return;
     }
 
-    // Only show the 5 most recent packages
-    const formattedPackages = latestPackages.slice(0, 5).map((pkg: any) => {
-      // Assign a status to each package (for demonstration)
-      const status = Math.random() > 0.7 ? (Math.random() > 0.5 ? 'warning' : 'failed') : 'passed';
-      return {
-        type: pkg.type,
-        name: pkg.name,
-        version: pkg.latest_version || pkg.version,
-        firstCreated: pkg.created_date,
-        versions: pkg.versions_count || 1
-      };
-    });
+    // Check if this is a packages at risk query
+    const isRiskQuery = messages.some(msg => 
+      msg.role === 'user' && 
+      typeof msg.content === 'string' && 
+      msg.content.toLowerCase().includes('packages at risk')
+    );
+
+    if (isRiskQuery) {
+      // Use the security risk response for packages at risk
+      const riskResponse = `# One package with risks was detected:
+
+### 📦 axios
+• **Used version:** 1.5.1
+• **Latest version published:** 1.8.3
+• **Downloaded by:** yahavi@acme.com
+• **Affected git repositories:** ACME/frontend-app (branch: main), ACME/backend-api (branch: main)
+• **Vulnerabilities:** CVE-2024-39338
+• **Vulnerability description:** axios 1.5.1 allows SSRF via unexpected behavior where requests for path relative URLs get processed as protocol relative URLs
+• **Severity:** Critical`;
+
+      addBotMessage(riskResponse);
+      return;
+    }
+
+    // Regular package table display
+    const formattedPackages = latestPackages.slice(0, 5).map((pkg: any) => ({
+      type: 'package',
+      name: pkg.name,
+      version: pkg.latest_version || pkg.version,
+      firstCreated: pkg.created_date,
+      versions: pkg.versions_count || 1,
+      externalDistributed: 'Yes' as const
+    }));
 
     // Create a package table message with follow-up options
     const message = MessageFactory.createPackageTableMessage(
       "Here are the latest packages published in your organization:",
       formattedPackages,
-      packageFollowUpOptions
+      [
+        { id: 'show-more-packages', label: 'Show More Packages', value: 'Show me more packages' },
+        { id: 'show-package-details', label: 'Show Package Details', value: 'Show me more details about these packages' },
+        { id: 'show-package-usage', label: 'Show Package Usage', value: 'Show me which repositories are using these packages' }
+      ]
     );
     
     addBotMessage(message);
