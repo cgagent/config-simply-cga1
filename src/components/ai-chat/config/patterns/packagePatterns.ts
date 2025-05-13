@@ -21,8 +21,11 @@ interface PackagePatterns {
  */
 export const PACKAGE_PATTERNS: PackagePatterns = {
   latestPackages: [
-    'latest packages', 
-    'recent packages', 
+    'Which packages were published recently?',
+    'recently published packages',
+    'latest published packages',
+    'recent packages',
+    'latest packages',
     'last packages', 
     'show me the latest packages', 
     'show me the last 5 packages',
@@ -33,12 +36,15 @@ export const PACKAGE_PATTERNS: PackagePatterns = {
     'list packages'
   ],
   packageDetail: [
+    'Which package details do you want to see?',
     'package detail', 
     'show package', 
     'get package info', 
     'package information'
   ],
   riskPackages: [
+    'Which packages are at risk?',
+    'Which packages were flagged recently?',
     'packages at risk',
     'risky packages',
     'vulnerable packages',

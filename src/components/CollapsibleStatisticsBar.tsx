@@ -5,6 +5,7 @@ import StatisticsBar from './StatisticsBar';
 import { useChat } from '@/contexts/ChatContext';
 import { useLocation } from 'react-router-dom';
 import { CLOSE_STATS_BAR_EVENT } from '@/contexts/ChatContext';
+import { formatNumber } from '@/lib/formatters';
 
 interface CollapsibleStatisticsBarProps {
   ciCompletionPercentage: number;
@@ -113,7 +114,7 @@ const CollapsibleStatisticsBar: React.FC<CollapsibleStatisticsBarProps> = ({
                   </span>
                 </div>
                 <span className="text-sm text-gray-300/70 group-hover:text-gray-300/90">
-                  {totalPackages} total packages • {blockedPackages} Blocked package
+                  {formatNumber(totalPackages)} total packages • {blockedPackages} Blocked package
                 </span>
               </div>
             )}

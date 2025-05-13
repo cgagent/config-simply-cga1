@@ -48,6 +48,13 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     }
   }, [input]);
   
+  // Focus input after response is complete
+  useEffect(() => {
+    if (!isProcessing && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [isProcessing]);
+  
   useEffect(() => {
     if (!isInitialState) return;
     

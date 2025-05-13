@@ -61,7 +61,7 @@ import { getUsageSnippet } from '../utils/snippetGenerator';
 export const useMessageHandler = ({ 
   onTokenGenerated 
 }: { 
-  onTokenGenerated?: (token: string, name: string, expiration: string) => void 
+  onTokenGenerated?: (token: string, name: string, expiration: string, isExternal: boolean) => void 
 } = {}) => {
   const { toast } = useToast();
   const [showCIConfig, setShowCIConfig] = useState(false);
@@ -118,6 +118,7 @@ export const useMessageHandler = ({
     step: 'name' | 'expiration' | 'confirmation';
     tokenName?: string;
     tokenExpiration?: string;
+    isExternal?: boolean;
   }>(null);
 
   /**
@@ -155,12 +156,20 @@ export const useMessageHandler = ({
    * Generic handler for processing user action selections in conversation flows
    */
   const handleActionSelection = (option: ChatOption) => {
-    // Add user's selection as a message
-    addUserMessage(option.value);
     setIsProcessing(true);
 
+    // Handle token creation from Docker example
+    if (option.id === 'create-docker-token') {
+      // Process through handleSendMessage to ensure consistent token flow
+      setIsProcessing(false); // Reset processing state before new flow
+      // Don't add user message here since handleSendMessage will do it
+      handleSendMessage(option.value);
+      return;
+    }
+    
     // Handle send invites confirmation
     if (option.id === 'send-invites') {
+      addUserMessage(option.value);
       setTimeout(() => {
         addBotMessage("🎉 Done! Invitations have been sent.\nIs there anything else I can help you with?");
         setIsProcessing(false);
@@ -170,6 +179,7 @@ export const useMessageHandler = ({
     
     // Handle cancel invites
     if (option.id === 'cancel-invites') {
+      addUserMessage(option.value);
       setTimeout(() => {
         addBotMessage("No problem. You can invite users anytime by typing 'invite users' in the chat.");
         setIsProcessing(false);
@@ -180,6 +190,7 @@ export const useMessageHandler = ({
     // Legacy handling for old flow - can be removed when no longer needed
     // Handle user invitation flow responses 
     if (option.id === 'admin-role' || option.id === 'developer-role') {
+      addUserMessage(option.value);
       // Explicitly bypass other flows for user invitation
       setTimeout(() => {
         const role = option.id === 'admin-role' ? 'Admin' : 'Developer';
@@ -234,6 +245,7 @@ export const useMessageHandler = ({
 
     // Check if we're in the token flow
     if (tokenFlowState && tokenFlowState.step === 'confirmation') {
+      addUserMessage(option.value);
       setTimeout(() => {
         try {
           if (option.id === 'confirm-yes') {
@@ -250,7 +262,8 @@ export const useMessageHandler = ({
               onTokenGenerated(
                 mockToken, 
                 tokenFlowState.tokenName || '', 
-                tokenFlowState.tokenExpiration || ''
+                tokenFlowState.tokenExpiration || '',
+                tokenFlowState.isExternal || false
               );
             }
             
@@ -427,7 +440,19 @@ export const useMessageHandler = ({
             
             const dockerSnippet = getUsageSnippet('docker', examplePackage.name, examplePackage.version);
             
-            addBotMessage(`Here's how to use Docker with the ${examplePackage.name} package:\n\n\`\`\`bash\n${dockerSnippet}\n\`\`\`\n\nThis will first authenticate you with the registry, then pull the image and run it as a container with port 8080 exposed. When logging in, use your access token as the password.`);
+            // Create message with both code snippet and token creation button
+            const message = MessageFactory.createActionOptionsMessage(
+              `Here's how to use Docker with the ${examplePackage.name} package:\n\n\`\`\`bash\n${dockerSnippet}\n\`\`\`\n\nThis will first authenticate you with the registry, then pull the image and run it as a container with port 8080 exposed. When logging in, use your access token as the password.`,
+              [
+                { 
+                  id: 'create-docker-token', 
+                  label: 'Create a new token', 
+                  value: 'Create a new, no-expiry access token called docker-token'
+                }
+              ]
+            );
+            
+            addBotMessage(message);
             setIsProcessing(false);
             return;
           }
@@ -573,6 +598,9 @@ Would you like me to send the invitations now?`,
           
           // First try to find a direct token name and duration - most specific patterns first
           const simpleMatch = 
+            // Match "Create a new, no-expiry access token called X" format
+            content.match(/(?:create\s+(?:a\s+)?new,?\s+)?(?:no-expiry|no\s+expiry)\s+access\s+token\s+called\s+(\w+[-\w]*)/i) ||
+
             // Match period-separated token name and expiration (flexible punctuation)
             content.match(/(?:also\s+)?(?:create\s+|generate\s+)?(?:a\s+)?token\s+(?:name\s+|named\s+)?(\w+[-\w]*)[\s.,/]*(?:expiration|expires?(?:\s+in)?|valid\s+for)\s+(\d+\s*(?:days?|months?|years?|week))(?:\s*$|\s*[\n\.,])/i) ||
             // Match "Create token named X with Y days expiration"
@@ -599,8 +627,13 @@ Would you like me to send the invitations now?`,
             if (possibleName) {
               directTokenMatch = simpleMatch;
               tokenDescription = possibleName;
-              // Remove angle brackets if they exist in the duration
-              tokenDuration = simpleMatch[2] ? simpleMatch[2].trim().replace(/[<>]/g, '') : 'never';
+              // Check if this is a no-expiry match (first pattern)
+              if (content.toLowerCase().includes('no-expiry') || content.toLowerCase().includes('no expiry')) {
+                tokenDuration = 'never';
+              } else {
+                // Remove angle brackets if they exist in the duration
+                tokenDuration = simpleMatch[2] ? simpleMatch[2].trim().replace(/[<>]/g, '') : 'never';
+              }
               console.log("Extracted token info:", { name: tokenDescription, duration: tokenDuration });
             }
           }
@@ -666,7 +699,7 @@ Would you like me to send the invitations now?`,
             
             // Validate duration
             const validDurations = [
-              'never', 'no expiration', 'no expire', 'unlimited',
+              'never', 'no expiration', 'no expire', 'unlimited', 'no-expiry',
               '1 day', 'one day', '1day', 'a day', 
               '3 days', 'three days', '3days',
               '7 days', 'seven days', '7days', 'a week', 'one week',
@@ -699,7 +732,7 @@ Would you like me to send the invitations now?`,
               const durationWithoutPeriod = normalizedDuration.replace(/\.$/, '');
               
               // Map to standard format
-              if (['no expiration', 'no expire', 'unlimited'].includes(durationWithoutPeriod)) {
+              if (['no expiration', 'no expire', 'unlimited', 'no-expiry'].includes(durationWithoutPeriod)) {
                 normalizedDuration = 'never';
               } else if (['one day', '1day', 'a day'].includes(durationWithoutPeriod)) {
                 normalizedDuration = '1 day';
@@ -727,7 +760,8 @@ Would you like me to send the invitations now?`,
             setTokenFlowState({
               step: 'confirmation',
               tokenName: tokenDescription,
-              tokenExpiration: normalizedDuration
+              tokenExpiration: normalizedDuration,
+              isExternal: content.toLowerCase().includes('external') || content.toLowerCase().includes('external only')
             });
             
             // Show confirmation message
@@ -735,6 +769,7 @@ Would you like me to send the invitations now?`,
               `Got it! Here's a quick summary:
 
 Name: ${tokenDescription}
+Type: ${content.toLowerCase().includes('external') || content.toLowerCase().includes('external only') ? 'external access' : 'internal access'}
 
 Expiry: ${normalizedDuration === 'never' ? 'never' : normalizedDuration}
 
@@ -757,7 +792,16 @@ Would you like me to generate the token now?`,
             console.log("Token request detected, showing instructions");
             
             // Show token generation instructions
-            addBotMessage(`🔐 Specify the desired token name and expiration.`);
+            addBotMessage(`🔐 To generate a token, please provide:
+
+1. A descriptive name for the token
+2. The expiration period (e.g., "7 days", "1 month", "never")
+3. Whether it's for external access (optional)
+
+For example:
+"Create a token named deploy-token with 30 days expiration"
+or
+"Generate an external token named client-access valid for 1 year"`);
             
             setIsProcessing(false);
             return;

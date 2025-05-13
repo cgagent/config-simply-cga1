@@ -109,18 +109,18 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
   const handleBlockedPackagesClick = useCallback(() => {
     console.log('StatisticsBar: Triggering blocked packages query');
     if (window.openAIChatWithQuery) {
-      window.openAIChatWithQuery("which packages were blocked in the last 30 days?");
+      window.openAIChatWithQuery("Which packages were blocked in the last 30 days?");
     } else if (onChatQuery) {
-      onChatQuery("which packages were blocked in the last 30 days?");
+      onChatQuery("Which packages were blocked in the last 30 days?");
     }
   }, [onChatQuery]);
 
   const handleTotalPackagesClick = useCallback(() => {
     console.log('StatisticsBar: Triggering packages at risk query');
     if (window.openAIChatWithQuery) {
-      window.openAIChatWithQuery("show me the packages that are at risk in my organization");
+      window.openAIChatWithQuery("Which packages were flagged recently?");
     } else if (onChatQuery) {
-      onChatQuery("show me the packages that are at risk in my organization");
+      onChatQuery("Which packages were flagged recently?");
     }
   }, [onChatQuery]);
 
@@ -132,9 +132,9 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
   const handleLatestPackagesClick = useCallback(() => {
     console.log('StatisticsBar: Triggering latest packages query');
     if (window.openAIChatWithQuery) {
-      window.openAIChatWithQuery("Show me the latest published packages in my organization");
+      window.openAIChatWithQuery("Which packages were published recently?");
     } else if (onChatQuery) {
-      onChatQuery("Show me the latest published packages in my organization");
+      onChatQuery("Which packages were published recently?");
     }
   }, [onChatQuery]);
 
@@ -145,9 +145,9 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
   const handlePackageAtRiskClick = useCallback(() => {
     console.log('StatisticsBar: Triggering packages at risk query');
     if (window.openAIChatWithQuery) {
-      window.openAIChatWithQuery("identify which packages are at risk in my organization");
+      window.openAIChatWithQuery("Which packages are at risk?");
     } else if (onChatQuery) {
-      onChatQuery("identify which packages are at risk in my organization");
+      onChatQuery("Which packages are at risk?");
     }
   }, [onChatQuery]);
 
@@ -203,10 +203,12 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
       >
         <Card className="space-card p-4 h-full flex flex-col backdrop-blur-sm">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-base font-medium text-blue-100/80">Malicious Packages</h3>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fillRule="evenodd" clipRule="evenodd" d="M3.6 15.3H5.175V13.05H6.525V15.3H8.775V13.05H10.125V15.3H11.7V11.9925C12.255 11.8275 12.7537 11.58 13.1962 11.25C13.6388 10.92 14.0175 10.5262 14.3325 10.0688C14.6475 9.61125 14.8875 9.10125 15.0525 8.53875C15.2175 7.97625 15.3 7.38 15.3 6.75C15.3 4.74 14.595 3.1125 13.185 1.8675C11.775 0.6225 9.93 0 7.65 0C5.37 0 3.525 0.6225 2.115 1.8675C0.705 3.1125 0 4.74 0 6.75C0 7.38 0.0825 7.97625 0.2475 8.53875C0.4125 9.10125 0.6525 9.61125 0.9675 10.0688C1.2825 10.5262 1.66125 10.92 2.10375 11.25C2.54625 11.58 3.045 11.8275 3.6 11.9925V15.3ZM9 10.35H6.3L7.65 7.65L9 10.35ZM5.61375 7.63875C5.30625 7.94625 4.935 8.1 4.5 8.1C4.065 8.1 3.69375 7.94625 3.38625 7.63875C3.07875 7.33125 2.925 6.96 2.925 6.525C2.925 6.09 3.07875 5.71875 3.38625 5.41125C3.69375 5.10375 4.065 4.95 4.5 4.95C4.935 4.95 5.30625 5.10375 5.61375 5.41125C5.92125 5.71875 6.075 6.09 6.075 6.525C6.075 6.96 5.92125 7.33125 5.61375 7.63875ZM11.9137 7.63875C11.6062 7.94625 11.235 8.1 10.8 8.1C10.365 8.1 9.99375 7.94625 9.68625 7.63875C9.37875 7.33125 9.225 6.96 9.225 6.525C9.225 6.09 9.37875 5.71875 9.68625 5.41125C9.99375 5.10375 10.365 4.95 10.8 4.95C11.235 4.95 11.6062 5.10375 11.9137 5.41125C12.2213 5.71875 12.375 6.09 12.375 6.525C12.375 6.96 12.2213 7.33125 11.9137 7.63875Z" fill="#FB515B"/>
-            </svg>
+            <div className="flex items-center space-x-3">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" clipRule="evenodd" d="M3.6 15.3H5.175V13.05H6.525V15.3H8.775V13.05H10.125V15.3H11.7V11.9925C12.255 11.8275 12.7537 11.58 13.1962 11.25C13.6388 10.92 14.0175 10.5262 14.3325 10.0688C14.6475 9.61125 14.8875 9.10125 15.0525 8.53875C15.2175 7.97625 15.3 7.38 15.3 6.75C15.3 4.74 14.595 3.1125 13.185 1.8675C11.775 0.6225 9.93 0 7.65 0C5.37 0 3.525 0.6225 2.115 1.8675C0.705 3.1125 0 4.74 0 6.75C0 7.38 0.0825 7.97625 0.2475 8.53875C0.4125 9.10125 0.6525 9.61125 0.9675 10.0688C1.2825 10.5262 1.66125 10.92 2.10375 11.25C2.54625 11.58 3.045 11.8275 3.6 11.9925V15.3ZM9 10.35H6.3L7.65 7.65L9 10.35ZM5.61375 7.63875C5.30625 7.94625 4.935 8.1 4.5 8.1C4.065 8.1 3.69375 7.94625 3.38625 7.63875C3.07875 7.33125 2.925 6.96 2.925 6.525C2.925 6.09 3.07875 5.71875 3.38625 5.41125C3.69375 5.10375 4.065 4.95 4.5 4.95C4.935 4.95 5.30625 5.10375 5.61375 5.41125C5.92125 5.71875 6.075 6.09 6.075 6.525C6.075 6.96 5.92125 7.33125 5.61375 7.63875ZM11.9137 7.63875C11.6062 7.94625 11.235 8.1 10.8 8.1C10.365 8.1 9.99375 7.94625 9.68625 7.63875C9.37875 7.33125 9.225 6.96 9.225 6.525C9.225 6.09 9.37875 5.71875 9.68625 5.41125C9.99375 5.10375 10.365 4.95 10.8 4.95C11.235 4.95 11.6062 5.10375 11.9137 5.41125C12.2213 5.71875 12.375 6.09 12.375 6.525C12.375 6.96 12.2213 7.33125 11.9137 7.63875Z" fill="#FB515B"/>
+              </svg>
+              <h3 className="text-lg font-bold text-blue-100/80">Package Protection</h3>
+            </div>
           </div>
           <div className="space-y-3">
             {/* Current At-Risk Packages Section */}
@@ -217,7 +219,7 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <span className="text-3xl font-semibold text-red-400 space-glow">1</span>
-                  <span className="text-sm text-red-200/70">package at risk</span>
+                  <span className="text-sm text-red-200/70">Package at risk</span>
                 </div>
                 <ChevronRight className="h-4 w-4 text-red-400 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
@@ -239,7 +241,7 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
                 <ChevronRight className="h-4 w-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <p className="text-sm text-blue-200/60 mt-1">
-                Successfully prevented in the last 30 days out of {totalPackages} scanned packages
+                Blocked in the last 30 days out of {formatNumber(totalPackages)} scanned packages
               </p>
             </div>
           </div>
@@ -256,10 +258,12 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
       >
         <Card className="space-card p-4 h-full flex flex-col backdrop-blur-sm">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-base font-medium text-blue-100/80">Recent Activity</h3>
-            <div className="flex items-center space-x-2">
-              <Package className="h-4 w-4 text-blue-400" />
-              <GitBranch className="h-4 w-4 text-blue-400" />
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2">
+                <Package className="h-4 w-4 text-blue-400" />
+                <GitBranch className="h-4 w-4 text-blue-400" />
+              </div>
+              <h3 className="text-lg font-bold text-blue-100/80">Recent Activity</h3>
             </div>
           </div>
           
@@ -342,10 +346,12 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
       >
         <Card className="space-card p-4 h-full flex flex-col backdrop-blur-sm">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-base font-medium text-blue-100/80">My Environment</h3>
-            <div className="flex items-center space-x-2">
-              <CheckCircle className="h-5 w-5 text-blue-400" />
-              <MonitorDot className="h-5 w-5 text-blue-400" />
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="h-5 w-5 text-blue-400" />
+                <MonitorDot className="h-5 w-5 text-blue-400" />
+              </div>
+              <h3 className="text-lg font-bold text-blue-100/80">My Environment</h3>
             </div>
           </div>
           <div className="space-y-3">
@@ -357,7 +363,7 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <span className="text-3xl font-semibold text-white space-glow">{configuredRepos} / {totalRepos}</span>
-                  <span className="text-sm text-blue-200/70">repositories configured</span>
+                  <span className="text-sm text-blue-200/70">Repositories configured</span>
                 </div>
                 <ChevronRight className="h-4 w-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
@@ -381,7 +387,7 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <span className="text-3xl font-semibold text-white space-glow">{activeToPendingRatio}</span>
-                  <span className="text-sm text-blue-200/70">developers connected</span>
+                  <span className="text-sm text-blue-200/70">Developers connected</span>
                 </div>
                 <ChevronRight className="h-4 w-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>

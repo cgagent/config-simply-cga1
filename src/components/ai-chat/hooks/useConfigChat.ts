@@ -19,7 +19,7 @@ export const useConfigChat = (
     {
       id: '1',
       role: 'user',
-      content: `I would like to integrate the CI workflows in my repository ${repositoryName} with JFrog`
+      content: `Integrate the CI workflows in my repository ${repositoryName} with JFrog`
     },
     {
       id: '2',

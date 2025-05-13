@@ -41,7 +41,11 @@ export const maliciousPackagesFlow: ConversationFlow = {
     },
     {
       id: 'show-more-packages',
-      patterns: ['show more blocked packages'],
+      patterns: [
+        'Show more blocked packages',
+        'Show more packages',
+        'Show more'
+      ],
       response: securityRiskResponses.detailedBlockedPackages,
       isEndOfFlow: true
     }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Copy, AlertTriangle, Terminal, Cloud } from 'lucide-react';
+import { X, Copy, AlertTriangle, Cloud, Container } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface TokenModalProps {
@@ -9,6 +9,7 @@ interface TokenModalProps {
   token: string;
   tokenName: string;
   expiration: string;
+  isExternal: boolean;
 }
 
 export const TokenModal: React.FC<TokenModalProps> = ({
@@ -16,10 +17,11 @@ export const TokenModal: React.FC<TokenModalProps> = ({
   onClose,
   token,
   tokenName,
-  expiration
+  expiration,
+  isExternal
 }) => {
   const { toast } = useToast();
-  const [selectedExample, setSelectedExample] = useState<'curl' | 'k8s'>('curl');
+  const [selectedExample, setSelectedExample] = useState<'docker' | 'k8s'>('docker');
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -30,10 +32,11 @@ export const TokenModal: React.FC<TokenModalProps> = ({
     });
   };
 
-  const curlExample = `curl \\
-  -H "Authorization: Bearer ${token}" \\
-  "https://acme.jfrog.io\\
-  /artifactory/generic/<PACKAGE>"`;
+  const dockerExample = `# Login to the registry
+docker login acme.jfrog.io -u yoavl@acme.com -p ${token}
+
+# Pull the Docker image
+docker pull acme.jfrog.io/my-app:latest`;
 
   const k8sExample = `apiVersion: v1
 kind: Secret
@@ -86,6 +89,10 @@ stringData:
                     <p className="text-white font-medium">{tokenName}</p>
                   </div>
                   <div>
+                    <label className="text-sm text-blue-300">Type</label>
+                    <p className="text-white font-medium">{isExternal ? 'external access' : 'internal access'}</p>
+                  </div>
+                  <div>
                     <label className="text-sm text-blue-300">Expiration</label>
                     <p className="text-white font-medium">{expiration}</p>
                   </div>
@@ -109,15 +116,15 @@ stringData:
                     <label className="text-sm text-blue-300 mb-2 block">Usage Examples</label>
                     <div className="flex gap-2 mb-3">
                       <button
-                        onClick={() => setSelectedExample('curl')}
+                        onClick={() => setSelectedExample('docker')}
                         className={`flex items-center gap-2 px-3 py-1.5 rounded ${
-                          selectedExample === 'curl'
+                          selectedExample === 'docker'
                             ? 'bg-blue-600 text-white'
                             : 'bg-blue-900/30 text-blue-300 hover:bg-blue-900/50'
                         }`}
                       >
-                        <Terminal className="h-4 w-4" />
-                        curl
+                        <Container className="h-4 w-4" />
+                        Docker
                       </button>
                       <button
                         onClick={() => setSelectedExample('k8s')}
@@ -133,10 +140,10 @@ stringData:
                     </div>
                     <div className="relative">
                       <pre className="bg-blue-900/50 text-blue-100 p-3 rounded border border-blue-800/30 font-mono text-sm whitespace-pre-wrap">
-                        {selectedExample === 'curl' ? curlExample : k8sExample}
+                        {selectedExample === 'docker' ? dockerExample : k8sExample}
                       </pre>
                       <button
-                        onClick={() => copyToClipboard(selectedExample === 'curl' ? curlExample : k8sExample)}
+                        onClick={() => copyToClipboard(selectedExample === 'docker' ? dockerExample : k8sExample)}
                         className="absolute top-2 right-2 p-1.5 text-blue-400 hover:text-blue-300 transition-colors bg-blue-900/80 rounded"
                         title="Copy example"
                       >

@@ -59,15 +59,17 @@ const AIChatContent: React.FC<AIChatProps> = ({
     token: string;
     tokenName: string;
     expiration: string;
+    isExternal: boolean;
   } | null>(null);
 
   // Function to show token in modal
-  const showTokenInModal = (token: string, name: string, expiration: string) => {
+  const showTokenInModal = (token: string, name: string, expiration: string, isExternal: boolean) => {
     setTokenModalState({
       isOpen: true,
       token,
       tokenName: name,
-      expiration
+      expiration,
+      isExternal
     });
   };
 
@@ -189,6 +191,7 @@ const AIChatContent: React.FC<AIChatProps> = ({
           token={tokenModalState.token}
           tokenName={tokenModalState.tokenName}
           expiration={tokenModalState.expiration}
+          isExternal={tokenModalState.isExternal}
         />
       )}
     </>

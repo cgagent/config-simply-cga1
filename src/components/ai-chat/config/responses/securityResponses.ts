@@ -39,7 +39,7 @@ export const generateSecurityRiskResponse = (): string => {
 export const showMoreOption: ChatOption = {
   id: 'show-more',
   label: 'Show more',
-  value: 'show more blocked packages'
+  value: 'Show more blocked packages'
 };
 
 /**

@@ -5,14 +5,8 @@ import { SECURITY_REMEDIATION_PATTERNS, getAllSecurityRemediationPatterns } from
  */
 export const SECURITY_RISK_PATTERNS = {
   identify: [
-    'identify which packages are at risk',
-    'packages at risk in my organization',
-    'security risk in my organization',
-    'vulnerable packages in my organization',
-    'security vulnerabilities in my organization',
-    'package vulnerabilities in my organization',
-    'are at risk in my organization',
-    'packages at risk',
+    'Which packages are at risk?',
+    'Which packages are at risk?',
     'security risk',
     'vulnerable packages',
     'security vulnerabilities',
@@ -36,22 +30,25 @@ export const getAllSecurityRiskPatterns = (): string[] => {
 export const securityRiskPatterns = {
   identifyRisk: [
     "identify which packages are at risk",
-    "vulnerable packages in my organization",
+    "Which packages are at risk?",
+    "vulnerable packages",
     "security vulnerabilities in packages",
     "packages with security issues",
     "malicious packages",
-    "blocked packages"
+    "blocked packages",
+    "Which packages are at risk?"
   ],
   remediationActionSelection: [
-    "create a git issue for this vulnerability",
-    "notify in slack about this vulnerability",
-    "send an email about this vulnerability"
+    "Create a git issue for this vulnerability",
+    "Notify in slack about this vulnerability",
+    "Send an email about this vulnerability"
   ],
   maliciousPackages: [
-    "which packages were blocked in the last 30 days",
-    "show me the malicious packages",
-    "list blocked packages",
-    "packages at risk",
-    "security vulnerabilities"
+    "Which packages were blocked in the last 30 days?",
+    "Show me the malicious packages",
+    "List blocked packages",
+    "Show more blocked packages",
+    "Packages at risk",
+    "Security vulnerabilities"
   ]
 }; 

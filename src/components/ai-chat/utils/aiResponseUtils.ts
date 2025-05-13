@@ -38,6 +38,7 @@ import { packageResponses } from '../config/responses/packageResponses';
 import { PACKAGE_FLOW_ID } from '../config/flows/packageFlow';
 import { TOKEN_FLOW_ID } from '../config/flows/tokenFlow';
 import { DISTRIBUTION_FLOW_ID } from '../config/flows/distributionFlow';
+import { Message as BaseMessage } from '../types/messageTypes';
 
 // Add priority pattern matching
 const PRIORITY_PATTERNS: Record<string, string[]> = {
@@ -104,7 +105,7 @@ export const setRepositoryData = (data: any) => {
 /**
  * Simulate AI response using structured conversation flows and responses
  */
-export const simulateAIResponse = (query: string): string => {
+export const simulateAIResponse = (query: string): string | BaseMessage => {
   const lowerQuery = query.toLowerCase().trim();
 
   // Add debug logging
@@ -121,9 +122,12 @@ export const simulateAIResponse = (query: string): string => {
       const currentStepData = flow.steps.find(s => s.id === currentStep);
       if (currentStepData) {
         // Check if the query matches any patterns for the current step
-        const matchingPattern = currentStepData.patterns.find(pattern => 
-          lowerQuery.includes(pattern)
-        );
+        const matchingPattern = currentStepData.patterns.some(pattern => {
+          // Normalize both the query and pattern
+          const normalizedQuery = lowerQuery.replace(/[?!.,]/g, '').trim();
+          const normalizedPattern = pattern.toLowerCase().replace(/[?!.,]/g, '').trim();
+          return normalizedQuery.includes(normalizedPattern);
+        });
 
         // Check if this is an action selection
         const isActionSelection = currentActionOptions && 
@@ -191,15 +195,18 @@ export const simulateAIResponse = (query: string): string => {
     const flow = conversationFlows.find(f => f.id === flowId);
     if (flow) {
       // Check for both exact matches and if the query contains the pattern
-      const exactMatch = patterns.some(pattern => 
-        lowerQuery === pattern.toLowerCase() ||
-        lowerQuery.includes(pattern.toLowerCase()) ||
-        // Special case for our distribution query
-        (flowId === DISTRIBUTION_FLOW_ID && 
-         lowerQuery.includes('externally distribute') && 
-         lowerQuery.includes('package') && 
-         lowerQuery.includes('outside'))
-      );
+      const exactMatch = patterns.some(pattern => {
+        // Normalize both the query and pattern
+        const normalizedQuery = lowerQuery.replace(/[?!.,]/g, '').trim();
+        const normalizedPattern = pattern.toLowerCase().replace(/[?!.,]/g, '').trim();
+        return normalizedQuery === normalizedPattern || 
+               normalizedQuery.includes(normalizedPattern) ||
+               // Special case for our distribution query
+               (flowId === DISTRIBUTION_FLOW_ID && 
+                normalizedQuery.includes('externally distribute') && 
+                normalizedQuery.includes('package') && 
+                normalizedQuery.includes('outside'));
+      });
       
       if (exactMatch) {
         const initialStep = flow.steps[0];
@@ -222,7 +229,15 @@ export const simulateAIResponse = (query: string): string => {
   // If not in a flow or no priority match, check for new flow starts
   for (const flow of conversationFlows) {
     const initialStep = flow.steps[0];
-    if (initialStep.patterns.some(pattern => lowerQuery.includes(pattern))) {
+    if (initialStep.patterns.some(pattern => {
+      // Normalize both the query and pattern by:
+      // 1. Converting to lowercase
+      // 2. Removing punctuation (?, ., !, etc.)
+      // 3. Trimming whitespace
+      const normalizedQuery = lowerQuery.replace(/[?!.,]/g, '').trim();
+      const normalizedPattern = pattern.toLowerCase().replace(/[?!.,]/g, '').trim();
+      return normalizedQuery.includes(normalizedPattern);
+    })) {
       currentFlow = flow.id;
       currentStep = initialStep.id;
       
@@ -251,8 +266,11 @@ export const simulateAIResponse = (query: string): string => {
     // For each response, check if any of its patterns are contained in the query
     // and if the query contains the pattern as a whole word
     const matchingPattern = response.patterns.find(pattern => {
-      const regex = new RegExp(`\\b${pattern}\\b`, 'i');
-      return regex.test(lowerQuery);
+      // Normalize both the query and pattern
+      const normalizedQuery = lowerQuery.replace(/[?!.,]/g, '').trim();
+      const normalizedPattern = pattern.toLowerCase().replace(/[?!.,]/g, '').trim();
+      const regex = new RegExp(`\\b${normalizedPattern}\\b`, 'i');
+      return regex.test(normalizedQuery);
     });
 
     if (matchingPattern) {
@@ -263,7 +281,7 @@ export const simulateAIResponse = (query: string): string => {
   }
 
   // Default response if no matches found
-  return "I understand you're asking about \"" + query + "\". Let me provide some information about that. This is a simulated response in our demo application. In a production environment, this would connect to an AI language model API like OpenAI GPT, Anthropic Claude, or Perplexity to provide helpful and accurate responses.";
+  return "I understand you're asking about \"" + query + "\". Let me provide some information about that. This is a simulated response in our demo application. In a production environment, this would connect to an AI language model API to provide helpful and accurate responses.";
 };
 
 // Helper function to get a simulated response
