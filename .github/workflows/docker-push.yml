@@ -27,4 +27,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: xcitest.jfrog.io/docker/${{ github.repository }}:latest
+          tags: |
+            xcitest.jfrog.io/docker/${{ github.repository }}:latest
+            xcitest.jfrog.io/docker/${{ github.repository }}:sha-${{ github.sha }}
