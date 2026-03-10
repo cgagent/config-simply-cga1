@@ -1,0 +1,280 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 20% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 222 47% 11%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 30% 95%;
+    --accent-foreground: 222 47% 11%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222 47% 11%;
+
+    --radius: 0.5rem;
+
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  }
+
+  .dark {
+    --background: 225 35% 7%;
+    --foreground: 210 40% 98%;
+
+    --card: 224 40% 5%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 224 40% 5%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 100% 60%;
+    --primary-foreground: 222 47% 11%;
+
+    --secondary: 217 35% 15%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 35% 12%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 215 30% 25%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 217 35% 15%;
+    --input: 217 35% 15%;
+    --ring: 224 76% 48%;
+  }
+
+  * {
+    @apply border-border;
+  }
+  
+  /* Add transitions only after initial load */
+  .init-transitions * {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02";
+  }
+
+  input:focus-visible, 
+  button:focus-visible {
+    @apply outline-none ring-2 ring-primary ring-opacity-25;
+  }
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+  src: url('https://rsms.me/inter/font-files/Inter-roman.var.woff2?v=3.19') format('woff2');
+}
+
+@layer components {
+  .glass-effect {
+    @apply bg-white bg-opacity-10 backdrop-blur-md border border-white/20 shadow-lg dark:bg-blue-950/20 dark:border-blue-500/20 dark:shadow-blue-900/5;
+  }
+  
+  .repo-row {
+    @apply transition-all duration-300 ease-in-out hover:bg-accent/40 hover:scale-[1.005] cursor-pointer dark:hover:bg-blue-800/20;
+  }
+  
+  .button-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .button-shine::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    bottom: -50%;
+    left: -50%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(59, 130, 246, 0.2) 100%);
+    transform: rotate(45deg) translate(0, -100%);
+    animation: shine 6s infinite;
+  }
+  
+  /* Add chat-specific styles for better dark mode */
+  .chat-message-container {
+    @apply bg-blue-950/30 dark:border-blue-900/30 backdrop-blur-sm;
+  }
+  
+  .chat-card {
+    @apply bg-blue-950/20 backdrop-filter backdrop-blur-sm dark:border-blue-800/30 shadow-lg shadow-blue-900/10;
+  }
+  
+  .stats-card {
+    @apply bg-blue-950/20 dark:hover:shadow-blue-900/20 transition-all hover:shadow-md border border-blue-800/30;
+  }
+  
+  @keyframes shine {
+    0% {
+      transform: rotate(45deg) translate(0, -100%);
+    }
+    20%, 100% {
+      transform: rotate(45deg) translate(0, 100%);
+    }
+  }
+  
+  /* Space tech specific styles */
+  .space-gradient {
+    @apply bg-gradient-to-br from-blue-950 via-blue-900 to-gray-950;
+  }
+  
+  .space-card {
+    @apply bg-gradient-to-br from-blue-950/90 to-gray-950/90 border border-blue-800/30 shadow-lg shadow-blue-900/20;
+  }
+  
+  .space-glow {
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+  }
+  
+  .space-border {
+    @apply border border-blue-500/20;
+  }
+  
+  .tech-grid {
+    background-image: radial-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  
+  /* Status transition animations */
+  .status-transition-start {
+    animation: gentle-pulse 1s ease-in-out;
+    position: relative;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .status-transition-start::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    background: rgba(251, 191, 36, 0.12);
+    border-radius: 8px;
+    z-index: -1;
+    animation: gentle-glow 2.5s ease-in-out;
+    opacity: 0;
+  }
+  
+  .status-transition-end {
+    animation: smooth-fade-in 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .status-transition-end::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(251, 191, 36, 0) 0%, rgba(251, 191, 36, 0.15) 50%, rgba(251, 191, 36, 0) 100%);
+    animation: elegant-shimmer 2s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+  }
+  
+  @keyframes gentle-pulse {
+    0% {
+      transform: scale(1);
+    }
+    20% {
+      transform: scale(1.07);
+    }
+    40% {
+      transform: scale(1.03);
+    }
+    60% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes smooth-fade-in {
+    0% {
+      opacity: 0.7;
+      transform: scale(0.97);
+    }
+    40% {
+      opacity: 0.85;
+      transform: scale(1.02);
+    }
+    70% {
+      opacity: 0.95;
+      transform: scale(0.99);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes gentle-glow {
+    0% {
+      opacity: 0;
+    }
+    30% {
+      opacity: 0.8;
+    }
+    70% {
+      opacity: 0.8;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  
+  @keyframes elegant-shimmer {
+    0% {
+      transform: translateX(-150%);
+      opacity: 0;
+    }
+    20% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 0.7;
+    }
+    80% {
+      opacity: 0.5;
+    }
+    100% {
+      transform: translateX(150%);
+      opacity: 0;
+    }
+  }
+}

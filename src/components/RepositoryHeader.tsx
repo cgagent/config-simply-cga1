@@ -1,0 +1,28 @@
+import React from 'react';
+
+interface Organization {
+  id: string;
+  name: string;
+}
+
+interface RepositoryHeaderProps {
+  organizations: Organization[];
+  selectedOrg: Organization;
+  setSelectedOrg: (org: Organization) => void;
+}
+
+const RepositoryHeader: React.FC<RepositoryHeaderProps> = ({
+  organizations,
+  selectedOrg,
+  setSelectedOrg
+}) => {
+  return (
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <div>
+        <h1 className="text-3xl font-bold mt-1">My CI Workflows</h1>
+      </div>
+    </div>
+  );
+};
+
+export default RepositoryHeader;

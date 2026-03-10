@@ -1,0 +1,407 @@
+import React, { useCallback, useEffect, useState } from 'react';
+import { Card } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { CheckCircle, Package, PackageX, Database, ShieldBan, MonitorDot, Biohazard, Skull, AlertTriangle, XCircle, ChevronRight, GitBranch } from 'lucide-react';
+import { formatNumber } from '@/lib/formatters';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { useRepositories } from '@/contexts/RepositoryContext';
+import { formatDistanceToNow } from 'date-fns';
+import { packageTypeColors } from '@/types/package';
+import { User } from '@/types/user';
+
+interface StatisticsBarProps {
+  ciCompletionPercentage: number;
+  blockedPackages: number;
+  totalPackages: number;
+  onChatQuery?: (query: string) => void;
+}
+
+// Mock users data - this would typically come from an API or central state management
+const initialUsers: User[] = [
+  {
+    id: '1',
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'john.doe@example.com',
+    role: 'Admin',
+    lastLoginDate: '2023-10-15T14:30:00Z',
+    developerApp: true,
+    status: 'active'
+  },
+  {
+    id: '2',
+    firstName: 'Jane',
+    lastName: 'Smith',
+    email: 'jane.smith@example.com',
+    role: 'Developer',
+    lastLoginDate: '2023-10-14T09:15:00Z',
+    developerApp: false,
+    status: 'active'
+  },
+  {
+    id: '3',
+    firstName: 'Mike',
+    lastName: 'Johnson',
+    email: 'mike.johnson@example.com',
+    role: 'Developer',
+    lastLoginDate: '2023-10-13T16:45:00Z',
+    developerApp: true,
+    status: 'active'
+  },
+  {
+    id: '4',
+    firstName: '',
+    lastName: '',
+    email: 'pending.user@example.com',
+    role: 'Developer',
+    lastLoginDate: '2023-10-13T16:45:00Z',
+    developerApp: false,
+    status: 'pending'
+  },
+  {
+    id: '7',
+    firstName: '',
+    lastName: '',
+    email: 'pending.user4@example.com',
+    role: 'Developer',
+    lastLoginDate: '',
+    developerApp: false,
+    status: 'pending'
+  },
+  {
+    id: '8',
+    firstName: '',
+    lastName: '',
+    email: 'pending.user5@example.com',
+    role: 'Admin',
+    lastLoginDate: '',
+    developerApp: false,
+    status: 'pending'
+  }
+];
+
+const StatisticsBar: React.FC<StatisticsBarProps> = ({
+  ciCompletionPercentage,
+  blockedPackages,
+  totalPackages,
+  onChatQuery
+}) => {
+  const navigate = useNavigate();
+  const { repositories, packageStats } = useRepositories();
+  const [users, setUsers] = useState<User[]>(initialUsers);
+
+  // Calculate repository statistics
+  const totalRepos = repositories.length;
+  const configuredRepos = repositories.filter(repo => repo.isConfigured).length;
+
+  // Calculate user statistics
+  const totalUsers = users.length;
+  const activeUsers = users.filter(user => user.status !== 'pending').length;
+  const activeToPendingRatio = `${activeUsers} / ${totalUsers}`;
+  const pendingUsers = totalUsers - activeUsers;
+
+  const handleCICompletionClick = useCallback(() => {
+    console.log('Navigating to CI page');
+    navigate('/repositories', { replace: true });
+  }, [navigate]);
+
+  const handleBlockedPackagesClick = useCallback(() => {
+    console.log('StatisticsBar: Triggering blocked packages query');
+    if (window.openAIChatWithQuery) {
+      window.openAIChatWithQuery("Which packages were blocked in the last 30 days?");
+    } else if (onChatQuery) {
+      onChatQuery("Which packages were blocked in the last 30 days?");
+    }
+  }, [onChatQuery]);
+
+  const handleTotalPackagesClick = useCallback(() => {
+    console.log('StatisticsBar: Triggering packages at risk query');
+    if (window.openAIChatWithQuery) {
+      window.openAIChatWithQuery("Which packages were flagged recently?");
+    } else if (onChatQuery) {
+      onChatQuery("Which packages were flagged recently?");
+    }
+  }, [onChatQuery]);
+
+  const handleConnectedDevelopersClick = useCallback(() => {
+    console.log('Navigating to User Management page');
+    navigate('/users', { replace: true });
+  }, [navigate]);
+
+  const handleLatestPackagesClick = useCallback(() => {
+    console.log('StatisticsBar: Triggering latest packages query');
+    if (window.openAIChatWithQuery) {
+      window.openAIChatWithQuery("Which packages were published recently?");
+    } else if (onChatQuery) {
+      onChatQuery("Which packages were published recently?");
+    }
+  }, [onChatQuery]);
+
+  const handleLatestBuildsClick = useCallback(() => {
+    navigate('/repositories');
+  }, [navigate]);
+
+  const handlePackageAtRiskClick = useCallback(() => {
+    console.log('StatisticsBar: Triggering packages at risk query');
+    if (window.openAIChatWithQuery) {
+      window.openAIChatWithQuery("Which packages are at risk?");
+    } else if (onChatQuery) {
+      onChatQuery("Which packages are at risk?");
+    }
+  }, [onChatQuery]);
+
+  const cardVariants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    hover: { scale: 1.02 }
+  };
+
+  // Helper function to get status icon
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'passed':
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case 'warning':
+        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+      case 'failed':
+        return <XCircle className="h-4 w-4 text-red-500" />;
+      default:
+        return null;
+    }
+  };
+
+  // Helper function to get package type icon
+  const getPackageTypeIcon = (type: string) => {
+    switch (type.toLowerCase()) {
+      case 'docker':
+        return <img src="/lovable-uploads/docker.png" className="w-4 h-4" alt="Docker" />;
+      case 'maven':
+        return <img src="/lovable-uploads/maven.png" className="w-4 h-4" alt="Maven" />;
+      case 'npm':
+        return <img src="/lovable-uploads/npm.png" className="w-4 h-4" alt="NPM" />;
+      case 'python':
+        return <img src="/lovable-uploads/python.png" className="w-4 h-4" alt="Python" />;
+      case 'debian':
+        return <img src="/lovable-uploads/debian.png" className="w-4 h-4" alt="Debian" />;
+      case 'rpm':
+        return <img src="/lovable-uploads/rpm.png" className="w-4 h-4" alt="RPM" />;
+      default:
+        return <Package className="h-4 w-4" />;
+    }
+  };
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+      {/* Blocked Malicious Packages Card */}
+      <motion.div
+        variants={cardVariants}
+        initial="initial"
+        animate="animate"
+        whileHover="hover"
+        transition={{ duration: 0.3, delay: 0.2 }}
+      >
+        <Card className="space-card p-4 h-full flex flex-col backdrop-blur-sm">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center space-x-3">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" clipRule="evenodd" d="M3.6 15.3H5.175V13.05H6.525V15.3H8.775V13.05H10.125V15.3H11.7V11.9925C12.255 11.8275 12.7537 11.58 13.1962 11.25C13.6388 10.92 14.0175 10.5262 14.3325 10.0688C14.6475 9.61125 14.8875 9.10125 15.0525 8.53875C15.2175 7.97625 15.3 7.38 15.3 6.75C15.3 4.74 14.595 3.1125 13.185 1.8675C11.775 0.6225 9.93 0 7.65 0C5.37 0 3.525 0.6225 2.115 1.8675C0.705 3.1125 0 4.74 0 6.75C0 7.38 0.0825 7.97625 0.2475 8.53875C0.4125 9.10125 0.6525 9.61125 0.9675 10.0688C1.2825 10.5262 1.66125 10.92 2.10375 11.25C2.54625 11.58 3.045 11.8275 3.6 11.9925V15.3ZM9 10.35H6.3L7.65 7.65L9 10.35ZM5.61375 7.63875C5.30625 7.94625 4.935 8.1 4.5 8.1C4.065 8.1 3.69375 7.94625 3.38625 7.63875C3.07875 7.33125 2.925 6.96 2.925 6.525C2.925 6.09 3.07875 5.71875 3.38625 5.41125C3.69375 5.10375 4.065 4.95 4.5 4.95C4.935 4.95 5.30625 5.10375 5.61375 5.41125C5.92125 5.71875 6.075 6.09 6.075 6.525C6.075 6.96 5.92125 7.33125 5.61375 7.63875ZM11.9137 7.63875C11.6062 7.94625 11.235 8.1 10.8 8.1C10.365 8.1 9.99375 7.94625 9.68625 7.63875C9.37875 7.33125 9.225 6.96 9.225 6.525C9.225 6.09 9.37875 5.71875 9.68625 5.41125C9.99375 5.10375 10.365 4.95 10.8 4.95C11.235 4.95 11.6062 5.10375 11.9137 5.41125C12.2213 5.71875 12.375 6.09 12.375 6.525C12.375 6.96 12.2213 7.33125 11.9137 7.63875Z" fill="#FB515B"/>
+              </svg>
+              <h3 className="text-lg font-bold text-blue-100/80">Package Protection</h3>
+            </div>
+          </div>
+          <div className="space-y-3">
+            {/* Current At-Risk Packages Section */}
+            <div 
+              className="group cursor-pointer hover:bg-blue-950/30 p-2 rounded-lg transition-all duration-200 border border-transparent hover:border-red-800/30 relative"
+              onClick={handlePackageAtRiskClick}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <span className="text-3xl font-semibold text-red-400 space-glow">1</span>
+                  <span className="text-sm text-red-200/70">Package at risk</span>
+                </div>
+                <ChevronRight className="h-4 w-4 text-red-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+              <p className="text-sm text-red-200/60 mt-1">
+                ⚠️ Malicious package detected
+              </p>
+            </div>
+
+            {/* Historical Blocked Packages Section */}
+            <div 
+              className="group cursor-pointer hover:bg-blue-950/30 p-2 rounded-lg transition-all duration-200 border border-transparent hover:border-blue-800/30 relative"
+              onClick={handleBlockedPackagesClick}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <span className="text-3xl font-semibold text-white space-glow">{blockedPackages}</span>
+                  <span className="text-sm text-blue-200/70">Blocked package</span>
+                </div>
+                <ChevronRight className="h-4 w-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+              <p className="text-sm text-blue-200/60 mt-1">
+                Blocked in the last 30 days out of {formatNumber(totalPackages)} scanned packages
+              </p>
+            </div>
+          </div>
+        </Card>
+      </motion.div>
+
+      {/* Recent Activity Card */}
+      <motion.div
+        variants={cardVariants}
+        initial="initial"
+        animate="animate"
+        whileHover="hover"
+        transition={{ duration: 0.3, delay: 0.3 }}
+      >
+        <Card className="space-card p-4 h-full flex flex-col backdrop-blur-sm">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2">
+                <Package className="h-4 w-4 text-blue-400" />
+                <GitBranch className="h-4 w-4 text-blue-400" />
+              </div>
+              <h3 className="text-lg font-bold text-blue-100/80">Recent Activity</h3>
+            </div>
+          </div>
+          
+          {/* Recent Packages Section */}
+          <div 
+            className="group cursor-pointer hover:bg-blue-950/30 p-2 rounded-lg transition-all duration-200 border border-transparent hover:border-blue-800/30 relative mb-3"
+            onClick={handleLatestPackagesClick}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Package className="h-4 w-4 text-blue-400" />
+                <span className="text-base font-medium text-blue-100/80">Published Packages</span>
+              </div>
+              <ChevronRight className="h-4 w-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+            {packageStats.latestPackages && packageStats.latestPackages.length > 0 ? (
+              <div className="mt-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="mr-2">
+                      {getPackageTypeIcon(packageStats.latestPackages[0].type)}
+                    </div>
+                    <span className="text-base text-white space-glow">{packageStats.latestPackages[0].name}</span>
+                    <span className="text-sm text-blue-200/70 ml-2">v{packageStats.latestPackages[0].version}</span>
+                  </div>
+                  <div className="flex items-center">
+                    {getStatusIcon(packageStats.latestPackages[0].status)}
+                  </div>
+                </div>
+                <p className="text-sm text-blue-200/60 mt-1">
+                  Published {formatDistanceToNow(new Date(packageStats.latestPackages[0].releaseDate), { addSuffix: true })}
+                </p>
+              </div>
+            ) : (
+              <p className="text-sm text-blue-200/60 mt-2">No recent package releases</p>
+            )}
+          </div>
+
+          {/* Recent Builds Section */}
+          <div 
+            className="group cursor-pointer hover:bg-blue-950/30 p-2 rounded-lg transition-all duration-200 border border-transparent hover:border-blue-800/30 relative"
+            onClick={handleLatestBuildsClick}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <GitBranch className="h-4 w-4 text-blue-400" />
+                <span className="text-base font-medium text-blue-100/80">CI Builds</span>
+              </div>
+              <ChevronRight className="h-4 w-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+            {packageStats.latestBuilds && packageStats.latestBuilds.length > 0 ? (
+              <div className="mt-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <span className="text-base text-white space-glow">{packageStats.latestBuilds[0].repository}</span>
+                    <span className="text-sm text-blue-200/70 ml-2">#{packageStats.latestBuilds[0].buildNumber}</span>
+                  </div>
+                  <div className="flex items-center">
+                    {getStatusIcon(packageStats.latestBuilds[0].status)}
+                  </div>
+                </div>
+                <p className="text-sm text-blue-200/60 mt-1">
+                  Built {formatDistanceToNow(new Date(packageStats.latestBuilds[0].buildDate), { addSuffix: true })}
+                </p>
+              </div>
+            ) : (
+              <p className="text-sm text-blue-200/60 mt-2">No recent builds</p>
+            )}
+          </div>
+        </Card>
+      </motion.div>
+
+      {/* Combined CI Coverage and Connected Developers Card */}
+      <motion.div
+        variants={cardVariants}
+        initial="initial"
+        animate="animate"
+        whileHover="hover"
+        transition={{ duration: 0.3, delay: 0.4 }}
+      >
+        <Card className="space-card p-4 h-full flex flex-col backdrop-blur-sm">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="h-5 w-5 text-blue-400" />
+                <MonitorDot className="h-5 w-5 text-blue-400" />
+              </div>
+              <h3 className="text-lg font-bold text-blue-100/80">My Environment</h3>
+            </div>
+          </div>
+          <div className="space-y-3">
+            {/* CI Coverage Section */}
+            <div 
+              className="group cursor-pointer hover:bg-blue-950/30 p-2 rounded-lg transition-all duration-200 border border-transparent hover:border-blue-800/30 relative"
+              onClick={handleCICompletionClick}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <span className="text-3xl font-semibold text-white space-glow">{configuredRepos} / {totalRepos}</span>
+                  <span className="text-sm text-blue-200/70">Repositories configured</span>
+                </div>
+                <ChevronRight className="h-4 w-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+              <Progress 
+                value={ciCompletionPercentage} 
+                className="h-1.5 bg-blue-950/60 mt-2" 
+                indicatorClassName="bg-gradient-to-r from-blue-600 to-blue-400"
+              />
+              <p className="text-sm text-blue-200/60 mt-1">
+                {configuredRepos === totalRepos 
+                  ? "All repositories are configured"
+                  : 1 === totalRepos - configuredRepos ? "⚠️ 1 repository is not protected" : `⚠️ ${totalRepos - configuredRepos} repositories are not protected`}
+              </p>
+            </div>
+
+            {/* Connected Developers Section */}
+            <div 
+              className="group cursor-pointer hover:bg-blue-950/30 p-2 rounded-lg transition-all duration-200 border border-transparent hover:border-blue-800/30 relative"
+              onClick={handleConnectedDevelopersClick}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <span className="text-3xl font-semibold text-white space-glow">{activeToPendingRatio}</span>
+                  <span className="text-sm text-blue-200/70">Developers connected</span>
+                </div>
+                <ChevronRight className="h-4 w-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+              <p className="text-sm text-blue-200/60 mt-1">
+                {pendingUsers === 0 
+                  ? "All developers are protected" 
+                  : `⚠️ ${pendingUsers} ${pendingUsers === 1 ? 'Developer is' : 'Developers are'} not protected`}
+              </p>
+            </div>
+          </div>
+        </Card>
+      </motion.div>
+    </div>
+  );
+};
+
+export default StatisticsBar;

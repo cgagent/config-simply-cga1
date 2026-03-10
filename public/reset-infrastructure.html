@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Repository Reset Tool</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    .card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    button {
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    button:hover {
+      background-color: #1d4ed8;
+    }
+    .success {
+      color: #10b981;
+      font-weight: 500;
+      display: none;
+      margin-top: 16px;
+    }
+    h1 {
+      color: #1e293b;
+    }
+    p {
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Repository Configuration Reset Tool</h1>
+    <p>
+      Use this tool to reset the configuration state of the infrastructure repository.
+      This will ensure the repository is in a non-configured state when viewing the Repositories page.
+    </p>
+    
+    <button id="resetBtn">Reset Infrastructure Repository</button>
+    <p id="successMessage" class="success">✅ Infrastructure repository has been reset successfully. You can now return to the application.</p>
+  </div>
+
+  <script>
+    document.getElementById('resetBtn').addEventListener('click', function() {
+      // Get current repositories from localStorage
+      try {
+        const repoData = localStorage.getItem('ci_repositories');
+        
+        if (repoData) {
+          const repos = JSON.parse(repoData);
+          
+          // Update infrastructure repo to be not configured
+          const updatedRepos = repos.map(repo => {
+            if (repo.name === 'infrastructure') {
+              return {
+                ...repo,
+                isConfigured: false,
+                packageTypes: [],
+                workflows: [],
+                packageTypeStatus: undefined
+              };
+            }
+            return repo;
+          });
+          
+          // Save back to localStorage
+          localStorage.setItem('ci_repositories', JSON.stringify(updatedRepos));
+          console.log('Infrastructure repository reset to non-configured state');
+          
+          // Show success message
+          document.getElementById('successMessage').style.display = 'block';
+        } else {
+          console.log('No repository data found in localStorage');
+          // Show success message anyway since default state should be correct
+          document.getElementById('successMessage').style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Error resetting repository:', error);
+        alert('There was an error resetting the repository. Please try again.');
+      }
+    });
+  </script>
+</body>
+</html> 
